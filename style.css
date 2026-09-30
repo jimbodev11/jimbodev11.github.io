@@ -1,3 +1,14 @@
-body{
-    background-color: #f0a4f0;
-}
+body { background:#000; display:grid; place-items:center; min-height:100vh; margin:0; }
+  .hello {
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: clamp(6rem, 20vw, 14rem);
+    font-weight: 400;
+    color: #fff;
+    margin: 0;
+    clip-path: inset(0 100% 0 0);
+    animation: write 3s cubic-bezier(.4,0,.2,1) .3s forwards;
+  }
+  @keyframes write { to { clip-path: inset(0 0 0 0); } }
+  @media (prefers-reduced-motion: reduce) {
+    .hello { animation: none; clip-path: none; }
+  }
