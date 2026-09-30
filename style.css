@@ -1,14 +1,33 @@
-body { background:#000; display:grid; place-items:center; min-height:100vh; margin:0; }
-  .hello {
-    font-family: 'Mrs Saint Delafield', cursive;
-    font-size: clamp(6rem, 20vw, 14rem);
-    font-weight: 400;
-    color: #fff;
-    margin: 0;
-    clip-path: inset(0 100% 0 0);
-    animation: write 3s cubic-bezier(.4,0,.2,1) .3s forwards;
+:root { --bg:#000; --fg:#fff; --muted:#8a8a8f; }
+  html, body { height:100%; }
+  body {
+    margin:0; background:var(--bg); color:var(--fg);
+    display:grid; place-items:center; text-align:center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   }
-  @keyframes write { to { clip-path: inset(0 0 0 0); } }
+  svg { width:min(90vw, 760px); height:auto; overflow:visible; }
+  .hello {
+    font-family:'Mrs Saint Delafield', cursive;
+    font-size:230px;
+    fill:transparent;
+    stroke:var(--fg);
+    stroke-width:2.5;
+    stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:
+      draw 3.2s cubic-bezier(.45,0,.25,1) .4s forwards,
+      fill .9s ease 3.2s forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset:0; } }
+  @keyframes fill { to { fill:var(--fg); stroke-width:0; } }
+
+  .sub { margin:0; color:var(--muted); font-size:1.1rem; opacity:0; animation:show 1s ease 4.2s forwards; }
+  @keyframes show { to { opacity:1; } }
+
+  main { padding:2rem; }
+
   @media (prefers-reduced-motion: reduce) {
-    .hello { animation: none; clip-path: none; }
+    .hello { animation:none; fill:var(--fg); stroke-width:0; stroke-dashoffset:0; }
+    .sub { animation:none; opacity:1; }
   }
