@@ -1,9 +1,13 @@
+
 (() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const GAP = 56, BASE = 3.2, REACH = 230, SMALL_MAX = 8;
+  const touch = matchMedia('(pointer: coarse)').matches;   // telefon/tablet: nincs egérkövetés, csak random mozgás
+  const GAP = touch ? 44 : 56, BASE = 3.2, REACH = touch ? 150 : 230, SMALL_MAX = 8;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const walkers = Array.from({ length: touch ? 3 : 1 }, () => ({ x: 0, y: 0, tx: 0, ty: 0, next: 0 }));
   let W = 0, H = 0, cols = 0, rows = 0, v = [], dpr = 1;
   let mx = -9999, my = -9999, moved = 0, visible = true, last = performance.now();
  
@@ -25,12 +29,14 @@
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     if (visible) {
       const rect = hero.getBoundingClientRect();
-      let x = mx - rect.left, y = my - rect.top;
-      if (now - moved > 2500) {
-        const t = now / 1000;
-        x = W * (0.5 + 0.34 * Math.sin(t * 0.7));
-        y = H * (0.5 + 0.30 * Math.sin(t * 1.1 + 1));
-      }
+      const pts = [];
+      if (!touch && now - moved < 2500) pts.push([mx - rect.left, my - rect.top]);
+      else walkers.forEach(w => {
+        if (now > w.next) { w.tx = rnd(0, W); w.ty = rnd(0, H); w.next = now + rnd(1200, 2800); if (!w.x) { w.x = w.tx; w.y = w.ty; } }
+        const k = 1 - Math.exp(-dt * 1.6);
+        w.x += (w.tx - w.x) * k; w.y += (w.ty - w.y) * k;
+        pts.push([w.x, w.y]);
+      });
       const decay = Math.pow(0.9, dt * 60);
       g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
       d.clearRect(0, 0, W, H);
@@ -38,8 +44,11 @@
       const maxS = GAP * 1.08;
       for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
         const k = j * cols + i, px = i * GAP, py = j * GAP;
-        const dist = Math.hypot(px - x, py - y);
-        const tgt = dist < REACH ? Math.pow(1 - dist / REACH, 1.4) : 0;
+        let tgt = 0;
+        for (const [x, y] of pts) {
+          const dist = Math.hypot(px - x, py - y);
+          if (dist < REACH) tgt = Math.max(tgt, Math.pow(1 - dist / REACH, 1.4));
+        }
         v[k] = Math.max(v[k] * decay, tgt);
         const s = BASE + v[k] * (maxS - BASE);
         const a = v[k] * 0.45 * Math.sin(k * 1.7);
@@ -58,7 +67,7 @@
  
   size();
   addEventListener('resize', size);
-  addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; moved = performance.now(); }, { passive: true });
+  addEventListener('pointermove', e => { if (touch) return; mx = e.clientX; my = e.clientY; moved = performance.now(); }, { passive: true });
   new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(hero);
  
   if (reduce) {
@@ -70,7 +79,7 @@
 (() => {
   const L = [
     [['k','const '],['','me'],['',' = {']],
-    [['','  '],['p','name'],['',': '],['s','"Jimbo"'],['',',']],
+    [['','  '],['p','name'],['',': '],['s','"[Név]"'],['',',']],
     [['','  '],['p','role'],['',': '],['s','"webfejlesztő"'],['',',']],
     [['','  '],['p','stack'],['',': ['],['s','"HTML"'],['',', '],['s','"CSS"'],['',', '],['s','"JavaScript"'],['','],']],
     [['','  '],['p','open'],['',': '],['k','true'],['',',']],
@@ -123,10 +132,9 @@
     const p = clamp(-r.top / (r.height - innerHeight));
     draw(Math.floor(clamp(p / 0.6) * total));
     const t = clamp((p - 0.68) / 0.22);
-    const enter = clamp(1 - r.top / innerHeight);   
-    const exit = clamp(r.bottom / innerHeight);      
+    const enter = clamp(1 - r.top / innerHeight);   // belépéskor felfelé úszik be
+    const exit = clamp(r.bottom / innerHeight);      // kilépéskor elhalványul
     hero.style.opacity = clamp(1 - scrollY / (innerHeight * 0.85));
-    hero.style.transform = `scale(${1 + (1 - hero.style.opacity) * 0.04})`;
     editor.style.opacity = (1 - t) * enter;
     editor.style.transform = `translateY(${-t * 40}px) scale(${1 - t * 0.05})`;
     editor.style.filter = `blur(${t * 6}px)`;
@@ -150,31 +158,5 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 })();
 
-(() => {
-  const THRESHOLD = 200;
-  let locked = false;
-  const lock = () => {
-    if (locked) return;
-    locked = true;
-    document.documentElement.innerHTML =
-      '<head><meta charset="utf-8"></head><body style="margin:0;background:#000"></body>';
-  };
-  const sizeCheck = () => {
-    if (window.outerWidth - window.innerWidth > THRESHOLD ||
-        window.outerHeight - window.innerHeight > THRESHOLD) lock();
-  };
-  const debuggerCheck = () => {
-    const t = performance.now();
-    debugger;
-    if (performance.now() - t > 100) lock();
-  };
-  setInterval(() => { sizeCheck(); debuggerCheck(); }, 1000);
-  window.addEventListener('resize', sizeCheck);
-  document.addEventListener('keydown', e => {
-    const k = e.key.toLowerCase();
-    if (e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(k)) ||
-        (e.ctrlKey && k === 'u')) e.preventDefault();
-  });
-  document.addEventListener('contextmenu', e => e.preventDefault());
-})();
+
+document.addEventListener('contextmenu', e => e.preventDefault());
