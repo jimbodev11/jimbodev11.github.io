@@ -1,4 +1,3 @@
-
 (() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
@@ -10,12 +9,12 @@
   const walkers = Array.from({ length: touch ? 3 : 1 }, () => ({ x: 0, y: 0, tx: 0, ty: 0, next: 0 }));
   let W = 0, H = 0, cols = 0, rows = 0, v = [], dpr = 1;
   let mx = -9999, my = -9999, moved = 0, visible = true, last = performance.now();
- 
+
   const rr = (c, x, y, s, r) => {
     const h = s / 2;
     c.beginPath(); c.roundRect(x - h, y - h, s, s, r); c.fill();
   };
- 
+
   const size = () => {
     dpr = Math.min(devicePixelRatio || 1, 2);
     W = hero.clientWidth; H = hero.clientHeight;
@@ -24,7 +23,7 @@
     cols = Math.ceil(W / GAP) + 1; rows = Math.ceil(H / GAP) + 1;
     v = new Float32Array(cols * rows);
   };
- 
+
   const frame = now => {
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     if (visible) {
@@ -64,12 +63,12 @@
     }
     requestAnimationFrame(frame);
   };
- 
+
   size();
   addEventListener('resize', size);
   addEventListener('pointermove', e => { if (touch) return; mx = e.clientX; my = e.clientY; moved = performance.now(); }, { passive: true });
   new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(hero);
- 
+
   if (reduce) {
     d.fillStyle = '#fff';
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) rr(d, i * GAP, j * GAP, BASE, 1);
@@ -99,7 +98,7 @@
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
- 
+
   let last = -1;
   const draw = shown => {
     if (shown === last) return; last = shown;
@@ -125,15 +124,15 @@
       (lines[idx] || lines[lines.length - 1]).appendChild(c);
     }
   };
- 
+
   const update = () => {
     if (!stage.isConnected) return;
     const r = stage.getBoundingClientRect();
     const p = clamp(-r.top / (r.height - innerHeight));
     draw(Math.floor(clamp(p / 0.6) * total));
     const t = clamp((p - 0.68) / 0.22);
-    const enter = clamp(1 - r.top / innerHeight);   // belépéskor felfelé úszik be
-    const exit = clamp(r.bottom / innerHeight);      // kilépéskor elhalványul
+    const enter = clamp(1 - r.top / innerHeight);   
+    const exit = clamp(r.bottom / innerHeight);      
     hero.style.opacity = clamp(1 - scrollY / (innerHeight * 0.85));
     editor.style.opacity = (1 - t) * enter;
     editor.style.transform = `translateY(${-t * 40}px) scale(${1 - t * 0.05})`;
@@ -141,7 +140,7 @@
     card.style.opacity = t * exit;
     card.style.transform = `translateY(${(1 - t) * 40}px)`;
   };
- 
+
   if (reduce) { draw(total); return; }
   let tick = false;
   addEventListener('scroll', () => {
@@ -158,5 +157,39 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 })();
 
-
 document.addEventListener('contextmenu', e => e.preventDefault());
+
+(() => {
+  const NOW_PLAYING_URL = 'https://spotify-now-playing.marton-bence-david.workers.dev';
+  const el = document.getElementById('np');
+  if (!el || !NOW_PLAYING_URL) return;
+  const img = el.querySelector('img'), title = el.querySelector('b'), sub = el.querySelector('small');
+  const mobile = matchMedia('(max-width:600px)');
+
+  const load = async () => {
+    try {
+      const r = await fetch(NOW_PLAYING_URL);
+      if (!r.ok) throw 0;
+      const d = await r.json();
+      if (!d.title) { el.hidden = true; return; }
+      img.src = d.image || '';
+      title.textContent = d.title;
+      sub.textContent = (d.isPlaying ? '' : 'utoljára · ') + d.artist;
+      el.href = d.url;
+      el.classList.toggle('playing', !!d.isPlaying);
+      el.hidden = false;
+    } catch { el.hidden = true; }
+  };
+
+  // telefonon az első koppintás kinyitja, a második megnyitja a számot
+  el.addEventListener('click', e => {
+    if (mobile.matches && !el.classList.contains('open')) {
+      e.preventDefault(); el.classList.add('open');
+      setTimeout(() => el.classList.remove('open'), 5000);
+    }
+  });
+
+  load();
+  setInterval(() => { if (!document.hidden) load(); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+})();
