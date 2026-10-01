@@ -1,33 +1,48 @@
-:root { --bg:#000; --fg:#fff; --muted:#8a8a8f; }
-  html, body { height:100%; }
-  body {
-    margin:0; background:var(--bg); color:var(--fg);
-    display:grid; place-items:center; text-align:center;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  }
-  svg { width:min(90vw, 760px); height:auto; overflow:visible; }
-  .hello {
-    font-family:'Mrs Saint Delafield', cursive;
-    font-size:230px;
-    fill:transparent;
-    stroke:var(--fg);
-    stroke-width:2.5;
-    stroke-linecap:round; stroke-linejoin:round;
-    stroke-dasharray:900;
-    stroke-dashoffset:900;
-    animation:
-      draw 3.2s cubic-bezier(.45,0,.25,1) .4s forwards,
-      fill .9s ease 3.2s forwards;
-  }
+:root { --bg:#000; --fg:#f2f2f4; --muted:#8a8a8f; --line:#222226; --k:#7aa2ff; --s:#f2b880; --f:#c4a7ff; --p:#9fd6c8; --c:#6b6b72; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+ 
+  /* HERO */
+  .hero { min-height:100vh; display:grid; place-items:center; text-align:center; padding:2rem; }
+  svg { width:min(90vw,760px); height:auto; overflow:visible; }
+  .hello { font-family:'Mrs Saint Delafield',cursive; font-size:230px; fill:transparent; stroke:var(--fg); stroke-width:2.5;
+    stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:900; stroke-dashoffset:900;
+    animation:draw 3.2s cubic-bezier(.45,0,.25,1) .4s forwards, fill .9s ease 3.2s forwards; }
   @keyframes draw { to { stroke-dashoffset:0; } }
   @keyframes fill { to { fill:var(--fg); stroke-width:0; } }
-
   .sub { margin:0; color:var(--muted); font-size:1.1rem; opacity:0; animation:show 1s ease 4.2s forwards; }
   @keyframes show { to { opacity:1; } }
-
-  main { padding:2rem; }
-
+ 
+  /* SCROLL STAGE: a kód görgetésre íródik, majd "lefordul" kártyává */
+  .stage { height:400vh; }
+  .pin { position:sticky; top:0; height:100vh; display:grid; place-items:center; padding:1.25rem; overflow:hidden; }
+  .editor, .card { grid-area:1/1; width:min(92vw,620px); }
+  .editor { border:1px solid var(--line); border-radius:12px; background:#0a0a0c; will-change:transform,opacity,filter; }
+  .tab { padding:.7rem 1rem; border-bottom:1px solid var(--line); color:var(--muted); font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  pre { margin:0; padding:1rem 0; min-height:19.5em; font:15px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; counter-reset:n; overflow-x:auto; }
+  .ln { display:block; padding:0 1rem 0 0; white-space:pre; counter-increment:n; min-height:1.65em; }
+  .ln::before { content:counter(n); display:inline-block; width:3em; padding-right:1em; text-align:right; color:#44444a; }
+  .k{color:var(--k)} .s{color:var(--s)} .f{color:var(--f)} .p{color:var(--p)} .c{color:var(--c)}
+  .caret { display:inline-block; width:.55em; height:1.1em; margin-left:1px; vertical-align:text-bottom; background:var(--fg); animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+ 
+  .card { opacity:0; padding:2.25rem; border:1px solid var(--line); border-radius:12px; background:#0a0a0c; will-change:transform,opacity; }
+  .card h2 { margin:0 0 .25rem; font-size:2.4rem; letter-spacing:-.02em; }
+  .card .role { margin:0 0 1.5rem; color:var(--muted); font-size:1.15rem; }
+  .chips { display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 1.75rem; padding:0; list-style:none; }
+  .chips li { padding:.35rem .8rem; border:1px solid var(--line); border-radius:999px; font-size:.95rem; }
+  .status { display:flex; align-items:center; gap:.6rem; color:var(--muted); }
+  .status i { width:.6rem; height:.6rem; border-radius:50%; background:var(--p); }
+ 
+  .end { min-height:60vh; display:grid; place-items:center; color:var(--muted); }
+ 
   @media (prefers-reduced-motion: reduce) {
     .hello { animation:none; fill:var(--fg); stroke-width:0; stroke-dashoffset:0; }
     .sub { animation:none; opacity:1; }
+    html { scroll-behavior:auto; }
+    .stage { height:auto; }
+    .pin { position:static; height:auto; display:block; padding:3rem 1.25rem; }
+    .editor, .card { margin:0 auto 1.5rem; opacity:1 !important; transform:none !important; filter:none !important; }
+    .caret { display:none; }
   }
