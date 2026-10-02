@@ -44,11 +44,24 @@ pre { margin:0; padding:1rem 0; min-height:19.5em; font:15px/1.65 ui-monospace,S
 .projects { padding: 4rem 1.25rem 8rem; max-width: 1000px; margin: 0 auto; }
 .section-title { font-size: 2.4rem; text-align: center; margin: 0 0 3rem; color: var(--fg); letter-spacing: -.02em; }
 .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-.project-card { padding: 2rem; border: 1px solid var(--line); border-radius: 12px; background: #0a0a0c; display: flex; flex-direction: column; }
+.project-card { 
+  padding: 2rem; 
+  border: 1px solid var(--line); 
+  border-radius: 12px; 
+  background: #0a0a0c; 
+  display: flex; 
+  flex-direction: column; 
+  /* Ide bekerült az animáció ideje (transition) */
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
 .project-card h3 { margin: 0 0 .5rem; font-size: 1.5rem; letter-spacing: -.01em; }
 .project-card .desc { margin: 0 0 1.5rem; color: var(--muted); font-size: 1.05rem; line-height: 1.6; flex: 1; }
 .project-link { display: inline-flex; align-items: center; gap: .5rem; color: var(--p); text-decoration: none; font-weight: 500; font-size: .95rem; transition: color 0.2s; align-self: flex-start; }
 .project-link:hover { color: var(--fg); }
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--muted);
+}
 
 @media (prefers-reduced-motion: reduce) {
   .hello { animation:none; fill:var(--fg); stroke-width:0; stroke-dashoffset:0; }
