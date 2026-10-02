@@ -160,6 +160,31 @@
 document.addEventListener('contextmenu', e => e.preventDefault());
 
 (() => {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  if (!sections.length || !navLinks.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    let currentId = '';
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        currentId = entry.target.id;
+      }
+    });
+    if (currentId) {
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${currentId}`) {
+          link.classList.add('active');
+        }
+      });
+    }
+  }, { threshold: 0.3 }); // Amikor a szekció 30%-a látszik
+
+  sections.forEach(sec => observer.observe(sec));
+})();
+
+(() => {
   const NOW_PLAYING_URL = 'https://spotify-now-playing.marton-bence-david.workers.dev';
   const el = document.getElementById('np');
   if (!el || !NOW_PLAYING_URL) return;
