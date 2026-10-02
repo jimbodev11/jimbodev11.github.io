@@ -218,3 +218,11 @@ document.addEventListener('contextmenu', e => e.preventDefault());
   setInterval(() => { if (!document.hidden) load(); }, 20000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
 })();
+
+// Header beúszás logikája a "hello" animáció felett
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const header = document.querySelector('.site-header');
+    if (header) header.classList.add('loaded');
+  }, 500); // Fél másodperccel az oldal betöltése után csúszik be a menü
+});

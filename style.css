@@ -7,25 +7,34 @@ body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-syste
 
 /* --- HEADER (Yuga Labs stílusú letisztult menü) --- */
 .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 2rem;
-  border-bottom: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.7);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 2rem; border-bottom: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   z-index: 100;
+  /* Header animáció beúszása felülről */
+  transform: translateY(-100%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.site-header.loaded { transform: translateY(0); }
 .site-header .logo { font-weight: 600; font-size: 1rem; color: var(--fg); letter-spacing: 0.02em; }
 .site-header .nav-links { display: flex; gap: 1.5rem; }
 .site-header .nav-links a { color: var(--fg); text-decoration: none; font-size: 0.9rem; font-weight: 500; position: relative; transition: color 0.2s; }
 .site-header .nav-links a:hover { color: var(--muted); }
 .site-header .nav-links a.active::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 1px; background: var(--fg); }
+
+/* --- STAR WARS 3D KÁRTYA ANIMÁCIÓ --- */
+.project-card.reveal {
+  opacity: 0;
+  transform: translateY(100px) perspective(800px) rotateX(45deg);
+  transform-origin: bottom center;
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), filter 1s ease;
+  filter: blur(8px);
+}
+.project-card.reveal.in {
+  opacity: 1;
+  transform: translateY(0) perspective(800px) rotateX(0deg);
+  filter: blur(0);
+}
 
 /* --- CONTACT --- */
 .contact { padding: 4rem 1.25rem 8rem; max-width: 800px; margin: 0 auto; text-align: center; }
@@ -88,8 +97,22 @@ pre { margin:0; padding:1rem 0; min-height:19.5em; font:15px/1.65 ui-monospace,S
 .project-link { display: inline-flex; align-items: center; gap: .5rem; color: var(--p); text-decoration: none; font-weight: 500; font-size: .95rem; transition: color 0.2s; align-self: flex-start; }
 .project-link:hover { color: var(--fg); }
 .project-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-6px) perspective(800px) rotateX(0deg);
   border-color: var(--muted);
+}
+
+/* --- STAR WARS 3D KÁRTYA ANIMÁCIÓ --- */
+.project-card.reveal {
+  opacity: 0;
+  transform: translateY(100px) perspective(800px) rotateX(45deg);
+  transform-origin: bottom center;
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), filter 1s ease, border-color 0.3s ease;
+  filter: blur(8px);
+}
+.project-card.reveal.in {
+  opacity: 1;
+  transform: translateY(0) perspective(800px) rotateX(0deg);
+  filter: blur(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
