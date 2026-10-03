@@ -3,6 +3,7 @@
 html { scroll-behavior:smooth; overflow-x:clip; }
 body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; overflow-x:clip; }
 @supports not (overflow:clip) { html { overflow-x:hidden; } }
+
 body::before {
   content: "";
   position: fixed;
@@ -18,15 +19,18 @@ body::before {
 @media (pointer: coarse) {
   body::before { display: none; }
 }
+
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; border: 2px solid var(--bg); }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
+
 .site-header {
   position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
   padding: 1.25rem 2rem; border-bottom: 1px solid var(--line);
   background: rgba(0, 0, 0, 0.7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   z-index: 100;
+
   transform: translateY(-100%);
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -36,6 +40,7 @@ body::before {
 .site-header .nav-links a { color: var(--fg); text-decoration: none; font-size: 0.9rem; font-weight: 500; position: relative; transition: color 0.2s; }
 .site-header .nav-links a:hover { color: var(--muted); }
 .site-header .nav-links a.active::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 1px; background: var(--fg); }
+
 .lang-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -53,6 +58,7 @@ body::before {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
 }
+
 .project-card.reveal {
   opacity: 0;
   transform: translateY(100px) perspective(800px) rotateX(45deg);
@@ -65,6 +71,7 @@ body::before {
   transform: translateY(0) perspective(800px) rotateX(0deg);
   filter: blur(0);
 }
+
 .contact { padding: 4rem 1.25rem 8rem; max-width: 800px; margin: 0 auto; text-align: center; }
 .contact p { color: var(--muted); font-size: 1.15rem; margin-bottom: 2.5rem; }
 .social-links { display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
@@ -84,6 +91,7 @@ svg { width:min(90vw,760px); height:auto; overflow:visible; }
 @keyframes fill { to { fill:var(--fg); stroke-width:0; filter: drop-shadow(0 0 15px rgba(242, 242, 244, 0.4)) drop-shadow(0 0 30px rgba(122, 162, 255, 0.3)); } }
 .sub { margin:0; color:var(--muted); font-size:1.1rem; opacity:0; animation:show 1s ease 4.2s forwards; }
 @keyframes show { to { opacity:1; } }
+
 .about-section { padding: 8rem 1.25rem; max-width: 1000px; margin: 0 auto; }
 .about-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
 @media (max-width: 800px) { .about-container { grid-template-columns: 1fr; gap: 2rem; } }
@@ -106,6 +114,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
 .about-text .desc { margin:0 0 2rem; color:var(--muted); font-size:1.1rem; line-height: 1.6; }
 .chips { display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 1.75rem; padding:0; list-style:none; }
 .chips li { padding:.4rem .9rem; border:1px solid var(--line); border-radius:999px; font-size:.95rem; background: rgba(255,255,255,0.03); }
+
 .skills-section {
   padding: 4rem 0;
   overflow: hidden;
@@ -190,6 +199,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
   border-color: rgba(122, 162, 255, 0.5);
   box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 25px rgba(122, 162, 255, 0.15);
 }
+
 .project-card.reveal {
   opacity: 0;
   transform: translateY(100px) perspective(800px) rotateX(45deg);
@@ -243,6 +253,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
 @media (prefers-reduced-motion: reduce) {
   .np.playing .eq i { animation:none; height:70%; }
 }
+
 #pet-area {
   position: relative; width: 100%; height: 60px; margin-top: 3rem; overflow: visible;
 }
@@ -251,6 +262,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
   transition: transform 0.2s ease;
 }
 .pet-character svg { width: 100%; height: 100%; display: block; }
+
 .pet-tooltip {
   position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%) scale(0.8);
   opacity: 0; pointer-events: none; transition: all 0.3s ease;
@@ -258,12 +270,14 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
 }
 .pet-tooltip img { width: 100%; border-radius: 4px; display: block; }
 .pet-character:hover .pet-tooltip { opacity: 1; transform: translateX(-50%) scale(1); }
+
 .pet-thought-bubble {
   position: absolute; top: -30px; left: 50%; transform: translateX(-50%) scale(0);
   background: white; border-radius: 50%; padding: 4px 6px; font-size: 14px;
   opacity: 0; transition: all 0.3s ease;
 }
 .pet-character.wants-bone .pet-thought-bubble { transform: translateX(-50%) scale(1); opacity: 1; }
+
 .pet-sprite {
   width: 70px;
   height: 70px;
@@ -272,9 +286,12 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
   background-repeat: no-repeat;
   image-rendering: pixelated;
 }
+
 .pet-character .pet-sprite { background-image: url('img/dog-stand.svg'); }
 .pet-character.walk .pet-sprite { animation: bounceWalk 0.3s infinite alternate; }
+
 .pet-character.sit .pet-sprite { background-image: url('img/dog-sit.svg'); }
+
 .pet-character.lay .pet-sprite { background-image: url('img/dog-lie.svg'); }
 
 .pet-character.spin .pet-sprite { animation: spinPet 0.8s infinite linear; }
@@ -288,6 +305,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
 @keyframes barkLinesAnim { 0% { transform: scale(1) translateX(0); } 100% { transform: scale(1.1) translateX(2px); } }
 @keyframes wag { 0% { transform: rotate(-10deg); } 100% { transform: rotate(20deg); } }
 @keyframes earFlop { 0% { transform: rotate(-5deg); } 100% { transform: rotate(15deg); } }
+
 .lang-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
