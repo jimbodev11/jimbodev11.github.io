@@ -1,16 +1,24 @@
-:root { --bg:#000; --fg:#f2f2f4; --muted:#8a8a8f; --line:#222226; --k:#7aa2ff; --s:#f2b880; --f:#c4a7ff; --p:#9fd6c8; --c:#6b6b72; }
+:root { --bg:#050508; --fg:#f2f2f4; --muted:#8a8a8f; --line:#222226; --k:#7aa2ff; --s:#f2b880; --f:#c4a7ff; --p:#9fd6c8; --c:#6b6b72; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; overflow-x:clip; }
 body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; overflow-x:clip; }
 @supports not (overflow:clip) { html { overflow-x:hidden; } }
 
-/* --- SMOOTH JS CURSOR --- */
-@media (pointer: fine) {
-  body { cursor: none; }
-  a, button, .pet-character, .project-card, .social-link { cursor: none !important; }
-  .cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; mix-blend-mode: difference; }
-  .cursor-ring { position: fixed; top: 0; left: 0; width: 36px; height: 36px; border: 1.5px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); z-index: 9998; mix-blend-mode: difference; transition: width 0.3s ease, height 0.3s ease, background 0.3s ease; will-change: transform; }
-  .cursor-ring.hover { width: 50px; height: 50px; background: rgba(255,255,255,1); mix-blend-mode: difference; }
+/* --- GLOWING FLASHLIGHT EFFECT --- */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(800px circle at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(255, 255, 255, 0.04), transparent 40%);
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+}
+@media (pointer: coarse) {
+  body::before { display: none; }
 }
 
 /* --- EGYEDI GÖRGETŐSÁV --- */
@@ -36,6 +44,25 @@ body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-syste
 .site-header .nav-links a:hover { color: var(--muted); }
 .site-header .nav-links a.active::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 1px; background: var(--fg); }
 
+/* --- NYELVVÁLTÓ GOMB --- */
+.lang-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+}
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
 /* --- STAR WARS 3D KÁRTYA ANIMÁCIÓ --- */
 .project-card.reveal {
   opacity: 0;
@@ -59,9 +86,9 @@ body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-syste
 
 .hero { position:relative; isolation:isolate; overflow:hidden; min-height:100vh; display:grid; place-items:center; text-align:center; padding:2rem; }
 .hero > div { position:relative; z-index:2; mix-blend-mode:difference; }
-.fx { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
-#goo { filter:blur(4px) contrast(20); background:#000; }
-#dots { z-index:1; }
+.fx { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-2; }
+#goo { filter: blur(80px); background: transparent; opacity: 0.8; }
+#dots { z-index:-1; mix-blend-mode: screen; opacity: 0.5; }
 svg { width:min(90vw,760px); height:auto; overflow:visible; }
 .hello { font-family:'Mrs Saint Delafield',cursive; font-size:230px; fill:transparent; stroke:var(--fg); stroke-width:2.5;
   stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:900; stroke-dashoffset:900;
@@ -71,48 +98,114 @@ svg { width:min(90vw,760px); height:auto; overflow:visible; }
 .sub { margin:0; color:var(--muted); font-size:1.1rem; opacity:0; animation:show 1s ease 4.2s forwards; }
 @keyframes show { to { opacity:1; } }
 
-.stage { height:400vh; }
-.pin { position:sticky; top:0; height:100vh; display:grid; place-items:center; padding:1.25rem; overflow:hidden; }
-.editor, .card { grid-area:1/1; width:min(92vw,620px); }
-.editor { border:1px solid var(--line); border-radius:12px; background:#0a0a0c; will-change:transform,opacity,filter; }
-.tab { padding:.7rem 1rem; border-bottom:1px solid var(--line); color:var(--muted); font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
-pre { margin:0; padding:1rem 0; min-height:19.5em; font:15px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; counter-reset:n; overflow-x:auto; }
+/* --- ABOUT (RÓLAM) SZEKCIÓ --- */
+.about-section { padding: 8rem 1.25rem; max-width: 1000px; margin: 0 auto; }
+.about-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+@media (max-width: 800px) { .about-container { grid-template-columns: 1fr; gap: 2rem; } }
+
+.editor { border:1px solid var(--line); border-radius:12px; background:rgba(10, 10, 12, 0.6); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(122, 162, 255, 0.05); overflow: hidden; }
+.editor-header { display:flex; align-items:center; padding:.7rem 1rem; border-bottom:1px solid var(--line); position:relative; background: rgba(0,0,0,0.4); }
+.mac-btns { display:flex; gap:6px; position:absolute; }
+.mac-btns span { width:11px; height:11px; border-radius:50%; }
+.mac-btns span:nth-child(1) { background:#ff5f56; }
+.mac-btns span:nth-child(2) { background:#ffbd2e; }
+.mac-btns span:nth-child(3) { background:#27c93f; }
+.mac-title { width:100%; text-align:center; color:var(--muted); font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-weight:500; }
+pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; counter-reset:n; overflow-x:auto; }
 .ln { display:block; padding:0 1rem 0 0; white-space:pre; counter-increment:n; min-height:1.65em; }
 .ln::before { content:counter(n); display:inline-block; width:3em; padding-right:1em; text-align:right; color:#44444a; }
 .k{color:var(--k)} .s{color:var(--s)} .f{color:var(--f)} .p{color:var(--p)} .c{color:var(--c)}
-.caret { display:inline-block; width:.55em; height:1.1em; margin-left:1px; vertical-align:text-bottom; background:var(--fg); animation:blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity:0; } }
 
-.card { opacity:0; padding:2.25rem; border:1px solid var(--line); border-radius:12px; background:#0a0a0c; will-change:transform,opacity; }
-.card h2 { margin:0 0 .25rem; font-size:2.4rem; letter-spacing:-.02em; }
-.card .role { margin:0 0 1.5rem; color:var(--muted); font-size:1.15rem; }
+.about-text h2 { margin:0 0 .5rem; font-size:2.8rem; letter-spacing:-.02em; }
+.about-text .role { margin:0 0 1.5rem; color:var(--p); font-size:1.15rem; font-weight: 500; }
+.about-text .desc { margin:0 0 2rem; color:var(--muted); font-size:1.1rem; line-height: 1.6; }
 .chips { display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 1.75rem; padding:0; list-style:none; }
-.chips li { padding:.35rem .8rem; border:1px solid var(--line); border-radius:999px; font-size:.95rem; }
-.status { display:flex; align-items:center; gap:.6rem; color:var(--muted); }
-.status i { width:.6rem; height:.6rem; border-radius:50%; background:var(--p); }
+.chips li { padding:.4rem .9rem; border:1px solid var(--line); border-radius:999px; font-size:.95rem; background: rgba(255,255,255,0.03); }
+
+/* --- SKILLS MARQUEE --- */
+.skills-section {
+  padding: 4rem 0;
+  overflow: hidden;
+  background: rgba(2, 2, 2, 0.4);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+}
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-left: 2rem;
+  animation: scrollMarquee 25s linear infinite;
+  will-change: transform;
+}
+.marquee.reverse .marquee-track {
+  animation-direction: reverse;
+}
+.marquee-track span {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.3s, text-shadow 0.3s;
+  cursor: default;
+}
+.marquee-track span.dot {
+  color: var(--line);
+  font-size: 1.5rem;
+}
+.marquee-track span:hover {
+  color: var(--fg);
+  text-shadow: 0 0 15px rgba(255,255,255,0.5);
+}
+
+@keyframes scrollMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
 .reveal { opacity:0; transform:translateY(28px); filter:blur(6px); transition:opacity .8s ease, transform .8s ease, filter .8s ease; }
 .reveal.in { opacity:1; transform:none; filter:none; }
-.projects { padding: 4rem 1.25rem 8rem; max-width: 1000px; margin: 0 auto; }
+.projects { padding: 4rem 0 8rem; width: 100vw; max-width: 100%; overflow: hidden; }
 .section-title { font-size: 2.4rem; text-align: center; margin: 0 0 3rem; color: var(--fg); letter-spacing: -.02em; }
-.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+.project-marquee { padding: 2rem 0; overflow: visible; display: flex; width: 100vw; }
+.project-marquee .marquee-track { animation: scrollMarquee 25s linear infinite; display: flex; gap: 2rem; width: max-content; padding: 0 1rem; }
+.project-marquee .marquee-track:hover { animation-play-state: paused; }
+
 .project-card { 
-  padding: 2rem; 
+  width: 380px;
   border: 1px solid var(--line); 
   border-radius: 12px; 
-  background: #0a0a0c; 
+  background: rgba(10, 10, 12, 0.6); 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex; 
   flex-direction: column; 
-  /* Ide bekerült az animáció ideje (transition) */
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  overflow: hidden;
+  text-align: left;
+  white-space: normal;
 }
+.project-content { padding: 2rem; display: flex; flex-direction: column; flex: 1; }
 .project-card h3 { margin: 0 0 .5rem; font-size: 1.5rem; letter-spacing: -.01em; }
 .project-card .desc { margin: 0 0 1.5rem; color: var(--muted); font-size: 1.05rem; line-height: 1.6; flex: 1; }
-.project-link { display: inline-flex; align-items: center; gap: .5rem; color: var(--p); text-decoration: none; font-weight: 500; font-size: .95rem; transition: color 0.2s; align-self: flex-start; }
-.project-link:hover { color: var(--fg); }
+.project-link { display: inline-flex; align-items: center; gap: .5rem; color: var(--p); text-decoration: none; font-weight: 500; font-size: .95rem; transition: color 0.2s, transform 0.2s; align-self: flex-start; }
+.project-link:hover { color: var(--fg); transform: translateX(4px); }
 .project-card:hover {
-  transform: translateY(-6px) perspective(800px) rotateX(0deg);
-  border-color: var(--muted);
+  transform: translateY(-12px) perspective(800px) rotateX(2deg) rotateY(-1deg) scale(1.02);
+  border-color: rgba(122, 162, 255, 0.5);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 25px rgba(122, 162, 255, 0.15);
 }
 
 /* --- STAR WARS 3D KÁRTYA ANIMÁCIÓ --- */
@@ -216,3 +309,22 @@ pre { margin:0; padding:1rem 0; min-height:19.5em; font:15px/1.65 ui-monospace,S
 @keyframes spinPet { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 @keyframes wag { 0% { transform: rotate(-10deg); } 100% { transform: rotate(20deg); } }
 @keyframes earFlop { 0% { transform: rotate(-5deg); } 100% { transform: rotate(10deg); } }
+
+/* --- NYELVVÁLTÓ GOMB --- */
+.lang-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+}
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}

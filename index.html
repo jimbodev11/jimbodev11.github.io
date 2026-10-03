@@ -12,70 +12,189 @@
 
 </head>
 <body>
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
+  <!-- HÁTTÉR EFFEKTEK (Minden szekcióban látszik) -->
+  <canvas class="fx" id="goo" aria-hidden="true"></canvas>
+  <canvas class="fx" id="dots" aria-hidden="true"></canvas>
+  
 <header class="site-header">
   <div class="logo">Jimbo Dev</div>
   <nav class="nav-links">
-    <a href="#hero" class="active">Főoldal</a>
-    <a href="#kapcsolat">Kapcsolat</a>
+    <a href="#hero" class="active" data-i18n="nav_home">Főoldal</a>
+    <a href="#about" data-i18n="nav_about">Rólam</a>
+    <a href="#projects" data-i18n="nav_projects">Projektek</a>
+    <a href="#kapcsolat" data-i18n="nav_contact">Kapcsolat</a>
+    <button id="lang-toggle" class="lang-btn">EN</button>
   </nav>
 </header>
 
 <section class="hero" id="hero">
-  <canvas class="fx" id="goo" aria-hidden="true"></canvas>
-  <canvas class="fx" id="dots" aria-hidden="true"></canvas>
   <div>
     <svg viewBox="0 0 700 260" role="img" aria-label="hello">
       <text class="hello" x="350" y="200" text-anchor="middle">hello</text>
     </svg>
-    <p class="sub">Görgess lefelé, és megmutatom, ki vagyok.</p>
+    <p class="sub" data-i18n="hero_sub">Görgess lefelé, és megmutatom, ki vagyok.</p>
+  </div>
+</section>
+
+<!-- ME.JS ÁTHELYEZVE STATIKUS GLASSMORPHISM KÁRTYÁBA -->
+<section class="about-section reveal" id="about">
+  <div class="about-container">
+    <div class="editor" id="editor">
+      <div class="editor-header">
+        <div class="mac-btns"><span></span><span></span><span></span></div>
+        <div class="mac-title">me.js</div>
+      </div>
+      <pre aria-label="Forráskód">
+<span class="ln"><span class="k">const </span>me = {</span>
+<span class="ln">  <span class="p">name</span>: <span class="s">"Jimbo"</span>,</span>
+<span class="ln">  <span class="p">passion</span>: <span class="s" data-i18n="code_passion">"Kreatív Fejlesztés"</span>,</span>
+<span class="ln">  <span class="p">skills</span>: [<span class="s">"Web"</span>, <span class="s">"UI/UX"</span>, <span class="s" data-i18n="code_skills_3">"Játékszerverek"</span>],</span>
+<span class="ln">  <span class="p">coffeeLevel</span>: <span class="s">"100%"</span>,</span>
+<span class="ln">  <span class="p">openToWork</span>: <span class="k">true</span></span>
+<span class="ln">};</span>
+<span class="ln"></span>
+<span class="ln"><span class="c" data-i18n="code_comment">// Egységes, letisztult dizájn!</span></span>
+<span class="ln"><span class="k">export default </span>me;</span></pre>
+    </div>
+    <div class="about-text">
+      <h2>Jimbo</h2>
+      <p class="role" data-i18n="about_role">Szoftverfejlesztő & Dizájner</p>
+      <p class="desc" data-i18n="about_desc">Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése. Fontos számomra, hogy amit alkotok, az ne csak jól működjön, de vizuálisan is maradandó élményt nyújtson.</p>
+      <ul class="chips">
+        <li data-i18n="chip_creative">Kreatív</li>
+        <li data-i18n="chip_coding">Kódolás</li>
+        <li>UI/UX</li>
+      </ul>
+    </div>
   </div>
 </section>
  
-<section class="stage" id="stage">
-  <div class="pin">
-    <div class="editor" id="editor">
-      <div class="tab">me.js</div>
-      <pre id="code" aria-label="Forráskód"></pre>
+<section class="skills-section reveal" id="skills">
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>HTML5</span><span class="dot">•</span>
+      <span>CSS3</span><span class="dot">•</span>
+      <span>JavaScript</span><span class="dot">•</span>
+      <span>C#</span><span class="dot">•</span>
+      <span>Lua</span><span class="dot">•</span>
+      <span>FiveM</span><span class="dot">•</span>
+      <!-- Másolat a végtelen görgetéshez -->
+      <span>HTML5</span><span class="dot">•</span>
+      <span>CSS3</span><span class="dot">•</span>
+      <span>JavaScript</span><span class="dot">•</span>
+      <span>C#</span><span class="dot">•</span>
+      <span>Lua</span><span class="dot">•</span>
+      <span>FiveM</span><span class="dot">•</span>
     </div>
-      <article class="card" id="card">
-      <h2>Jimbo</h2>
-      <p class="role">Webfejlesztő, C# Szoftverfejlesztő, FiveM Lua Developer</p>
-      <ul class="chips"><li>Web</li><li>C#</li><li>Lua</li></ul>
-      <div class="status"><i></i>Nyitott új projektekre</div>
-    </article>
+  </div>
+  <div class="marquee reverse">
+    <div class="marquee-track">
+      <span>Git</span><span class="dot">•</span>
+      <span>Node.js</span><span class="dot">•</span>
+      <span>.NET</span><span class="dot">•</span>
+      <span>SQL</span><span class="dot">•</span>
+      <span>Python</span><span class="dot">•</span>
+      <span>Tailwind</span><span class="dot">•</span>
+      <span>API</span><span class="dot">•</span>
+      <!-- Másolat a végtelen görgetéshez -->
+      <span>Git</span><span class="dot">•</span>
+      <span>Node.js</span><span class="dot">•</span>
+      <span>.NET</span><span class="dot">•</span>
+      <span>SQL</span><span class="dot">•</span>
+      <span>Python</span><span class="dot">•</span>
+      <span>Tailwind</span><span class="dot">•</span>
+      <span>API</span><span class="dot">•</span>
+    </div>
   </div>
 </section>
  
 <section class="projects" id="projects">
-  <h2 class="reveal section-title">Projektek</h2>
-  <div class="projects-grid">
-    <article class="project-card reveal">
-      <h3>Gasztrotükör</h3>
-      <p class="desc">Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.</p>
-      <ul class="chips"><li>Webfejlesztés</li><li>Vizsgamunka</li></ul>
-      <a href="src/GasztroTükör vizsgaremek.pdf" target="_blank" rel="noopener noreferrer" class="project-link">Megnézem<span>&rarr;</span></a>
-    </article>
-    <article class="project-card reveal">
-      <h3>Nocturne RP</h3>
-      <p class="desc">Egyedi Roleplay szerver projekt. (Jelenleg szünetel)</p>
-      <ul class="chips"><li>Játékszerver</li><li>Közösség</li></ul>
-      <span class="project-link" style="color: var(--muted); cursor: not-allowed;">Szünetel</span>
-    </article>
-    <article class="project-card reveal">
-      <h3>Saját Portfólió</h3>
-      <p class="desc">A jelenlegi bemutatkozó weboldalam.</p>
-      <ul class="chips"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
-      <a href="https://github.com/jimbodev11" class="project-link">GitHub <span>&rarr;</span></a>
-    </article>
+  <h2 class="reveal section-title" data-i18n="nav_projects">Projektek</h2>
+  <div class="marquee project-marquee">
+    <div class="marquee-track">
+      <!-- 1. Eredeti -->
+      <article class="project-card editor">
+        <div class="editor-header">
+          <div class="mac-btns"><span></span><span></span><span></span></div>
+          <div class="mac-title">gasztrotukor.js</div>
+        </div>
+        <div class="project-content">
+          <h3>Gasztrotükör</h3>
+          <p class="desc" data-i18n="proj1_desc">Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.</p>
+          <ul class="chips"><li data-i18n="proj1_chip1">Webfejlesztés</li><li data-i18n="proj1_chip2">Vizsgamunka</li></ul>
+          <a href="src/GasztroTükör vizsgaremek.pdf" target="_blank" rel="noopener noreferrer" class="project-link"><span data-i18n="proj_btn_view">Megnézem</span><span>&rarr;</span></a>
+        </div>
+      </article>
+      <article class="project-card editor">
+        <div class="editor-header">
+          <div class="mac-btns"><span></span><span></span><span></span></div>
+          <div class="mac-title">nocturne.exe</div>
+        </div>
+        <div class="project-content">
+          <h3>Nocturne RP</h3>
+          <p class="desc" data-i18n="proj2_desc">Egyedi Roleplay szerver projekt. (Jelenleg szünetel)</p>
+          <ul class="chips"><li data-i18n="proj2_chip1">Játékszerver</li><li data-i18n="proj2_chip2">Közösség</li></ul>
+          <span class="project-link" style="color: var(--muted); cursor: not-allowed;" data-i18n="proj_btn_paused">Szünetel</span>
+        </div>
+      </article>
+      <article class="project-card editor">
+        <div class="editor-header">
+          <div class="mac-btns"><span></span><span></span><span></span></div>
+          <div class="mac-title">portfolio.html</div>
+        </div>
+        <div class="project-content">
+          <h3>Saját Portfólió</h3>
+          <p class="desc" data-i18n="proj3_desc">A jelenlegi bemutatkozó weboldalam.</p>
+          <ul class="chips"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+          <a href="https://github.com/jimbodev11" class="project-link">GitHub <span>&rarr;</span></a>
+        </div>
+      </article>
+
+      <!-- 2. Másolat a végtelen loophoz -->
+      <article class="project-card editor">
+        <div class="editor-header">
+          <div class="mac-btns"><span></span><span></span><span></span></div>
+          <div class="mac-title">gasztrotukor.js</div>
+        </div>
+        <div class="project-content">
+          <h3>Gasztrotükör</h3>
+          <p class="desc" data-i18n="proj1_desc">Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.</p>
+          <ul class="chips"><li data-i18n="proj1_chip1">Webfejlesztés</li><li data-i18n="proj1_chip2">Vizsgamunka</li></ul>
+          <a href="src/GasztroTükör vizsgaremek.pdf" target="_blank" rel="noopener noreferrer" class="project-link"><span data-i18n="proj_btn_view">Megnézem</span><span>&rarr;</span></a>
+        </div>
+      </article>
+      <article class="project-card editor">
+        <div class="editor-header">
+          <div class="mac-btns"><span></span><span></span><span></span></div>
+          <div class="mac-title">nocturne.exe</div>
+        </div>
+        <div class="project-content">
+          <h3>Nocturne RP</h3>
+          <p class="desc" data-i18n="proj2_desc">Egyedi Roleplay szerver projekt. (Jelenleg szünetel)</p>
+          <ul class="chips"><li data-i18n="proj2_chip1">Játékszerver</li><li data-i18n="proj2_chip2">Közösség</li></ul>
+          <span class="project-link" style="color: var(--muted); cursor: not-allowed;" data-i18n="proj_btn_paused">Szünetel</span>
+        </div>
+      </article>
+      <article class="project-card editor">
+        <div class="editor-header">
+          <div class="mac-btns"><span></span><span></span><span></span></div>
+          <div class="mac-title">portfolio.html</div>
+        </div>
+        <div class="project-content">
+          <h3>Saját Portfólió</h3>
+          <p class="desc" data-i18n="proj3_desc">A jelenlegi bemutatkozó weboldalam.</p>
+          <ul class="chips"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+          <a href="https://github.com/jimbodev11" class="project-link">GitHub <span>&rarr;</span></a>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 
 <section class="contact" id="kapcsolat">
-  <h2 class="reveal section-title">Kapcsolat</h2>
+  <h2 class="reveal section-title" data-i18n="contact_title">Kapcsolat</h2>
   <div class="contact-content reveal">
-    <p>Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!</p>
+    <p data-i18n="contact_desc">Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!</p>
     <div class="social-links">
       <a href="mailto:mrton.bence@gmail.com" class="social-link">E-mail</a>
       <a href="https://github.com/jimbodev11" target="_blank" class="social-link">GitHub</a>

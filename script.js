@@ -17,7 +17,7 @@
 
   const size = () => {
     dpr = Math.min(devicePixelRatio || 1, 2);
-    W = hero.clientWidth; H = hero.clientHeight;
+    W = window.innerWidth; H = window.innerHeight;
     [goo, dots].forEach(c => { c.width = W * dpr; c.height = H * dpr; });
     g.setTransform(dpr, 0, 0, dpr, 0, 0); d.setTransform(dpr, 0, 0, dpr, 0, 0);
     cols = Math.ceil(W / GAP) + 1; rows = Math.ceil(H / GAP) + 1;
@@ -27,9 +27,8 @@
   const frame = now => {
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     if (visible) {
-      const rect = hero.getBoundingClientRect();
       const pts = [];
-      if (!touch && now - moved < 2500) pts.push([mx - rect.left, my - rect.top]);
+      if (!touch && now - moved < 2500) pts.push([mx, my]);
       else walkers.forEach(w => {
         if (now > w.next) { w.tx = rnd(0, W); w.ty = rnd(0, H); w.next = now + rnd(1200, 2800); if (!w.x) { w.x = w.tx; w.y = w.ty; } }
         const k = 1 - Math.exp(-dt * 1.6);
@@ -37,24 +36,32 @@
         pts.push([w.x, w.y]);
       });
       const decay = Math.pow(0.9, dt * 60);
-      g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+      g.clearRect(0, 0, W, H);
       d.clearRect(0, 0, W, H);
-      g.fillStyle = d.fillStyle = '#fff';
       const maxS = GAP * 1.08;
       for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
         const k = j * cols + i, px = i * GAP, py = j * GAP;
         let tgt = 0;
         for (const [x, y] of pts) {
+           // Paralaxis eltolás a kurzor miatt
           const dist = Math.hypot(px - x, py - y);
           if (dist < REACH) tgt = Math.max(tgt, Math.pow(1 - dist / REACH, 1.4));
         }
         v[k] = Math.max(v[k] * decay, tgt);
         const s = BASE + v[k] * (maxS - BASE);
         const a = v[k] * 0.45 * Math.sin(k * 1.7);
+        
+        // Pici háttérpontok (dinamikus opacity)
+        const alpha = 0.08 + v[k] * 0.92;
+        d.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         d.save(); d.translate(px, py); d.rotate(a);
         rr(d, 0, 0, Math.min(s, SMALL_MAX), Math.min(s, SMALL_MAX) * 0.28);
         d.restore();
+        
+        // Neon Gooey Effekt (kék-lila-pink színátmenet a térben)
         if (s > 6) {
+          const hue = 220 + (i / cols) * 60 + (j / rows) * 60; // 220 to 340 (kék-pink)
+          g.fillStyle = `hsl(${hue}, 100%, 70%)`;
           g.save(); g.translate(px, py); g.rotate(a);
           rr(g, 0, 0, s, s * 0.3);
           g.restore();
@@ -67,28 +74,22 @@
   size();
   addEventListener('resize', size);
   addEventListener('pointermove', e => { if (touch) return; mx = e.clientX; my = e.clientY; moved = performance.now(); }, { passive: true });
-  new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(hero);
 
   if (reduce) {
-    d.fillStyle = '#fff';
+    d.fillStyle = 'rgba(255, 255, 255, 0.15)';
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) rr(d, i * GAP, j * GAP, BASE, 1);
   } else requestAnimationFrame(frame);
 })();
 
-// --- SMOOTH JS CURSOR & 3D SVG TILT ---
+// --- 3D SVG TILT ---
 (() => {
   if (matchMedia('(pointer: coarse)').matches) return;
   
-  const dot = document.querySelector('.cursor-dot');
-  const ring = document.querySelector('.cursor-ring');
   const helloSvg = document.querySelector('.hero svg');
-  
-  if (!dot || !ring) return;
+  if (!helloSvg) return;
 
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
-  let ringX = mouseX;
-  let ringY = mouseY;
   
   // SVG target és jelenlegi forgás
   let targetRotX = 0;
@@ -100,26 +101,21 @@
     mouseX = e.clientX;
     mouseY = e.clientY;
     
-    // Pötty azonnal követ
-    dot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
+    // CSS változók frissítése a Glowing Background effekthez
+    document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
+    document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
     
     // SVG tilt célpontjainak kiszámítása
-    if (helloSvg) {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const moveX = (mouseX - centerX) / centerX;
-      const moveY = (mouseY - centerY) / centerY;
-      
-      targetRotX = -moveY * 15; // Max 15 fok
-      targetRotY = moveX * 15;
-    }
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const moveX = (mouseX - centerX) / centerX;
+    const moveY = (mouseY - centerY) / centerY;
+    
+    targetRotX = -moveY * 15;
+    targetRotY = moveX * 15;
   }, { passive: true });
 
   const loop = () => {
-    // Gyűrű simán leköveti a pöttyöt (lerp)
-    ringX += (mouseX - ringX) * 0.15;
-    ringY += (mouseY - ringY) * 0.15;
-    ring.style.transform = `translate(calc(${ringX}px - 50%), calc(${ringY}px - 50%))`;
     
     // SVG finomított (lerp) dőlése
     if (helloSvg) {
@@ -133,88 +129,23 @@
   };
   requestAnimationFrame(loop);
 
-  // Hover effektek a gyűrűn
-  const interactables = document.querySelectorAll('a, button, .pet-character, .project-card, .social-link');
-  interactables.forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-  });
+
 })();
 
 (() => {
-   const L = [
-    [['k','const '],['','me'],['',' = {']],
-    [['','  '],['p','name'],['',': '],['s','"Jimbo"'],['',',']],
-    [['','  '],['p','roles'],['',': ['],['s','"Web"'],['',', '],['s','"C# Szoftver"'],['',', '],['s','"FiveM Lua"'],['','],']],
-    [['','  '],['p','stack'],['',': ['],['s','"Web"'],['',', '],['s','"C#"'],['',', '],['s','"Lua"'],['','],']],
-    [['','  '],['p','open'],['',': '],['k','true'],['',',']],
-    [['','};']],
-    [],
-    [['c','// görgess tovább: lefordítom']],
-    [['k','function '],['f','render'],['','() {']],
-    [['','  '],['k','return '],['','me;']],
-    [['','}']]
-  ];
-  const total = L.reduce((a, l) => a + l.reduce((b, t) => b + t[1].length, 0), 0);
-  const stage = document.getElementById('stage');
-  const hero = document.getElementById('hero');
-  const editor = document.getElementById('editor');
-  const card = document.getElementById('card');
-  const code = document.getElementById('code');
-  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-
-  let last = -1;
-  const draw = shown => {
-    if (shown === last) return; last = shown;
-    let left = shown, out = '';
-    L.forEach(line => {
-      let html = '';
-      line.forEach(([c, t]) => {
-        if (left <= 0) return;
-        const part = t.slice(0, left); left -= part.length;
-        html += c ? `<span class="${c}">${esc(part)}</span>` : esc(part);
-      });
-      out += `<span class="ln">${html}</span>`;
-    });
-    code.innerHTML = out;
-    if (shown < total && shown > 0) {
-      const lines = code.querySelectorAll('.ln');
-      let idx = 0, rem = shown;
-      for (let i = 0; i < L.length; i++) {
-        const len = L[i].reduce((b, t) => b + t[1].length, 0);
-        if (rem <= len) { idx = i; break; } rem -= len; idx = i;
-      }
-      const c = document.createElement('span'); c.className = 'caret';
-      (lines[idx] || lines[lines.length - 1]).appendChild(c);
-    }
-  };
-
-  const update = () => {
-    if (!stage.isConnected) return;
-    const r = stage.getBoundingClientRect();
-    const p = clamp(-r.top / (r.height - innerHeight));
-    draw(Math.floor(clamp(p / 0.6) * total));
-    const t = clamp((p - 0.68) / 0.22);
-    const enter = clamp(1 - r.top / innerHeight);   
-    const exit = clamp(r.bottom / innerHeight);      
-    hero.style.opacity = clamp(1 - scrollY / (innerHeight * 0.85));
-    editor.style.opacity = (1 - t) * enter;
-    editor.style.transform = `translateY(${-t * 40}px) scale(${1 - t * 0.05})`;
-    editor.style.filter = `blur(${t * 6}px)`;
-    card.style.opacity = t * exit;
-    card.style.transform = `translateY(${(1 - t) * 40}px)`;
-  };
-
-  if (reduce) { draw(total); return; }
+  // Hero halványítása görgetésre
+  const heroText = document.querySelector('.hero > div');
+  if (!heroText) return;
   let tick = false;
-  addEventListener('scroll', () => {
-    if (tick) return; tick = true;
-    requestAnimationFrame(() => { tick = false; update(); });
+  window.addEventListener('scroll', () => {
+    if (tick) return;
+    tick = true;
+    requestAnimationFrame(() => {
+      tick = false;
+      const opacity = Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.7));
+      heroText.style.opacity = opacity;
+    });
   }, { passive: true });
-  addEventListener('resize', update);
-  update();
 })();
 
 (() => {
@@ -361,4 +292,53 @@ window.addEventListener('load', () => {
     if (pos > area.offsetWidth - 60) pos = area.offsetWidth - 60;
     pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
   });
+})();
+
+(() => {
+  const i18n = {
+    nav_home: { hu: "Főoldal", en: "Home" },
+    nav_about: { hu: "Rólam", en: "About" },
+    nav_projects: { hu: "Projektek", en: "Projects" },
+    nav_contact: { hu: "Kapcsolat", en: "Contact" },
+    hero_sub: { hu: "Görgess lefelé, és megmutatom, ki vagyok.", en: "Scroll down, let me show you who I am." },
+    code_passion: { hu: "Kreatív Fejlesztés", en: "Creative Development" },
+    code_skills_3: { hu: "Játékszerverek", en: "Game Servers" },
+    code_comment: { hu: "// Egységes, letisztult dizájn!", en: "// Unified, clean design!" },
+    about_role: { hu: "Szoftverfejlesztő & Dizájner", en: "Software Developer & Designer" },
+    about_desc: { hu: "Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése. Fontos számomra, hogy amit alkotok, az ne csak jól működjön, de vizuálisan is maradandó élményt nyújtson.", en: "I am passionate about creating unique, creative websites and clean user interfaces. It's important to me that what I build not only works well, but also provides a lasting visual experience." },
+    chip_creative: { hu: "Kreatív", en: "Creative" },
+    chip_coding: { hu: "Kódolás", en: "Coding" },
+    proj1_desc: { hu: "Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.", en: "Gastronomy web project created as a school exam masterpiece." },
+    proj1_chip1: { hu: "Webfejlesztés", en: "Web Dev" },
+    proj1_chip2: { hu: "Vizsgamunka", en: "Exam Project" },
+    proj_btn_view: { hu: "Megnézem", en: "View" },
+    proj2_desc: { hu: "Egyedi Roleplay szerver projekt. (Jelenleg szünetel)", en: "Custom Roleplay server project. (Currently paused)" },
+    proj2_chip1: { hu: "Játékszerver", en: "Game Server" },
+    proj2_chip2: { hu: "Közösség", en: "Community" },
+    proj_btn_paused: { hu: "Szünetel", en: "Paused" },
+    proj3_desc: { hu: "A jelenlegi bemutatkozó weboldalam.", en: "My current portfolio website." },
+    contact_title: { hu: "Beszéljünk!", en: "Let's Talk!" },
+    contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" }
+  };
+
+  let currentLang = 'hu';
+  const btn = document.getElementById('lang-toggle');
+  
+  if (btn) {
+    btn.addEventListener('click', () => {
+      currentLang = currentLang === 'hu' ? 'en' : 'hu';
+      btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[key] && i18n[key][currentLang]) {
+          if (el.tagName === 'SPAN' && el.classList.contains('s')) {
+             el.textContent = `"${i18n[key][currentLang]}"`; // Retain quotes for JS string
+          } else {
+             el.textContent = i18n[key][currentLang];
+          }
+        }
+      });
+    });
+  }
 })();
