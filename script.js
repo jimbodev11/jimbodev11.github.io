@@ -270,9 +270,9 @@ window.addEventListener('load', () => {
       const areaWidth = area.offsetWidth;
       pos += direction * 8; // Sebesség
       
-      // Pattanjon vissza a szélekről
-      if (pos < 20) { pos = 20; direction = 1; }
-      if (pos > areaWidth - 20) { pos = areaWidth - 20; direction = -1; }
+      // Pattanjon vissza a szélekről (50px a kutya szélessége)
+      if (pos < 10) { pos = 10; direction = 1; }
+      if (pos > areaWidth - 60) { pos = areaWidth - 60; direction = -1; }
       
       pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
     }
@@ -283,7 +283,7 @@ window.addEventListener('load', () => {
   
   // Ablak átméretezéskor frissítsük a pozíciót ha túlment
   window.addEventListener('resize', () => {
-    if (pos > area.offsetWidth) pos = area.offsetWidth - 20;
+    if (pos > area.offsetWidth - 60) pos = area.offsetWidth - 60;
     pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
   });
 })();
