@@ -75,6 +75,72 @@
   } else requestAnimationFrame(frame);
 })();
 
+// --- SMOOTH JS CURSOR & 3D SVG TILT ---
+(() => {
+  if (matchMedia('(pointer: coarse)').matches) return;
+  
+  const dot = document.querySelector('.cursor-dot');
+  const ring = document.querySelector('.cursor-ring');
+  const helloSvg = document.querySelector('.hero svg');
+  
+  if (!dot || !ring) return;
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX = mouseX;
+  let ringY = mouseY;
+  
+  // SVG target és jelenlegi forgás
+  let targetRotX = 0;
+  let targetRotY = 0;
+  let currRotX = 0;
+  let currRotY = 0;
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Pötty azonnal követ
+    dot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
+    
+    // SVG tilt célpontjainak kiszámítása
+    if (helloSvg) {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const moveX = (mouseX - centerX) / centerX;
+      const moveY = (mouseY - centerY) / centerY;
+      
+      targetRotX = -moveY * 15; // Max 15 fok
+      targetRotY = moveX * 15;
+    }
+  }, { passive: true });
+
+  const loop = () => {
+    // Gyűrű simán leköveti a pöttyöt (lerp)
+    ringX += (mouseX - ringX) * 0.15;
+    ringY += (mouseY - ringY) * 0.15;
+    ring.style.transform = `translate(calc(${ringX}px - 50%), calc(${ringY}px - 50%))`;
+    
+    // SVG finomított (lerp) dőlése
+    if (helloSvg) {
+      currRotX += (targetRotX - currRotX) * 0.1;
+      currRotY += (targetRotY - currRotY) * 0.1;
+      // Itt nincs szükség CSS transitionre, maga a JS végzi a simítást percenként 60 képkockával
+      helloSvg.style.transform = `perspective(1000px) rotateX(${currRotX}deg) rotateY(${currRotY}deg) translateZ(20px)`;
+    }
+    
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+
+  // Hover effektek a gyűrűn
+  const interactables = document.querySelectorAll('a, button, .pet-character, .project-card, .social-link');
+  interactables.forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+})();
+
 (() => {
    const L = [
     [['k','const '],['','me'],['',' = {']],

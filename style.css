@@ -4,6 +4,15 @@ html { scroll-behavior:smooth; overflow-x:clip; }
 body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; overflow-x:clip; }
 @supports not (overflow:clip) { html { overflow-x:hidden; } }
 
+/* --- SMOOTH JS CURSOR --- */
+@media (pointer: fine) {
+  body { cursor: none; }
+  a, button, .pet-character, .project-card, .social-link { cursor: none !important; }
+  .cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; mix-blend-mode: difference; }
+  .cursor-ring { position: fixed; top: 0; left: 0; width: 36px; height: 36px; border: 1.5px solid #fff; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); z-index: 9998; mix-blend-mode: difference; transition: width 0.3s ease, height 0.3s ease, background 0.3s ease; will-change: transform; }
+  .cursor-ring.hover { width: 50px; height: 50px; background: rgba(255,255,255,1); mix-blend-mode: difference; }
+}
+
 /* --- EGYEDI GÖRGETŐSÁV --- */
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -58,7 +67,7 @@ svg { width:min(90vw,760px); height:auto; overflow:visible; }
   stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:900; stroke-dashoffset:900;
   animation:draw 3.2s cubic-bezier(.45,0,.25,1) .4s forwards, fill .9s ease 3.2s forwards; }
 @keyframes draw { to { stroke-dashoffset:0; } }
-@keyframes fill { to { fill:var(--fg); stroke-width:0; } }
+@keyframes fill { to { fill:var(--fg); stroke-width:0; filter: drop-shadow(0 0 15px rgba(242, 242, 244, 0.4)) drop-shadow(0 0 30px rgba(122, 162, 255, 0.3)); } }
 .sub { margin:0; color:var(--muted); font-size:1.1rem; opacity:0; animation:show 1s ease 4.2s forwards; }
 @keyframes show { to { opacity:1; } }
 
