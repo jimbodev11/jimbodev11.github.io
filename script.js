@@ -322,3 +322,23 @@ window.addEventListener('load', () => {
     });
   }
 })();
+// Hamburger Menu Logic
+(() => {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const siteHeader = document.querySelector('.site-header');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+      siteHeader.classList.toggle('nav-open');
+      menuToggle.classList.toggle('active');
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        siteHeader.classList.remove('nav-open');
+        menuToggle.classList.remove('active');
+      });
+    });
+  }
+})();
