@@ -203,6 +203,12 @@ document.addEventListener('contextmenu', e => e.preventDefault());
       el.href = d.url;
       el.classList.toggle('playing', !!d.isPlaying);
       el.hidden = false;
+      
+      // Megvárjuk, hogy a DOM frissüljön a display:none levétele után,
+      // majd hozzáadjuk a data-ready classt, hogy a transition lefuthessen.
+      requestAnimationFrame(() => {
+        el.classList.add('data-ready');
+      });
     } catch { el.hidden = true; }
   };
 
@@ -223,7 +229,10 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 window.addEventListener('load', () => {
   setTimeout(() => {
     const header = document.querySelector('.site-header');
+    const np = document.querySelector('.np');
+    
     if (header) header.classList.add('loaded');
+    if (np) np.classList.add('loaded');
   }, 500);
 });
 
