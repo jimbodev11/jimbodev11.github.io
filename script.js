@@ -238,25 +238,56 @@ window.addEventListener('load', () => {
   const pet = document.querySelector('.pet-character');
   if (!pet) return;
   const area = document.getElementById('pet-area');
+  const tooltipImg = pet.querySelector('.pet-tooltip img');
   
+  // Ide tölthetsz fel több képet Suzyról!
+  const suzyImages = [
+    'img/suzy.jpg',
+    // 'img/suzy2.jpg',
+    // 'img/suzy3.jpg'
+  ];
+
   let pos = area.offsetWidth / 2;
   let direction = 1;
   let currentState = 'idle';
+  
+  // Random kép beállítása hover esetén
+  pet.addEventListener('mouseenter', () => {
+    // Ha lesz több kép, véletlenszerűen kiválaszt egyet:
+    const randImg = suzyImages[Math.floor(Math.random() * suzyImages.length)];
+    tooltipImg.src = randImg;
+    
+    // Hoverre leül vagy lefekszik
+    currentState = Math.random() > 0.5 ? 'sit' : 'lay';
+    pet.className = `pet-character ${currentState}`;
+    
+    // Hover alatt ne mutassa a csontot, csak a képet
+    pet.classList.remove('wants-bone');
+  });
+
+  pet.addEventListener('mouseleave', () => {
+    pet.classList.remove('wants-bone');
+    currentState = 'idle';
+    pet.className = `pet-character ${currentState}`;
+  });
 
   const updatePet = () => {
+    // Ha épp hoverolják, ne változtassuk az állapotát magától
+    if (pet.matches(':hover')) return;
+
     const rand = Math.random();
     
     // Állapot sorsolása
-    if (rand < 0.4) currentState = 'walk';
-    else if (rand < 0.6) currentState = 'sit';
+    if (rand < 0.3) currentState = 'walk';
+    else if (rand < 0.5) currentState = 'sit';
     else if (rand < 0.7) currentState = 'lay';
-    else if (rand < 0.8) currentState = 'spin';
+    else if (rand < 0.8) currentState = 'bark';
     else currentState = 'idle';
 
     pet.className = `pet-character ${currentState}`;
 
-    // Csont kérése (gondolatbuborék)
-    if ((currentState === 'sit' || currentState === 'idle') && Math.random() < 0.35) {
+    // Csont kérése magától néha
+    if ((currentState === 'sit' || currentState === 'idle') && Math.random() < 0.2) {
       pet.classList.add('wants-bone');
     } else {
       pet.classList.remove('wants-bone');
@@ -267,30 +298,28 @@ window.addEventListener('load', () => {
       direction *= -1;
     }
     
-    pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+    pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
   };
 
   // Séta mozgatása
   setInterval(() => {
-    if (currentState === 'walk') {
+    if (currentState === 'walk' || currentState === 'jump') {
       const areaWidth = area.offsetWidth;
-      pos += direction * 8; // Sebesség
+      pos += direction * (currentState === 'jump' ? 12 : 8); 
       
-      // Pattanjon vissza a szélekről (50px a kutya szélessége)
       if (pos < 10) { pos = 10; direction = 1; }
       if (pos > areaWidth - 60) { pos = areaWidth - 60; direction = -1; }
       
-      pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+      pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
     }
   }, 100);
 
-  // Állapotváltás 3 másodpercenként
-  setInterval(updatePet, 3000);
+  // Állapotváltás gyakrabban (2 másodpercenként)
+  setInterval(updatePet, 2000);
   
-  // Ablak átméretezéskor frissítsük a pozíciót ha túlment
   window.addEventListener('resize', () => {
     if (pos > area.offsetWidth - 60) pos = area.offsetWidth - 60;
-    pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+    pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
   });
 })();
 

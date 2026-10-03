@@ -291,24 +291,36 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
 .pet-character.wants-bone .pet-thought-bubble { transform: translateX(-50%) scale(1); opacity: 1; }
 
 /* States */
-.pet-tail { animation: wag 0.3s infinite alternate; }
-.pet-ear { animation: earFlop 0.4s infinite alternate; }
-.pet-head { transition: transform 0.3s ease; }
-.pet-paw { transition: transform 0.3s ease; }
+.pet-sprite {
+  width: 70px;
+  height: 70px;
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
 
-.pet-character.walk svg { animation: bounceWalk 0.3s infinite alternate; }
-.pet-character.sit .pet-paw { transform: rotate(-50deg); }
-.pet-character.sit .pet-head { transform: translateY(2px); }
-.pet-character.sit .pet-tail { animation: wag 0.2s infinite alternate; }
-.pet-character.lay .pet-head { transform: translateY(12px); }
-.pet-character.lay .pet-paw { transform: rotate(-80deg); }
-.pet-character.lay .pet-ear { transform: rotate(10deg); }
-.pet-character.spin svg { animation: spinPet 0.8s infinite linear; }
+/* Álló/Séta pozíció (Alapértelmezett) */
+.pet-character .pet-sprite { background-image: url('img/dog-stand.svg'); }
+.pet-character.walk .pet-sprite { animation: bounceWalk 0.3s infinite alternate; }
+
+/* Ülő pozíció */
+.pet-character.sit .pet-sprite { background-image: url('img/dog-sit.svg'); }
+
+/* Fekvő pozíció */
+.pet-character.lay .pet-sprite { background-image: url('img/dog-lie.svg'); }
+
+.pet-character.spin .pet-sprite { animation: spinPet 0.8s infinite linear; }
+.pet-character.jump .pet-sprite { animation: jumpPet 0.4s infinite alternate; }
+.pet-character.bark .pet-sprite { animation: barkHead 0.2s infinite alternate; }
 
 @keyframes bounceWalk { from { transform: translateY(0); } to { transform: translateY(-5px); } }
 @keyframes spinPet { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes jumpPet { from { transform: translateY(0); } to { transform: translateY(-15px); } }
+@keyframes barkHead { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-10deg) translateY(-2px); } }
+@keyframes barkLinesAnim { 0% { transform: scale(1) translateX(0); } 100% { transform: scale(1.1) translateX(2px); } }
 @keyframes wag { 0% { transform: rotate(-10deg); } 100% { transform: rotate(20deg); } }
-@keyframes earFlop { 0% { transform: rotate(-5deg); } 100% { transform: rotate(10deg); } }
+@keyframes earFlop { 0% { transform: rotate(-5deg); } 100% { transform: rotate(15deg); } }
 
 /* --- NYELVVÁLTÓ GOMB --- */
 .lang-btn {
