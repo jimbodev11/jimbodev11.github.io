@@ -224,5 +224,66 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     const header = document.querySelector('.site-header');
     if (header) header.classList.add('loaded');
-  }, 500); // Fél másodperccel az oldal betöltése után csúszik be a menü
+  }, 500);
 });
+
+// Interaktív Kutyus Logika
+(() => {
+  const pet = document.querySelector('.pet-character');
+  if (!pet) return;
+  const area = document.getElementById('pet-area');
+  
+  let pos = area.offsetWidth / 2;
+  let direction = 1;
+  let currentState = 'idle';
+
+  const updatePet = () => {
+    const rand = Math.random();
+    
+    // Állapot sorsolása
+    if (rand < 0.4) currentState = 'walk';
+    else if (rand < 0.6) currentState = 'sit';
+    else if (rand < 0.7) currentState = 'lay';
+    else if (rand < 0.8) currentState = 'spin';
+    else currentState = 'idle';
+
+    pet.className = `pet-character ${currentState}`;
+
+    // Csont kérése (gondolatbuborék)
+    if ((currentState === 'sit' || currentState === 'idle') && Math.random() < 0.35) {
+      pet.classList.add('wants-bone');
+    } else {
+      pet.classList.remove('wants-bone');
+    }
+
+    // Irányváltás séta közben
+    if (currentState === 'walk' && Math.random() < 0.3) {
+      direction *= -1;
+    }
+    
+    pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+  };
+
+  // Séta mozgatása
+  setInterval(() => {
+    if (currentState === 'walk') {
+      const areaWidth = area.offsetWidth;
+      pos += direction * 8; // Sebesség
+      
+      // Pattanjon vissza a szélekről
+      if (pos < 20) { pos = 20; direction = 1; }
+      if (pos > areaWidth - 20) { pos = areaWidth - 20; direction = -1; }
+      
+      pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+    }
+  }, 100);
+
+  // Állapotváltás 3 másodpercenként
+  setInterval(updatePet, 3000);
+  
+  // Ablak átméretezéskor frissítsük a pozíciót ha túlment
+  window.addEventListener('resize', () => {
+    if (pos > area.offsetWidth) pos = area.offsetWidth - 20;
+    pet.style.transform = `translateX(${pos}px) scaleX(${direction})`;
+  });
+})();

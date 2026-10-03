@@ -149,3 +149,50 @@ pre { margin:0; padding:1rem 0; min-height:19.5em; font:15px/1.65 ui-monospace,S
 @media (prefers-reduced-motion: reduce) {
   .np.playing .eq i { animation:none; height:70%; }
 }
+
+/* --- PIXEL PET (Cocker Spaniel) --- */
+#pet-area {
+  position: relative; width: 100%; height: 60px; margin-top: 3rem; overflow: visible;
+}
+.pet-character {
+  position: absolute; bottom: 0; left: 50%; width: 50px; height: 40px; cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.pet-character svg { width: 100%; height: 100%; display: block; }
+
+/* Tooltip on Hover */
+.pet-tooltip {
+  position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%) scale(0.8);
+  opacity: 0; pointer-events: none; transition: all 0.3s ease;
+  background: #111; border: 1px solid var(--line); padding: 6px; border-radius: 8px; width: 140px;
+}
+.pet-tooltip img { width: 100%; border-radius: 4px; display: block; }
+.pet-character:hover .pet-tooltip { opacity: 1; transform: translateX(-50%) scale(1); }
+
+/* Thought Bubble */
+.pet-thought-bubble {
+  position: absolute; top: -30px; left: 50%; transform: translateX(-50%) scale(0);
+  background: white; border-radius: 50%; padding: 4px 6px; font-size: 14px;
+  opacity: 0; transition: all 0.3s ease;
+}
+.pet-character.wants-bone .pet-thought-bubble { transform: translateX(-50%) scale(1); opacity: 1; }
+
+/* States */
+.pet-tail { animation: wag 0.3s infinite alternate; }
+.pet-ear { animation: earFlop 0.4s infinite alternate; }
+.pet-head { transition: transform 0.3s ease; }
+.pet-paw { transition: transform 0.3s ease; }
+
+.pet-character.walk svg { animation: bounceWalk 0.3s infinite alternate; }
+.pet-character.sit .pet-paw { transform: rotate(-50deg); }
+.pet-character.sit .pet-head { transform: translateY(2px); }
+.pet-character.sit .pet-tail { animation: wag 0.2s infinite alternate; }
+.pet-character.lay .pet-head { transform: translateY(12px); }
+.pet-character.lay .pet-paw { transform: rotate(-80deg); }
+.pet-character.lay .pet-ear { transform: rotate(10deg); }
+.pet-character.spin svg { animation: spinPet 0.8s infinite linear; }
+
+@keyframes bounceWalk { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+@keyframes spinPet { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes wag { 0% { transform: rotate(-10deg); } 100% { transform: rotate(20deg); } }
+@keyframes earFlop { 0% { transform: rotate(-5deg); } 100% { transform: rotate(10deg); } }
