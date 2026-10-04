@@ -300,7 +300,8 @@ window.addEventListener('load', () => {
     proj_btn_paused: { hu: "Szünetel", en: "Paused" },
     proj3_desc: { hu: "A jelenlegi bemutatkozó weboldalam.", en: "My current portfolio website." },
     contact_title: { hu: "Beszéljünk!", en: "Let's Talk!" },
-    contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" }
+    contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" },
+    status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" }
   };
 
   let currentLang = 'hu';
@@ -431,4 +432,14 @@ window.addEventListener('load', () => {
   });
 
   updateCarousel();
+})();
+
+
+/* Felső sáv: budapesti óra */
+(() => {
+  const el = document.getElementById('clock');
+  if (!el) return;
+  const fmt = new Intl.DateTimeFormat('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' });
+  const set = () => { el.textContent = fmt.format(new Date()); };
+  set(); setInterval(set, 1000);
 })();
