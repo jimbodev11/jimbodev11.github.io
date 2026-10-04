@@ -3,7 +3,7 @@
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const touch = matchMedia('(pointer: coarse)').matches;   // telefon/tablet: nincs egérkövetés, csak random mozgás
+  const touch = matchMedia('(pointer: coarse)').matches;   
   const GAP = touch ? 44 : 56, BASE = 3.2, REACH = touch ? 150 : 230, SMALL_MAX = 8;
   const rnd = (a, b) => a + Math.random() * (b - a);
   const walkers = Array.from({ length: touch ? 3 : 1 }, () => ({ x: 0, y: 0, tx: 0, ty: 0, next: 0 }));
@@ -55,7 +55,7 @@
         rr(d, 0, 0, Math.min(s, SMALL_MAX), Math.min(s, SMALL_MAX) * 0.28);
         d.restore();
         if (s > 6) {
-          const hue = 220 + (i / cols) * 60 + (j / rows) * 60; // 220 to 340 (kék-pink)
+          const hue = 220 + (i / cols) * 60 + (j / rows) * 60; 
           g.fillStyle = `hsl(${hue}, 100%, 70%)`;
           g.save(); g.translate(px, py); g.rotate(a);
           rr(g, 0, 0, s, s * 0.3);
@@ -158,7 +158,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
         }
       });
     }
-  }, { threshold: 0.3 }); // Amikor a szekció 30%-a látszik
+  }, { threshold: 0.3 }); 
 
   sections.forEach(sec => observer.observe(sec));
 })();
@@ -178,7 +178,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
       if (!d.title) { el.hidden = true; return; }
       img.src = d.image || '';
       title.textContent = d.title;
-      sub.textContent = (d.isPlaying ? '' : 'utoljára · ') + d.artist;
+      sub.textContent = (d.isPlaying ? '' : 'Last played · ') + d.artist;
       el.href = d.url;
       el.classList.toggle('playing', !!d.isPlaying);
       el.hidden = false;
@@ -315,7 +315,7 @@ window.addEventListener('load', () => {
         const key = el.getAttribute('data-i18n');
         if (i18n[key] && i18n[key][currentLang]) {
           if (el.tagName === 'SPAN' && el.classList.contains('s')) {
-             el.textContent = `"${i18n[key][currentLang]}"`; // Retain quotes for JS string
+             el.textContent = `"${i18n[key][currentLang]}"`; 
           } else {
              el.textContent = i18n[key][currentLang];
           }
@@ -347,7 +347,6 @@ window.addEventListener('load', () => {
 
 
 
-// Easter Egg Logic
 (() => {
   const pet = document.querySelector('.pet-character');
   const overlay = document.getElementById('suzy-easter-egg');
