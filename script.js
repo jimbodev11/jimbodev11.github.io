@@ -3,7 +3,7 @@
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const touch = matchMedia('(pointer: coarse)').matches;   // telefon/tablet: nincs egĂ©rkĂ¶vetĂ©s, csak random mozgĂˇs
+  const touch = matchMedia('(pointer: coarse)').matches;   // telefon/tablet: nincs egérkövetés, csak random mozgás
   const GAP = touch ? 44 : 56, BASE = 3.2, REACH = touch ? 150 : 230, SMALL_MAX = 8;
   const rnd = (a, b) => a + Math.random() * (b - a);
   const walkers = Array.from({ length: touch ? 3 : 1 }, () => ({ x: 0, y: 0, tx: 0, ty: 0, next: 0 }));
@@ -55,7 +55,7 @@
         rr(d, 0, 0, Math.min(s, SMALL_MAX), Math.min(s, SMALL_MAX) * 0.28);
         d.restore();
         if (s > 6) {
-          const hue = 220 + (i / cols) * 60 + (j / rows) * 60; // 220 to 340 (kĂ©k-pink)
+          const hue = 220 + (i / cols) * 60 + (j / rows) * 60; // 220 to 340 (kék-pink)
           g.fillStyle = `hsl(${hue}, 100%, 70%)`;
           g.save(); g.translate(px, py); g.rotate(a);
           rr(g, 0, 0, s, s * 0.3);
@@ -158,7 +158,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
         }
       });
     }
-  }, { threshold: 0.3 }); // Amikor a szekciĂł 30%-a lĂˇtszik
+  }, { threshold: 0.3 }); // Amikor a szekció 30%-a látszik
 
   sections.forEach(sec => observer.observe(sec));
 })();
@@ -178,7 +178,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
       if (!d.title) { el.hidden = true; return; }
       img.src = d.image || '';
       title.textContent = d.title;
-      sub.textContent = (d.isPlaying ? '' : 'utoljĂˇra Â· ') + d.artist;
+      sub.textContent = (d.isPlaying ? '' : 'utoljára · ') + d.artist;
       el.href = d.url;
       el.classList.toggle('playing', !!d.isPlaying);
       el.hidden = false;
@@ -209,6 +209,144 @@ window.addEventListener('load', () => {
 });
 (() => {
   const pet = document.querySelector('.pet-character');
+  if (!pet) return;
+  const area = document.getElementById('pet-area');
+  const tooltipImg = pet.querySelector('.pet-tooltip img');
+  const suzyImages = [
+    'img/suzy.jpg',
+    'img/suzy7.JPEG',
+    'img/suzy8.JPEG',
+  ];
+
+  let pos = area.offsetWidth / 2;
+  let direction = 1;
+  let currentState = 'idle';
+  pet.addEventListener('mouseenter', () => {
+    const randImg = suzyImages[Math.floor(Math.random() * suzyImages.length)];
+    tooltipImg.src = randImg;
+    currentState = Math.random() > 0.5 ? 'sit' : 'lay';
+    pet.className = `pet-character ${currentState}`;
+    pet.classList.remove('wants-bone');
+  });
+
+  pet.addEventListener('mouseleave', () => {
+    pet.classList.remove('wants-bone');
+    currentState = 'idle';
+    pet.className = `pet-character ${currentState}`;
+  });
+
+  const updatePet = () => {
+    if (pet.matches(':hover')) return;
+
+    const rand = Math.random();
+    if (rand < 0.3) currentState = 'walk';
+    else if (rand < 0.5) currentState = 'sit';
+    else if (rand < 0.7) currentState = 'lay';
+    else if (rand < 0.8) currentState = 'bark';
+    else currentState = 'idle';
+
+    pet.className = `pet-character ${currentState}`;
+    if ((currentState === 'sit' || currentState === 'idle') && Math.random() < 0.2) {
+      pet.classList.add('wants-bone');
+    } else {
+      pet.classList.remove('wants-bone');
+    }
+    if (currentState === 'walk' && Math.random() < 0.3) {
+      direction *= -1;
+    }
+
+    pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
+  };
+  setInterval(() => {
+    if (currentState === 'walk' || currentState === 'jump') {
+      const areaWidth = area.offsetWidth;
+      pos += direction * (currentState === 'jump' ? 12 : 8); 
+
+      if (pos < 10) { pos = 10; direction = 1; }
+      if (pos > areaWidth - 60) { pos = areaWidth - 60; direction = -1; }
+
+      pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
+    }
+  }, 100);
+  setInterval(updatePet, 2000);
+
+  window.addEventListener('resize', () => {
+    if (pos > area.offsetWidth - 60) pos = area.offsetWidth - 60;
+    pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
+  });
+})();
+
+(() => {
+  const i18n = {
+    nav_home: { hu: "Főoldal", en: "Home" },
+    nav_about: { hu: "Rólam", en: "About" },
+    nav_projects: { hu: "Projektek", en: "Projects" },
+    nav_contact: { hu: "Kapcsolat", en: "Contact" },
+    hero_sub: { hu: "Görgess lefelé, és megmutatom, ki vagyok.", en: "Scroll down, let me show you who I am." },
+    code_passion: { hu: "Kreatív Fejlesztés", en: "Creative Development" },
+    code_skills_3: { hu: "Játékszerverek", en: "Game Servers" },
+    code_comment: { hu: "// Egységes, letisztult dizájn!", en: "// Unified, clean design!" },
+    about_role: { hu: "Szoftverfejlesztő & Dizájner", en: "Software Developer & Designer" },
+    about_desc: { hu: "Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése. Fontos számomra, hogy amit alkotok, az ne csak jól működjön, de vizuálisan is maradandó élményt nyújtson.", en: "I am passionate about creating unique, creative websites and clean user interfaces. It's important to me that what I build not only works well, but also provides a lasting visual experience." },
+    chip_creative: { hu: "Kreatív", en: "Creative" },
+    chip_coding: { hu: "Kódolás", en: "Coding" },
+    proj1_desc: { hu: "Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.", en: "Gastronomy web project created as a school exam masterpiece." },
+    proj1_chip1: { hu: "Webfejlesztés", en: "Web Dev" },
+    proj1_chip2: { hu: "Vizsgamunka", en: "Exam Project" },
+    proj_btn_view: { hu: "Megnézem", en: "View" },
+    proj2_desc: { hu: "Egyedi Roleplay szerver projekt. (Jelenleg szünetel)", en: "Custom Roleplay server project. (Currently paused)" },
+    proj2_chip1: { hu: "Játékszerver", en: "Game Server" },
+    proj2_chip2: { hu: "Közösség", en: "Community" },
+    proj_btn_paused: { hu: "Szünetel", en: "Paused" },
+    proj3_desc: { hu: "A jelenlegi bemutatkozó weboldalam.", en: "My current portfolio website." },
+    contact_title: { hu: "Beszéljünk!", en: "Let's Talk!" },
+    contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" }
+  };
+
+  let currentLang = 'hu';
+  const btn = document.getElementById('lang-toggle');
+
+  if (btn) {
+    btn.addEventListener('click', () => {
+      currentLang = currentLang === 'hu' ? 'en' : 'hu';
+      btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[key] && i18n[key][currentLang]) {
+          if (el.tagName === 'SPAN' && el.classList.contains('s')) {
+             el.textContent = `"${i18n[key][currentLang]}"`; // Retain quotes for JS string
+          } else {
+             el.textContent = i18n[key][currentLang];
+          }
+        }
+      });
+    });
+  }
+})();
+
+(() => {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const siteHeader = document.querySelector('.site-header');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+      siteHeader.classList.toggle('nav-open');
+      menuToggle.classList.toggle('active');
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        siteHeader.classList.remove('nav-open');
+        menuToggle.classList.remove('active');
+      });
+    });
+  }
+})();
+
+(() => {
+  const pet = document.querySelector('.pet-character');
   const overlay = document.getElementById('suzy-easter-egg');
   if (!pet || !overlay) return;
 
@@ -219,23 +357,11 @@ window.addEventListener('load', () => {
   let activeIndex = 0;
   let currentRotation = 0;
   const theta = 360 / items.length;
-  let autoplayTimer;
+  const radius = 350; 
 
-  const getRadius = () => {
-    const itemWidth = items[0].offsetWidth || 300;
-    // Matematikailag a minimális sugár, hogy a kártyák szélei épp összeérjenek: (width / 2) / tan(36deg)
-    // Rápakolunk még 20px-et (vagy többet), hogy biztosan legyen köztük kis rés és ne lógjanak egymásba
-    const minRadius = (itemWidth / 2) / Math.tan(Math.PI / items.length) + 30;
-    return window.innerWidth > 768 ? 350 : minRadius;
-  };
-
-  const startAutoplay = () => {
-    clearInterval(autoplayTimer);
-    autoplayTimer = setInterval(() => {
-      activeIndex = (activeIndex + 1) % items.length;
-      updateCarousel();
-    }, 2500);
-  };
+  items.forEach((item, i) => {
+    item.style.transform = `rotateY(${i * theta}deg) translateZ(${radius}px)`;
+  });
 
   pet.addEventListener('click', () => {
     clicks++;
@@ -243,7 +369,6 @@ window.addEventListener('load', () => {
     if (clicks >= 5) {
       overlay.classList.add('show');
       updateCarousel();
-      startAutoplay();
       clicks = 0;
     } else {
       clickTimer = setTimeout(() => { clicks = 0; }, 1000);
@@ -252,11 +377,9 @@ window.addEventListener('load', () => {
 
   closeBtn.addEventListener('click', () => {
     overlay.classList.remove('show');
-    clearInterval(autoplayTimer);
   });
 
   const updateCarousel = () => {
-    const radius = getRadius();
     let targetRotation = -activeIndex * theta;
     let diff = (targetRotation - currentRotation) % 360;
     if (diff > 180) diff -= 360;
@@ -268,8 +391,6 @@ window.addEventListener('load', () => {
     track.style.transform = `translateZ(${-radius}px) rotateY(${currentRotation}deg)`;
 
     items.forEach((item, i) => {
-      item.style.transform = `rotateY(${i * theta}deg) translateZ(${radius}px)`;
-
       let offset = Math.abs(i - activeIndex);
       if (offset > items.length / 2) offset = items.length - offset; 
       
@@ -283,15 +404,9 @@ window.addEventListener('load', () => {
       if (i !== activeIndex) {
         activeIndex = i;
         updateCarousel();
-        startAutoplay();
       }
     });
   });
 
-  window.addEventListener('resize', () => {
-    if (overlay.classList.contains('show')) updateCarousel();
-  });
-
   updateCarousel();
 })();
-
