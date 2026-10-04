@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
@@ -417,7 +417,7 @@ window.addEventListener('load', () => {
       if (offset > items.length / 2) offset = items.length - offset; 
       
       item.style.filter = `brightness(${offset === 0 ? 1 : Math.max(0.2, 1 - (offset * 0.4))})`;
-      item.style.pointerEvents = 'auto'; 
+       
     });
   };
 

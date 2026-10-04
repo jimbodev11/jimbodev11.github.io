@@ -219,7 +219,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
 
 .project-marquee { padding: 2rem 0; overflow: visible; display: flex; width: 100vw; }
 .project-marquee .marquee-track { animation: scrollMarquee 25s linear infinite; display: flex; gap: 2rem; width: max-content; padding: 0 1rem; }
-.project-marquee .marquee-track:hover { animation-play-state: paused; }
+.project-marquee:hover .marquee-track { animation-play-state: paused; }
 
 .project-card { 
   width: 380px;
