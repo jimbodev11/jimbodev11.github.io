@@ -214,6 +214,8 @@ window.addEventListener('load', () => {
   const tooltipImg = pet.querySelector('.pet-tooltip img');
   const suzyImages = [
     'img/suzy.jpg',
+    'img/suzy7.JPEG',
+    'img/suzy8.JPEG',
   ];
 
   let pos = area.offsetWidth / 2;
@@ -322,7 +324,7 @@ window.addEventListener('load', () => {
     });
   }
 })();
-// Hamburger Menu Logic
+
 (() => {
   const menuToggle = document.querySelector('.menu-toggle');
   const siteHeader = document.querySelector('.site-header');
@@ -341,4 +343,70 @@ window.addEventListener('load', () => {
       });
     });
   }
+})();
+
+(() => {
+  const pet = document.querySelector('.pet-character');
+  const overlay = document.getElementById('suzy-easter-egg');
+  if (!pet || !overlay) return;
+
+  const closeBtn = overlay.querySelector('.close-easter-egg');
+  const items = overlay.querySelectorAll('.carousel-item');
+  let clicks = 0;
+  let clickTimer;
+  let activeIndex = 0;
+  let currentRotation = 0;
+  const theta = 360 / items.length;
+  const radius = 350; 
+
+  items.forEach((item, i) => {
+    item.style.transform = `rotateY(${i * theta}deg) translateZ(${radius}px)`;
+  });
+
+  pet.addEventListener('click', () => {
+    clicks++;
+    clearTimeout(clickTimer);
+    if (clicks >= 5) {
+      overlay.classList.add('show');
+      updateCarousel();
+      clicks = 0;
+    } else {
+      clickTimer = setTimeout(() => { clicks = 0; }, 1000);
+    }
+  });
+
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.remove('show');
+  });
+
+  const updateCarousel = () => {
+    let targetRotation = -activeIndex * theta;
+    let diff = (targetRotation - currentRotation) % 360;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    
+    currentRotation += diff;
+
+    const track = document.querySelector('.carousel-track');
+    track.style.transform = `translateZ(${-radius}px) rotateY(${currentRotation}deg)`;
+
+    items.forEach((item, i) => {
+      let offset = Math.abs(i - activeIndex);
+      if (offset > items.length / 2) offset = items.length - offset; 
+      
+      item.style.filter = `brightness(${offset === 0 ? 1 : Math.max(0.2, 1 - (offset * 0.4))})`;
+      item.style.pointerEvents = 'auto'; 
+    });
+  };
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => {
+      if (i !== activeIndex) {
+        activeIndex = i;
+        updateCarousel();
+      }
+    });
+  });
+
+  updateCarousel();
 })();

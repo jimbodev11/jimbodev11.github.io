@@ -369,3 +369,63 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 ui-monospace,SFMono-Regular,Men
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
 }
+/* --- EASTER EGG CAROUSEL --- */
+.easter-egg-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: #050505;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 2000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.easter-egg-overlay.show {
+  opacity: 1; pointer-events: auto;
+}
+.close-easter-egg {
+  position: absolute; top: 2rem; right: 2rem;
+  background: none; border: none; color: white; font-size: 3rem; cursor: pointer;
+  z-index: 2001; transition: transform 0.2s; padding: 0; line-height: 1;
+}
+.close-easter-egg:hover { transform: scale(1.2); }
+
+.carousel-container {
+  perspective: 1200px;
+  width: 100%;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-track {
+  position: relative;
+  width: min(300px, 60vw);
+  height: min(450px, 80vh);
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.carousel-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease, filter 0.6s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.carousel-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  pointer-events: none;
+}
