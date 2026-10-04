@@ -371,7 +371,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
 }
-/* --- EASTER EGG CAROUSEL --- */
+
 .easter-egg-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background-color: #050505;
@@ -432,7 +432,6 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   pointer-events: none;
 }
 
-/* ===== FELSŐ SÁV: cellákra osztva ===== */
 .site-header { height:56px; padding:0; align-items:stretch; font-family:var(--mono); }
 .site-header .logo { border-left:0; display:flex; align-items:center; gap:.7rem; padding:0 1.25rem; border-right:1px solid var(--line);
   text-decoration:none; font:500 12px var(--mono); letter-spacing:.14em; text-transform:uppercase; }
@@ -458,7 +457,6 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   .site-header .nav-links a { font-size:12px; }
 }
 
-/* ===== BETŰTÍPUS-SZEREPEK ===== */
 .sub { font:italic 1.5rem var(--serif); }
 .section-title { font:400 clamp(3rem,7vw,5rem)/1 var(--display); letter-spacing:.01em; text-transform:uppercase; }
 .about-text h2 { font:400 clamp(3rem,7vw,4.5rem)/1 var(--display); letter-spacing:.01em; text-transform:uppercase; }

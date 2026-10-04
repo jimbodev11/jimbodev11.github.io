@@ -448,7 +448,6 @@ window.addEventListener('load', () => {
 })();
 
 
-/* Felső sáv: budapesti óra */
 (() => {
   const el = document.getElementById('clock');
   if (!el) return;
@@ -477,5 +476,28 @@ window.addEventListener('load', () => {
     card.addEventListener('mouseleave', () => {
       card.style.transform = '';
     });
+  });
+})();
+
+(() => {
+  let clickCount = 0;
+  let clickTimer = null;
+  document.querySelectorAll('.mac-title').forEach(title => {
+    if (title.textContent.trim() === 'gasztrotukor.hu') {
+      title.style.cursor = 'pointer';
+      title.style.userSelect = 'none';
+      title.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clickCount++;
+        clearTimeout(clickTimer);
+        
+        if (clickCount >= 5) {
+          window.open('http://csopa04.hu', '_blank');
+          clickCount = 0;
+        }
+        
+        clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
+      });
+    }
   });
 })();
