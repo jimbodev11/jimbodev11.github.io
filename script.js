@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
@@ -304,24 +304,28 @@ window.addEventListener('load', () => {
     status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" }
   };
 
-  let currentLang = 'hu';
+  let currentLang = 'en';
   const btn = document.getElementById('lang-toggle');
 
+  const applyLang = () => {
+    btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (i18n[key] && i18n[key][currentLang]) {
+        if (el.tagName === 'SPAN' && el.classList.contains('s')) {
+           el.textContent = `"${i18n[key][currentLang]}"`;
+        } else {
+           el.textContent = i18n[key][currentLang];
+        }
+      }
+    });
+  };
+
   if (btn) {
+    applyLang();
     btn.addEventListener('click', () => {
       currentLang = currentLang === 'hu' ? 'en' : 'hu';
-      btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[key] && i18n[key][currentLang]) {
-          if (el.tagName === 'SPAN' && el.classList.contains('s')) {
-             el.textContent = `"${i18n[key][currentLang]}"`; 
-          } else {
-             el.textContent = i18n[key][currentLang];
-          }
-        }
-      });
+      applyLang();
     });
   }
 })();
