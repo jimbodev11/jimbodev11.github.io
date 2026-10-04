@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
@@ -455,4 +455,27 @@ window.addEventListener('load', () => {
   const fmt = new Intl.DateTimeFormat('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' });
   const set = () => { el.textContent = fmt.format(new Date()); };
   set(); setInterval(set, 1000);
+})();
+
+(() => {
+  if (matchMedia('(pointer: coarse)').matches) return;
+  const cards = document.querySelectorAll('.project-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left; 
+      const y = e.clientY - rect.top; 
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -12; 
+      const rotateY = ((x - centerX) / centerX) * 12;
+
+      card.style.transform = 'translateY(-16px) perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.06)';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
 })();
