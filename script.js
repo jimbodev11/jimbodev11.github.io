@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
@@ -345,6 +345,9 @@ window.addEventListener('load', () => {
   }
 })();
 
+
+
+// Easter Egg Logic
 (() => {
   const pet = document.querySelector('.pet-character');
   const overlay = document.getElementById('suzy-easter-egg');
@@ -357,11 +360,21 @@ window.addEventListener('load', () => {
   let activeIndex = 0;
   let currentRotation = 0;
   const theta = 360 / items.length;
-  const radius = 350; 
+  let autoplayTimer;
 
-  items.forEach((item, i) => {
-    item.style.transform = `rotateY(${i * theta}deg) translateZ(${radius}px)`;
-  });
+  const getRadius = () => {
+    const itemWidth = items[0].offsetWidth || 300;
+    const minRadius = (itemWidth / 2) / Math.tan(Math.PI / items.length) + 30;
+    return window.innerWidth > 768 ? 350 : minRadius;
+  };
+
+  const startAutoplay = () => {
+    clearInterval(autoplayTimer);
+    autoplayTimer = setInterval(() => {
+      activeIndex = (activeIndex + 1) % items.length;
+      updateCarousel();
+    }, 2500);
+  };
 
   pet.addEventListener('click', () => {
     clicks++;
@@ -369,6 +382,7 @@ window.addEventListener('load', () => {
     if (clicks >= 5) {
       overlay.classList.add('show');
       updateCarousel();
+      startAutoplay();
       clicks = 0;
     } else {
       clickTimer = setTimeout(() => { clicks = 0; }, 1000);
@@ -377,9 +391,11 @@ window.addEventListener('load', () => {
 
   closeBtn.addEventListener('click', () => {
     overlay.classList.remove('show');
+    clearInterval(autoplayTimer);
   });
 
   const updateCarousel = () => {
+    const radius = getRadius();
     let targetRotation = -activeIndex * theta;
     let diff = (targetRotation - currentRotation) % 360;
     if (diff > 180) diff -= 360;
@@ -391,6 +407,8 @@ window.addEventListener('load', () => {
     track.style.transform = `translateZ(${-radius}px) rotateY(${currentRotation}deg)`;
 
     items.forEach((item, i) => {
+      item.style.transform = `rotateY(${i * theta}deg) translateZ(${radius}px)`;
+
       let offset = Math.abs(i - activeIndex);
       if (offset > items.length / 2) offset = items.length - offset; 
       
@@ -404,8 +422,13 @@ window.addEventListener('load', () => {
       if (i !== activeIndex) {
         activeIndex = i;
         updateCarousel();
+        startAutoplay();
       }
     });
+  });
+
+  window.addEventListener('resize', () => {
+    if (overlay.classList.contains('show')) updateCarousel();
   });
 
   updateCarousel();
