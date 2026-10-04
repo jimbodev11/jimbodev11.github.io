@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const hero = document.getElementById('hero');
   const goo = document.getElementById('goo'), dots = document.getElementById('dots');
   const g = goo.getContext('2d'), d = dots.getContext('2d');
@@ -143,13 +143,21 @@ document.addEventListener('contextmenu', e => e.preventDefault());
   const navLinks = document.querySelectorAll('.nav-links a');
   if (!sections.length || !navLinks.length) return;
 
-  const observer = new IntersectionObserver((entries) => {
+  const updateNav = () => {
     let currentId = '';
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        currentId = entry.target.id;
+    const focusY = window.innerHeight * 0.4; // Képernyő felső 40%-a a fókuszpont
+
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= focusY && rect.bottom >= focusY) {
+        currentId = sec.id;
       }
     });
+
+    if ((window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight - 50) {
+      currentId = sections[sections.length - 1].id;
+    }
+
     if (currentId) {
       navLinks.forEach(link => {
         link.classList.remove('active');
@@ -158,9 +166,10 @@ document.addEventListener('contextmenu', e => e.preventDefault());
         }
       });
     }
-  }, { threshold: 0.3 }); 
+  };
 
-  sections.forEach(sec => observer.observe(sec));
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
 })();
 
 (() => {
