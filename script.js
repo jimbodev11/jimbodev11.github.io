@@ -501,3 +501,37 @@ window.addEventListener('load', () => {
     }
   });
 })();
+
+(() => {
+  const fullTitle = 'Jimbo Dev';
+  let currentLength = 0;
+  let isTyping = true;
+  let blinkCount = 0;
+  
+  document.title = '_';
+
+  const typeTitle = () => {
+    if (isTyping) {
+      currentLength++;
+      document.title = fullTitle.substring(0, currentLength) + '_';
+      
+      if (currentLength === fullTitle.length) {
+        isTyping = false;
+      }
+      // Random gépelési sebesség (150-350ms)
+      const speed = Math.floor(Math.random() * 200) + 150;
+      setTimeout(typeTitle, speed);
+    } else {
+      // Villogó kurzor a végén pár másodpercig
+      if (blinkCount < 8) {
+        document.title = fullTitle + (blinkCount % 2 === 0 ? ' ' : '_');
+        blinkCount++;
+        setTimeout(typeTitle, 500);
+      } else {
+        document.title = fullTitle; // Végleges cím
+      }
+    }
+  };
+
+  setTimeout(typeTitle, 1000);
+})();
