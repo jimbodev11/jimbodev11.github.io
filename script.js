@@ -578,3 +578,54 @@ let currentLang = 'en';
     });
   }
 })();
+
+(() => {
+  // 1. Mágneses gombok (Magnetic Buttons)
+  const magneticElements = document.querySelectorAll('.nav-links a, .social-link, #lang-toggle, .h-icon');
+  
+  magneticElements.forEach(el => {
+    el.classList.add('magnetic-btn');
+    
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const h = rect.width / 2;
+      const v = rect.height / 2;
+      
+      // Calculate cursor position relative to center
+      const x = e.clientX - rect.left - h;
+      const y = e.clientY - rect.top - v;
+      
+      // Move slightly towards the cursor (pull strength: 0.3)
+      el.style.transform = 'translate(' + (x * 0.3) + 'px, ' + (y * 0.3) + 'px)';
+    });
+    
+    el.addEventListener('mouseleave', () => {
+      // Snap back to center
+      el.style.transform = 'translate(0px, 0px)';
+    });
+  });
+
+  // 2. "Page Refresh" Animáció (Nyelvváltás és Navbar)
+  const triggerRefresh = () => {
+    document.querySelectorAll('section').forEach(sec => {
+      sec.style.animation = 'none';
+      void sec.offsetWidth; // Trigger reflow
+      sec.style.animation = 'refreshAnim 0.35s ease-out forwards';
+    });
+  };
+
+  // Kötés nyelvváltóhoz
+  const langBtn = document.getElementById('lang-toggle');
+  if (langBtn) {
+    langBtn.addEventListener('click', () => {
+      triggerRefresh();
+    });
+  }
+
+  // Kötés Navbar linkekhez
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      triggerRefresh();
+    });
+  });
+})();
