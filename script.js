@@ -583,7 +583,8 @@ let currentLang = 'en';
   // 1. Mágneses gombok (Magnetic Buttons)
   const magneticElements = document.querySelectorAll('.nav-links a, .social-link, #lang-toggle, .h-icon');
   
-  magneticElements.forEach(el => {
+  if (!matchMedia('(pointer: coarse)').matches) {
+    magneticElements.forEach(el => {
     el.classList.add('magnetic-btn');
     
     el.addEventListener('mousemove', (e) => {
@@ -604,6 +605,7 @@ let currentLang = 'en';
       el.style.transform = 'translate(0px, 0px)';
     });
   });
+  }
 
   // 2. "Page Refresh" Animáció (Nyelvváltás és Navbar)
   const triggerRefresh = () => {
