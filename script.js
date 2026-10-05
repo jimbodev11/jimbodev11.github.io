@@ -1,81 +1,4 @@
 ﻿(() => {
-  const hero = document.getElementById('hero');
-  const goo = document.getElementById('goo'), dots = document.getElementById('dots');
-  const g = goo.getContext('2d'), d = dots.getContext('2d');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const touch = matchMedia('(pointer: coarse)').matches;   
-  const GAP = touch ? 44 : 56, BASE = 3.2, REACH = touch ? 150 : 230, SMALL_MAX = 8;
-  const rnd = (a, b) => a + Math.random() * (b - a);
-  const walkers = Array.from({ length: touch ? 3 : 1 }, () => ({ x: 0, y: 0, tx: 0, ty: 0, next: 0 }));
-  let W = 0, H = 0, cols = 0, rows = 0, v = [], dpr = 1;
-  let mx = -9999, my = -9999, moved = 0, visible = true, last = performance.now();
-
-  const rr = (c, x, y, s, r) => {
-    const h = s / 2;
-    c.beginPath(); c.roundRect(x - h, y - h, s, s, r); c.fill();
-  };
-
-  const size = () => {
-    dpr = Math.min(devicePixelRatio || 1, 2);
-    W = window.innerWidth; H = window.innerHeight;
-    [goo, dots].forEach(c => { c.width = W * dpr; c.height = H * dpr; });
-    g.setTransform(dpr, 0, 0, dpr, 0, 0); d.setTransform(dpr, 0, 0, dpr, 0, 0);
-    cols = Math.ceil(W / GAP) + 1; rows = Math.ceil(H / GAP) + 1;
-    v = new Float32Array(cols * rows);
-  };
-
-  const frame = now => {
-    const dt = Math.min((now - last) / 1000, 0.05); last = now;
-    if (visible) {
-      const pts = [];
-      if (!touch && now - moved < 2500) pts.push([mx, my]);
-      else walkers.forEach(w => {
-        if (now > w.next) { w.tx = rnd(0, W); w.ty = rnd(0, H); w.next = now + rnd(1200, 2800); if (!w.x) { w.x = w.tx; w.y = w.ty; } }
-        const k = 1 - Math.exp(-dt * 1.6);
-        w.x += (w.tx - w.x) * k; w.y += (w.ty - w.y) * k;
-        pts.push([w.x, w.y]);
-      });
-      const decay = Math.pow(0.9, dt * 60);
-      g.clearRect(0, 0, W, H);
-      d.clearRect(0, 0, W, H);
-      const maxS = GAP * 1.08;
-      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-        const k = j * cols + i, px = i * GAP, py = j * GAP;
-        let tgt = 0;
-        for (const [x, y] of pts) {
-          const dist = Math.hypot(px - x, py - y);
-          if (dist < REACH) tgt = Math.max(tgt, Math.pow(1 - dist / REACH, 1.4));
-        }
-        v[k] = Math.max(v[k] * decay, tgt);
-        const s = BASE + v[k] * (maxS - BASE);
-        const a = v[k] * 0.45 * Math.sin(k * 1.7);
-        const alpha = 0.08 + v[k] * 0.92;
-        d.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        d.save(); d.translate(px, py); d.rotate(a);
-        rr(d, 0, 0, Math.min(s, SMALL_MAX), Math.min(s, SMALL_MAX) * 0.28);
-        d.restore();
-        if (s > 6) {
-          const hue = 220 + (i / cols) * 60 + (j / rows) * 60; 
-          g.fillStyle = `hsl(${hue}, 100%, 70%)`;
-          g.save(); g.translate(px, py); g.rotate(a);
-          rr(g, 0, 0, s, s * 0.3);
-          g.restore();
-        }
-      }
-    }
-    requestAnimationFrame(frame);
-  };
-
-  size();
-  addEventListener('resize', size);
-  addEventListener('pointermove', e => { if (touch) return; mx = e.clientX; my = e.clientY; moved = performance.now(); }, { passive: true });
-
-  if (reduce) {
-    d.fillStyle = 'rgba(255, 255, 255, 0.15)';
-    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) rr(d, i * GAP, j * GAP, BASE, 1);
-  } else requestAnimationFrame(frame);
-})();
-(() => {
   if (matchMedia('(pointer: coarse)').matches) return;
 
   const helloSvg = document.querySelector('.hero svg');
@@ -630,4 +553,136 @@ let currentLang = 'en';
       triggerRefresh();
     });
   });
+})();
+// 3. Cyber Topography (Dense 3D Waves + AFK Walker)
+(() => {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let w, h;
+  const spacingX = 25; 
+  const spacingY = 25; 
+  let cols, rows;
+  let points = [];
+  
+  let mx = -1000, my = -1000;
+  let lastMoved = Date.now();
+  let time = 0;
+  
+  let afkX = window.innerWidth / 2;
+  let afkY = window.innerHeight / 2;
+  let afkTx = afkX;
+  let afkTy = afkY;
+
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    lastMoved = Date.now();
+    afkX = mx;
+    afkY = my;
+  });
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    cols = Math.ceil(w / spacingX) + 4;
+    rows = Math.ceil(h / spacingY) + 4;
+    points = [];
+    for(let i = 0; i < cols; i++) {
+      points[i] = [];
+      for(let j = 0; j < rows; j++) {
+        points[i][j] = {
+          ox: i * spacingX - spacingX*2, 
+          oy: j * spacingY - spacingY*2, 
+          x: 0,
+          y: 0
+        };
+      }
+    }
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    time += 0.008; // Kicsit lassabb, folyékonyabb idő
+    
+    let now = Date.now();
+    let isAfk = (now - lastMoved > 2500) && !matchMedia('(pointer: coarse)').matches;
+    
+    if (isAfk) {
+      if (Math.random() < 0.015) {
+        afkTx = Math.random() * w;
+        afkTy = Math.random() * h;
+      }
+      afkX += (afkTx - afkX) * 0.015;
+      afkY += (afkTy - afkY) * 0.015;
+      document.documentElement.style.setProperty('--mouse-x', afkX + 'px');
+      document.documentElement.style.setProperty('--mouse-y', afkY + 'px');
+    }
+    
+    let targetX = isAfk ? afkX : mx;
+    let targetY = isAfk ? afkY : my;
+
+    // Pontok kiszámítása komplex hullámokkal
+    for(let i = 0; i < cols; i++) {
+      for(let j = 0; j < rows; j++) {
+        let p = points[i][j];
+        
+        // Komplex hullám: alap szinusz + egy gyorsabb/kisebb szinusz + Y-eltolás a brutális 3D térhatásért
+        let waveY = Math.sin(i * 0.12 + time) * 35 
+                  + Math.sin(i * 0.25 - time * 1.2) * 15 
+                  + Math.cos(j * 0.15 + time) * 20;
+
+        let waveX = Math.cos(j * 0.1 + time) * 15;
+
+        let dx = targetX - p.ox;
+        let dy = targetY - p.oy;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        
+        let repX = 0, repY = 0;
+        const radius = 200; 
+        if (dist < radius && matchMedia('(pointer: fine)').matches) {
+          // Lágy, haranggörbe szerű torzítás csak az Y tengelyen (mintha belenyomnád az ujjad)
+          let force = Math.exp(-(dist * dist) / (radius * radius * 0.3));
+          repY = force * 60; // 60px-el lefelé nyomja a vonalakat
+        }
+
+        p.x = p.ox + waveX;
+        p.y = p.oy + waveY + repY;
+      }
+    }
+
+    // Rajzolás - CSAK VÍZSZINTES VONALAK a topográfiai térhatásért
+    ctx.lineWidth = 1.2;
+    for(let j = 0; j < rows; j++) {
+      ctx.beginPath();
+      for(let i = 0; i < cols; i++) {
+        let p = points[i][j];
+        if (i === 0) {
+          ctx.moveTo(p.x, p.y);
+        } else {
+          // Enyhe bezier görbe a szebb törésekért
+          let prev = points[i-1][j];
+          let cpX = (prev.x + p.x) / 2;
+          let cpY = (prev.y + p.y) / 2;
+          ctx.quadraticCurveTo(prev.x, prev.y, cpX, cpY);
+        }
+      }
+      // A vonal utolsó pontja
+      ctx.lineTo(points[cols-1][j].x, points[cols-1][j].y);
+      
+      // Halvány vonalszín
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)'; 
+      ctx.stroke();
+    }
+
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(draw);
+    }
+  }
+  
+  draw();
 })();

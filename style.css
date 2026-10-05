@@ -126,9 +126,6 @@ body::before {
 
 .hero { position:relative; isolation:isolate; overflow:hidden; min-height:100vh; display:grid; place-items:center; text-align:center; padding:2rem; }
 .hero > div { position:relative; z-index:2; mix-blend-mode:difference; }
-.fx { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-2; }
-#goo { filter: blur(80px); background: transparent; opacity: 0.8; }
-#dots { z-index:-1; mix-blend-mode: screen; opacity: 0.5; }
 svg { width:min(90vw,760px); height:auto; overflow:visible; }
 .hello { font-family:'Mrs Saint Delafield',cursive; font-size:230px; fill:transparent; stroke:var(--fg); stroke-width:2.5;
   stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:900; stroke-dashoffset:900;
@@ -528,4 +525,13 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   opacity: 1;
   transform: translateY(0) perspective(800px) rotateX(0deg);
   filter: blur(0);
+}
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
 }
