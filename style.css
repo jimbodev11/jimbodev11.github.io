@@ -494,3 +494,28 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   transition: transform 0.15s ease-out, color 0.2s;
   will-change: transform;
 }
+/* About Section Reveal Effektek */
+.about-container .editor.reveal {
+  opacity: 0;
+  transform: translateX(-40px) perspective(800px) rotateY(-15deg);
+  filter: blur(8px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.8s ease;
+}
+.about-container .editor.reveal.in {
+  opacity: 1;
+  transform: translateX(0) perspective(800px) rotateY(0deg);
+  filter: blur(0);
+}
+
+.about-container .about-text.reveal {
+  opacity: 0;
+  transform: translateX(40px);
+  filter: blur(8px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.8s ease;
+  transition-delay: 0.15s; /* Pici késleltetés, hogy a kódablak jöjjön be először */
+}
+.about-container .about-text.reveal.in {
+  opacity: 1;
+  transform: translateX(0);
+  filter: blur(0);
+}
