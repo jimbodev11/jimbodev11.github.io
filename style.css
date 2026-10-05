@@ -483,10 +483,8 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
 
 /* --- Új effektek --- */
 @keyframes refreshAnim {
-  0% { opacity: 0; filter: brightness(2) blur(4px); transform: scale(0.97) translateY(15px); }
-  40% { opacity: 1; filter: brightness(1.2) blur(0); transform: scale(1.02) translateY(-2px); }
-  70% { transform: scale(0.99) translateY(1px); }
-  100% { filter: brightness(1); transform: scale(1) translateY(0); }
+  0% { opacity: 0; filter: blur(6px); transform: translateY(40px) perspective(800px) rotateX(10deg); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0) perspective(800px) rotateX(0deg); }
 }
 
 .magnetic-btn {

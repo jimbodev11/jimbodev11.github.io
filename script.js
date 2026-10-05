@@ -610,7 +610,7 @@ let currentLang = 'en';
     document.querySelectorAll('section').forEach(sec => {
       sec.style.animation = 'none';
       void sec.offsetWidth; // Trigger reflow
-      sec.style.animation = 'refreshAnim 0.35s ease-out forwards';
+      sec.style.animation = 'refreshAnim 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards';
     });
   };
 
