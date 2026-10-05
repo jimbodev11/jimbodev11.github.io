@@ -287,36 +287,39 @@ window.addEventListener('load', () => {
 
 (() => {
   const i18n = {
-    nav_home: { hu: "Főoldal", en: "Home" },
-    nav_about: { hu: "Rólam", en: "About" },
-    nav_projects: { hu: "Projektek", en: "Projects" },
-    nav_contact: { hu: "Kapcsolat", en: "Contact" },
-    hero_sub: { hu: "Görgess lefelé, és megmutatom, ki vagyok.", en: "Scroll down, let me show you who I am." },
-    code_passion: { hu: "Kreatív Fejlesztés", en: "Creative Development" },
-    code_skills_3: { hu: "Játékszerverek", en: "Game Servers" },
-    code_comment: { hu: "// Egységes, letisztult dizájn!", en: "// Unified, clean design!" },
-    about_role: { hu: "Szoftverfejlesztő & Dizájner", en: "Software Developer & Designer" },
-    about_desc: { hu: "Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése. Fontos számomra, hogy amit alkotok, az ne csak jól működjön, de vizuálisan is maradandó élményt nyújtson.", en: "I am passionate about creating unique, creative websites and clean user interfaces. It's important to me that what I build not only works well, but also provides a lasting visual experience." },
-    chip_creative: { hu: "Kreatív", en: "Creative" },
-    chip_coding: { hu: "Kódolás", en: "Coding" },
-    proj1_desc: { hu: "Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.", en: "Gastronomy web project created as a school exam masterpiece." },
-    proj1_chip1: { hu: "Webfejlesztés", en: "Web Dev" },
-    proj1_chip2: { hu: "Vizsgamunka", en: "Exam Project" },
-    proj_btn_view: { hu: "Megnézem", en: "View" },
-    proj2_desc: { hu: "Egyedi Roleplay szerver projekt. (Jelenleg szünetel)", en: "Custom Roleplay server project. (Currently paused)" },
-    proj2_chip1: { hu: "Játékszerver", en: "Game Server" },
-    proj2_chip2: { hu: "Közösség", en: "Community" },
-    proj_btn_paused: { hu: "Szünetel", en: "Paused" },
-    proj3_desc: { hu: "A jelenlegi bemutatkozó weboldalam.", en: "My current portfolio website." },
-    contact_title: { hu: "Beszéljünk!", en: "Let's Talk!" },
-    contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" },
-    status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" }
-  };
-
-  let currentLang = 'en';
+      nav_home: { hu: "Főoldal", en: "Home" },
+      nav_about: { hu: "Rólam", en: "About" },
+      nav_projects: { hu: "Projektek", en: "Projects" },
+      nav_contact: { hu: "Kapcsolat", en: "Contact" },
+      hero_sub: { hu: "Görgess lefelé, és megmutatom, ki vagyok.", en: "Scroll down, let me show you who I am." },
+      code_passion: { hu: "Kreatív Fejlesztés", en: "Creative Development" },
+      code_skills_3: { hu: "Játékszerverek", en: "Game Servers" },
+      code_comment: { hu: "// Egységes, letisztult dizájn!", en: "// Unified, clean design!" },
+      about_role: { hu: "Szoftverfejlesztő & Dizájner", en: "Software Developer & Designer" },
+      about_desc: { hu: "Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése. Fontos számomra, hogy amit alkotok, az ne csak jól működjön, de vizuálisan is maradandó élményt nyújtson.", en: "I am passionate about creating unique, creative websites and clean user interfaces. It's important to me that what I build not only works well, but also provides a lasting visual experience." },
+      chip_creative: { hu: "Kreatív", en: "Creative" },
+      chip_coding: { hu: "Kódolás", en: "Coding" },
+      proj1_desc: { hu: "Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.", en: "Gastronomy web project created as a school exam masterpiece." },
+      proj1_chip1: { hu: "Webfejlesztés", en: "Web Dev" },
+      proj1_chip2: { hu: "Vizsgamunka", en: "Exam Project" },
+      proj_btn_view: { hu: "Megnézem", en: "View" },
+      proj2_desc: { hu: "Egyedi Roleplay szerver projekt. (Jelenleg szünetel)", en: "Custom Roleplay server project. (Currently paused)" },
+      proj2_chip1: { hu: "Játékszerver", en: "Game Server" },
+      proj2_chip2: { hu: "Közösség", en: "Community" },
+      proj_btn_paused: { hu: "Szünetel", en: "Paused" },
+      proj3_title: { hu: "Saját Portfólió", en: "My Portfolio" },
+      proj3_desc: { hu: "A jelenlegi bemutatkozó weboldalam.", en: "My current portfolio website." },
+      tag_clean: { hu: "Letisztult", en: "Clean" },
+      tag_fast: { hu: "Gyors", en: "Fast" },
+      tag_creative: { hu: "Kreatív", en: "Creative" },
+      contact_title: { hu: "Beszéljünk!", en: "Let's Talk!" },
+      contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" },
+      status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" }
+    };
+let currentLang = 'en';
   const btn = document.getElementById('lang-toggle');
 
-  const applyLang = () => {
+  const applyLang = () => { window.currentLang = currentLang;
     btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
