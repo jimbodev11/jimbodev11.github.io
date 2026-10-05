@@ -521,17 +521,15 @@ let currentLang = 'en';
       if (currentLength === fullTitle.length) {
         isTyping = false;
       }
-      // Random gépelési sebesség (150-350ms)
       const speed = Math.floor(Math.random() * 200) + 150;
       setTimeout(typeTitle, speed);
     } else {
-      // Villogó kurzor a végén pár másodpercig
       if (blinkCount < 8) {
         document.title = fullTitle + (blinkCount % 2 === 0 ? ' ' : '_');
         blinkCount++;
         setTimeout(typeTitle, 500);
       } else {
-        document.title = fullTitle; // Végleges cím
+        document.title = fullTitle; 
       }
     }
   };
@@ -543,7 +541,7 @@ let currentLang = 'en';
   const npPlayer = document.getElementById('np');
   if (!npPlayer) return;
 
-  // 3D Parallax effect
+ 
   if (!matchMedia('(pointer: coarse)').matches) {
     npPlayer.addEventListener('mousemove', e => {
       const rect = npPlayer.getBoundingClientRect();
@@ -563,14 +561,13 @@ let currentLang = 'en';
     });
   }
 
-  // Lecsukás (Minimize) a fejlécből
   const header = npPlayer.querySelector('.editor-header');
   const body = npPlayer.querySelector('.np-body');
   
   if (header && body) {
     header.style.cursor = 'pointer';
     header.addEventListener('click', (e) => {
-      e.preventDefault(); // Ne nyissa meg a Spotify-t
+      e.preventDefault();
       e.stopPropagation();
       
       if (body.style.display === 'none') {
