@@ -535,3 +535,46 @@ window.addEventListener('load', () => {
 
   setTimeout(typeTitle, 1000);
 })();
+
+(() => {
+  const npPlayer = document.getElementById('np');
+  if (!npPlayer) return;
+
+  // 3D Parallax effect
+  if (!matchMedia('(pointer: coarse)').matches) {
+    npPlayer.addEventListener('mousemove', e => {
+      const rect = npPlayer.getBoundingClientRect();
+      const x = e.clientX - rect.left; 
+      const y = e.clientY - rect.top; 
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -10; 
+      const rotateY = ((x - centerX) / centerX) * 10;
+
+      npPlayer.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
+    });
+
+    npPlayer.addEventListener('mouseleave', () => {
+      npPlayer.style.transform = '';
+    });
+  }
+
+  // Lecsukás (Minimize) a fejlécből
+  const header = npPlayer.querySelector('.editor-header');
+  const body = npPlayer.querySelector('.np-body');
+  
+  if (header && body) {
+    header.style.cursor = 'pointer';
+    header.addEventListener('click', (e) => {
+      e.preventDefault(); // Ne nyissa meg a Spotify-t
+      e.stopPropagation();
+      
+      if (body.style.display === 'none') {
+        body.style.display = 'flex';
+      } else {
+        body.style.display = 'none';
+      }
+    });
+  }
+})();

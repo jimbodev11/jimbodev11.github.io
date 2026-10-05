@@ -118,7 +118,7 @@ body::before {
   filter: blur(0);
 }
 
-.contact { padding: 4rem 1.25rem 8rem; max-width: 800px; margin: 0 auto; text-align: center; }
+.contact { padding: 4rem 1.25rem 12rem; max-width: 800px; margin: 0 auto; text-align: center; }
 .contact p { color: var(--muted); font-size: 1.15rem; margin-bottom: 2.5rem; }
 .social-links { display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
 .social-link { color: var(--fg); text-decoration: none; font-size: 1.05rem; font-weight: 500; border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s; padding-bottom: 4px; }
@@ -272,36 +272,51 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   .reveal { opacity:1; transform:none; filter:none; transition:none; }
 }
 
-.np { position:fixed; z-index:20; left:max(1rem, env(safe-area-inset-left)); bottom:max(1rem, env(safe-area-inset-bottom));
-  display:flex; align-items:center; gap:.75rem; max-width:min(320px, calc(100vw - 2rem));
-  padding:.45rem .95rem .45rem .45rem; border:1px solid var(--line); border-radius:999px;
-  background:rgba(0,0,0,.85); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
-  color:var(--fg); text-decoration:none; font-size:.85rem; 
+.np { 
+  position: fixed; z-index: 20; 
+  left: max(1.5rem, env(safe-area-inset-left)); bottom: max(1.5rem, env(safe-area-inset-bottom));
+  width: 280px; max-width: calc(100vw - 3rem);
+  padding: 0; 
+  text-decoration: none; 
   transform: translateY(150%);
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  display: flex; flex-direction: column;
 }
-.np.data-ready.loaded {
-  transform: translateY(0);
+.np:hover {
+  border-color: rgba(30, 215, 96, 0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(30, 215, 96, 0.15);
 }
-.np[hidden] { display:none; }
-.np img { width:40px; height:40px; border-radius:50%; object-fit:cover; flex:none; background:#111; }
-.np-text { display:flex; flex-direction:column; min-width:0; }
-.np-text b, .np-text small { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.np-text small { color:var(--muted); }
-.eq { display:flex; gap:2px; align-items:flex-end; height:14px; flex:none; }
-.eq i { width:3px; height:25%; background:var(--fg); border-radius:1px; }
-.np.playing .eq i { animation:eq 1s ease-in-out infinite; }
-.np.playing .eq i:nth-child(2) { animation-delay:.25s; }
-.np.playing .eq i:nth-child(3) { animation-delay:.5s; }
-@keyframes eq { 50% { height:100%; } }
-@media (max-width:600px) {
-  .np:not(.open) { padding-right:.45rem; }
-  .np:not(.open) .np-text, .np:not(.open) .eq { display:none; }
+.np-body {
+  display: flex; align-items: center; gap: 14px; 
+  padding: 12px; width: 100%;
+}
+.np.data-ready.loaded { transform: translateY(0); }
+.np[hidden] { display: none; }
+.np img { 
+  width: 52px; height: 52px; 
+  border-radius: 8px; object-fit: cover; flex: none; 
+  background: #111; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.np-text { display: flex; flex-direction: column; min-width: 0; flex: 1; justify-content: center; gap: 4px; }
+.np-text b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.2px; color: var(--fg); }
+.np-text small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 0.8rem; font-weight: 500; }
+.eq { display: flex; gap: 3px; align-items: flex-end; height: 16px; flex: none; margin-right: 4px; }
+.eq i { width: 4px; height: 20%; background: #1ED760; border-radius: 2px; }
+.np.playing .eq i { animation: eq 1s ease-in-out infinite; }
+.np.playing .eq i:nth-child(2) { animation-delay: 0.25s; }
+.np.playing .eq i:nth-child(3) { animation-delay: 0.5s; }
+@keyframes eq { 50% { height: 100%; } }
+@media (max-width: 600px) {
+  .np { left: 1rem; bottom: 1rem; width: 100%; max-width: calc(100vw - 2rem); border-radius: 12px; }
+  .np .editor-header { padding: 0.5rem 0.8rem; }
+  .np-body { padding: 8px; gap: 10px; }
+  .np img { width: 42px; height: 42px; border-radius: 6px; }
+  .np-text b { font-size: 0.85rem; }
+  .np-text small { font-size: 0.75rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .np.playing .eq i { animation:none; height:70%; }
+  .np.playing .eq i { animation: none; height: 70%; }
 }
-
 #pet-area {
   position: relative; width: 100%; height: 60px; margin-top: 3rem; overflow: visible;
 }
