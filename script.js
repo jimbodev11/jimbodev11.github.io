@@ -493,11 +493,7 @@ let currentLang = 'en';
       e.preventDefault();
       e.stopPropagation();
       
-      if (body.style.display === 'none') {
-        body.style.display = 'flex';
-      } else {
-        body.style.display = 'none';
-      }
+      npPlayer.classList.toggle('collapsed');
     });
   }
 })();

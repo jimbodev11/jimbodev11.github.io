@@ -535,3 +535,20 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   z-index: -1;
   pointer-events: none;
 }
+
+/* Spotify Toggle UI */
+.np .editor-header::after {
+  content: "▼";
+  position: absolute;
+  right: 1rem;
+  color: var(--muted);
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+.np.collapsed .editor-header::after {
+  transform: rotate(180deg);
+}
+.np.collapsed .np-body {
+  display: none !important;
+}
