@@ -682,3 +682,41 @@ let currentLang = 'en';
   
   draw();
 })();
+// 4. Contact Links - Copy to Clipboard
+(() => {
+  const notification = document.createElement('div');
+  notification.className = 'copy-notification';
+  document.body.appendChild(notification);
+
+  document.querySelectorAll('.social-links a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      let textToCopy = '';
+      const href = link.getAttribute('href');
+      
+      if (href.startsWith('mailto:')) {
+        textToCopy = href.replace('mailto:', '');
+      } else if (link.textContent.trim().toLowerCase() === 'discord') {
+        // Ha ms a Discord neved, krlek rd t ezt!
+        textToCopy = 'bigkokxd'; 
+      } else {
+        textToCopy = href; 
+      }
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          let isEn = document.documentElement.lang === 'en';
+          notification.textContent = isEn 
+            ? textToCopy + ' copied to clipboard!' 
+            : textToCopy + ' vágólapra másolva!';
+          
+          notification.classList.add('show');
+          
+          clearTimeout(notification.timeout);
+          notification.timeout = setTimeout(() => {
+            notification.classList.remove('show');
+          }, 3000);
+        }).catch(err => console.error('Nem sikerült másolni:', err));
+      }
+    });
+  });
+})();
