@@ -785,9 +785,8 @@ window.addEventListener('load', () => {
         let repX = 0, repY = 0;
         const radius = 200; 
         if (dist < radius && matchMedia('(pointer: fine)').matches) {
-          // Lágy, haranggörbe szerű torzítás csak az Y tengelyen (mintha belenyomnád az ujjad)
           let force = Math.exp(-(dist * dist) / (radius * radius * 0.3));
-          repY = force * 60; // 60px-el lefelé nyomja a vonalakat
+          repY = force * 60; 
         }
 
         p.x = p.ox + waveX;
@@ -835,7 +834,7 @@ window.addEventListener('load', () => {
       if (href.startsWith('mailto:')) {
         textToCopy = href.replace('mailto:', '');
       } else if (link.textContent.trim().toLowerCase() === 'discord') {
-        // Ha ms a Discord neved, krlek rd t ezt!
+        
         textToCopy = 'bigkokxd'; 
       } else {
         textToCopy = href; 
