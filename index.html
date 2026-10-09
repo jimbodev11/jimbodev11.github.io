@@ -1,15 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jimbo Dev | Szoftverfejlesztő &amp; Dizájner</title>
+    <meta name="description" content="Jimbo Dev – Kreatív szoftverfejlesztő &amp; dizájner. Letisztult, gyors weboldalak, modern felhasználói felületek és egyedi fejlesztések Budapestről.">
+    <meta name="keywords" content="Jimbo Dev, szoftverfejlesztő, webfejlesztés, portfólió, frontend, UI/UX dizájn, JavaScript, FiveM, C#, Budapest">
+    <meta name="author" content="Jimbo Dev">
+    <meta name="theme-color" content="#050508">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook / Discord -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimbodev11.github.io/">
+    <meta property="og:title" content="Jimbo Dev — Szoftverfejlesztő &amp; Dizájner">
+    <meta property="og:description" content="Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése.">
+    <meta property="og:image" content="https://jimbodev11.github.io/img/suzy.jpg">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jimbo Dev — Szoftverfejlesztő &amp; Dizájner">
+    <meta name="twitter:description" content="Szenvedélyem az egyedi, kreatív weboldalak és letisztult felhasználói felületek készítése.">
+    <meta name="twitter:image" content="https://jimbodev11.github.io/img/suzy.jpg">
+
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-<title>Jimbo Dev</title>
-
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
@@ -414,13 +432,25 @@
     </div>
     
     <div id="pet-area">
-      <div class="pet-character">
-        <div class="pet-thought-bubble">🦴</div>
-        <div class="pet-tooltip">
-          <img src="img/suzy.jpg" alt="Saját kutyám">
+      <div class="pet-hud">
+        <button type="button" class="pet-throw-btn" id="pet-throw-btn">
+          <span>🦴</span> <span data-i18n="pet_throw_btn">Dobj csontot!</span>
+        </button>
+        <div class="pet-stats">
+          <span class="pet-score" title="Elkapott csontok"><span data-i18n="pet_score_label">Csontok:</span> <b id="pet-score-val">0</b> 🦴</span>
+          <span class="pet-hearts" id="pet-hearts" title="Suzy boldogsága">❤️❤️❤️</span>
         </div>
-        <div class="pet-sprite"></div>
       </div>
+      <div class="pet-ground" id="pet-ground" title="Kattints ide csont dobásához!">
+        <div class="pet-character">
+          <div class="pet-thought-bubble">🦴</div>
+          <div class="pet-tooltip">
+            <img src="img/suzy.jpg" alt="Saját kutyám">
+          </div>
+          <div class="pet-sprite"></div>
+        </div>
+      </div>
+      <p class="pet-hint" data-i18n="pet_hint">Kattints a földre vagy a gombra egy csont dobásához!</p>
     </div>
   </div>
 </section>

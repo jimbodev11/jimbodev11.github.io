@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   if (matchMedia('(pointer: coarse)').matches) return;
 
   const helloSvg = document.querySelector('.hero svg');
@@ -141,69 +141,216 @@ window.addEventListener('load', () => {
 });
 (() => {
   const pet = document.querySelector('.pet-character');
-  if (!pet) return;
-  const area = document.getElementById('pet-area');
+  const ground = document.getElementById('pet-ground');
+  const throwBtn = document.getElementById('pet-throw-btn');
+  const scoreVal = document.getElementById('pet-score-val');
+  const heartsEl = document.getElementById('pet-hearts');
+  if (!pet || !ground) return;
+
   const tooltipImg = pet.querySelector('.pet-tooltip img');
+  const thoughtBubble = pet.querySelector('.pet-thought-bubble');
   const suzyImages = [
     'img/suzy.jpg',
     'img/suzy7.JPEG',
     'img/suzy8.JPEG',
   ];
 
-  let pos = area.offsetWidth / 2;
+  let pos = ground.offsetWidth / 2 || 150;
   let direction = 1;
   let currentState = 'idle';
+  let isChasing = false;
+  let activeBone = null;
+  let targetBoneX = null;
+  let isCelebrating = false;
+
+  let score = parseInt(localStorage.getItem('suzy_bones') || '0', 10);
+  if (scoreVal) scoreVal.textContent = score;
+
+  const updateHappiness = () => {
+    if (!heartsEl) return;
+    if (score >= 20) heartsEl.textContent = '🌟💖💖💖🌟';
+    else if (score >= 10) heartsEl.textContent = '💖💖💖💖💖';
+    else if (score >= 5) heartsEl.textContent = '❤️❤️❤️❤️';
+    else heartsEl.textContent = '❤️❤️❤️';
+  };
+  updateHappiness();
+
   pet.addEventListener('mouseenter', () => {
+    if (isChasing || isCelebrating) return;
     const randImg = suzyImages[Math.floor(Math.random() * suzyImages.length)];
-    tooltipImg.src = randImg;
+    if (tooltipImg) tooltipImg.src = randImg;
     currentState = Math.random() > 0.5 ? 'sit' : 'lay';
     pet.className = `pet-character ${currentState}`;
     pet.classList.remove('wants-bone');
   });
 
   pet.addEventListener('mouseleave', () => {
+    if (isChasing || isCelebrating) return;
     pet.classList.remove('wants-bone');
     currentState = 'idle';
     pet.className = `pet-character ${currentState}`;
   });
 
+  const showFloatingFeedback = (text, x) => {
+    const floatEl = document.createElement('div');
+    floatEl.className = 'pet-floating-heart';
+    floatEl.textContent = text;
+    floatEl.style.left = `${x}px`;
+    floatEl.style.bottom = '55px';
+    ground.appendChild(floatEl);
+    setTimeout(() => floatEl.remove(), 1000);
+  };
+
+  const throwBone = (targetX) => {
+    if (isCelebrating) return;
+
+    if (activeBone) {
+      activeBone.remove();
+      activeBone = null;
+    }
+
+    const groundWidth = ground.offsetWidth;
+    const clampedX = Math.max(20, Math.min(groundWidth - 40, targetX));
+
+    const bone = document.createElement('div');
+    bone.className = 'pet-bone';
+    bone.textContent = '🦴';
+    bone.style.left = `${clampedX}px`;
+    ground.appendChild(bone);
+
+    activeBone = bone;
+    targetBoneX = clampedX;
+    isChasing = true;
+    currentState = 'run';
+    pet.className = 'pet-character run';
+    pet.classList.remove('wants-bone');
+
+    if (thoughtBubble) {
+      thoughtBubble.textContent = '😋';
+      pet.classList.add('wants-bone');
+    }
+
+    direction = clampedX > pos ? 1 : -1;
+    pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
+  };
+
+  if (throwBtn) {
+    throwBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const groundWidth = ground.offsetWidth;
+      let targetX;
+      if (pos < groundWidth / 2) {
+        targetX = pos + 100 + Math.random() * (groundWidth - pos - 150);
+      } else {
+        targetX = 40 + Math.random() * (pos - 100);
+      }
+      throwBone(targetX);
+    });
+  }
+
+  ground.addEventListener('click', (e) => {
+    if (e.target.closest('.pet-character')) return;
+    const rect = ground.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    throwBone(clickX);
+  });
+
   const updatePet = () => {
-    if (pet.matches(':hover')) return;
+    if (isChasing || isCelebrating || pet.matches(':hover')) return;
 
     const rand = Math.random();
-    if (rand < 0.3) currentState = 'walk';
-    else if (rand < 0.5) currentState = 'sit';
-    else if (rand < 0.7) currentState = 'lay';
-    else if (rand < 0.8) currentState = 'bark';
+    if (rand < 0.35) currentState = 'walk';
+    else if (rand < 0.55) currentState = 'sit';
+    else if (rand < 0.72) currentState = 'lay';
+    else if (rand < 0.82) currentState = 'bark';
     else currentState = 'idle';
 
     pet.className = `pet-character ${currentState}`;
-    if ((currentState === 'sit' || currentState === 'idle') && Math.random() < 0.2) {
+    if ((currentState === 'sit' || currentState === 'idle') && Math.random() < 0.25) {
+      if (thoughtBubble) thoughtBubble.textContent = '🦴';
       pet.classList.add('wants-bone');
     } else {
       pet.classList.remove('wants-bone');
     }
+
     if (currentState === 'walk' && Math.random() < 0.3) {
       direction *= -1;
     }
 
     pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
   };
+
   setInterval(() => {
-    if (currentState === 'walk' || currentState === 'jump') {
-      const areaWidth = area.offsetWidth;
-      pos += direction * (currentState === 'jump' ? 12 : 8); 
+    const groundWidth = ground.offsetWidth;
+
+    if (isChasing && targetBoneX !== null && activeBone) {
+      const dist = targetBoneX - pos;
+      direction = dist > 0 ? 1 : -1;
+
+      if (Math.abs(dist) <= 24) {
+        isChasing = false;
+        isCelebrating = true;
+        targetBoneX = null;
+
+        activeBone.classList.add('eaten');
+        setTimeout(() => {
+          if (activeBone) {
+            activeBone.remove();
+            activeBone = null;
+          }
+        }, 300);
+
+        score++;
+        localStorage.setItem('suzy_bones', score);
+        if (scoreVal) scoreVal.textContent = score;
+        updateHappiness();
+
+        currentState = 'jump';
+        pet.className = 'pet-character jump';
+        showFloatingFeedback('+1 🦴 ❤️', pos + 30);
+
+        if (thoughtBubble) {
+          thoughtBubble.textContent = '💖';
+          pet.classList.add('wants-bone');
+        }
+
+        setTimeout(() => {
+          currentState = 'spin';
+          pet.className = 'pet-character spin';
+        }, 400);
+
+        setTimeout(() => {
+          currentState = 'sit';
+          pet.className = 'pet-character sit';
+        }, 850);
+
+        setTimeout(() => {
+          isCelebrating = false;
+          pet.classList.remove('wants-bone');
+          currentState = 'idle';
+          pet.className = 'pet-character idle';
+        }, 1400);
+      } else {
+        pos += direction * 14;
+        if (pos < 10) pos = 10;
+        if (pos > groundWidth - 70) pos = groundWidth - 70;
+        pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
+      }
+    } else if (currentState === 'walk' || currentState === 'jump') {
+      pos += direction * (currentState === 'jump' ? 12 : 7);
 
       if (pos < 10) { pos = 10; direction = 1; }
-      if (pos > areaWidth - 60) { pos = areaWidth - 60; direction = -1; }
+      if (pos > groundWidth - 70) { pos = groundWidth - 70; direction = -1; }
 
       pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
     }
   }, 100);
-  setInterval(updatePet, 2000);
+
+  setInterval(updatePet, 2200);
 
   window.addEventListener('resize', () => {
-    if (pos > area.offsetWidth - 60) pos = area.offsetWidth - 60;
+    const groundWidth = ground.offsetWidth;
+    if (pos > groundWidth - 70) pos = groundWidth - 70;
     pet.style.transform = `translateX(${pos}px) scaleX(${-direction})`;
   });
 })();
@@ -237,13 +384,18 @@ window.addEventListener('load', () => {
       tag_creative: { hu: "Kreatív", en: "Creative" },
       contact_title: { hu: "Beszéljünk!", en: "Let's Talk!" },
       contact_desc: { hu: "Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!", en: "I am open to new projects. Feel free to contact me on the platforms below!" },
-      status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" }
+      status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" },
+      pet_throw_btn: { hu: "Dobj csontot!", en: "Throw bone!" },
+      pet_score_label: { hu: "Csontok:", en: "Bones:" },
+      pet_hint: { hu: "Kattints a földre vagy a gombra egy csont dobásához!", en: "Click the ground or button to throw a bone!" }
     };
-let currentLang = 'en';
+  let currentLang = localStorage.getItem('site_lang') || 'hu';
   const btn = document.getElementById('lang-toggle');
 
-  const applyLang = () => { window.currentLang = currentLang;
-    btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
+  const applyLang = () => {
+    window.currentLang = currentLang;
+    document.documentElement.lang = currentLang;
+    if (btn) btn.textContent = currentLang === 'hu' ? 'EN' : 'HU';
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (i18n[key] && i18n[key][currentLang]) {
@@ -260,6 +412,7 @@ let currentLang = 'en';
     applyLang();
     btn.addEventListener('click', () => {
       currentLang = currentLang === 'hu' ? 'en' : 'hu';
+      localStorage.setItem('site_lang', currentLang);
       applyLang();
     });
   }
