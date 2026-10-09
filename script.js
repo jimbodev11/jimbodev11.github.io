@@ -652,7 +652,6 @@ window.addEventListener('load', () => {
 })();
 
 (() => {
-  // 1. Mágneses gombok (Magnetic Buttons)
   const magneticElements = document.querySelectorAll('.nav-links a, .social-link, #lang-toggle, .h-icon');
   
   if (!matchMedia('(pointer: coarse)').matches) {
@@ -664,22 +663,18 @@ window.addEventListener('load', () => {
       const h = rect.width / 2;
       const v = rect.height / 2;
       
-      // Calculate cursor position relative to center
       const x = e.clientX - rect.left - h;
       const y = e.clientY - rect.top - v;
       
-      // Move slightly towards the cursor (pull strength: 0.3)
       el.style.transform = 'translate(' + (x * 0.3) + 'px, ' + (y * 0.3) + 'px)';
     });
     
     el.addEventListener('mouseleave', () => {
-      // Snap back to center
       el.style.transform = 'translate(0px, 0px)';
     });
   });
   }
 
-  // 2. "Page Refresh" Animáció (Nyelvváltás és Navbar)
   const triggerRefresh = () => {
     document.querySelectorAll('section').forEach(sec => {
       sec.style.animation = 'none';
@@ -688,7 +683,6 @@ window.addEventListener('load', () => {
     });
   };
 
-  // Kötés nyelvváltóhoz
   const langBtn = document.getElementById('lang-toggle');
   if (langBtn) {
     langBtn.addEventListener('click', () => {
@@ -696,14 +690,13 @@ window.addEventListener('load', () => {
     });
   }
 
-  // Kötés Navbar linkekhez
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
       triggerRefresh();
     });
   });
 })();
-// 3. Cyber Topography (Dense 3D Waves + AFK Walker)
+
 (() => {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
@@ -756,7 +749,7 @@ window.addEventListener('load', () => {
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    time += 0.008; // Kicsit lassabb, folyékonyabb idő
+    time += 0.008; 
     
     let now = Date.now();
     let isAfk = (now - lastMoved > 2500) && !matchMedia('(pointer: coarse)').matches;
@@ -775,12 +768,10 @@ window.addEventListener('load', () => {
     let targetX = isAfk ? afkX : mx;
     let targetY = isAfk ? afkY : my;
 
-    // Pontok kiszámítása komplex hullámokkal
     for(let i = 0; i < cols; i++) {
       for(let j = 0; j < rows; j++) {
         let p = points[i][j];
         
-        // Komplex hullám: alap szinusz + egy gyorsabb/kisebb szinusz + Y-eltolás a brutális 3D térhatásért
         let waveY = Math.sin(i * 0.12 + time) * 35 
                   + Math.sin(i * 0.25 - time * 1.2) * 15 
                   + Math.cos(j * 0.15 + time) * 20;
@@ -804,7 +795,6 @@ window.addEventListener('load', () => {
       }
     }
 
-    // Rajzolás - CSAK VÍZSZINTES VONALAK a topográfiai térhatásért
     ctx.lineWidth = 1.2;
     for(let j = 0; j < rows; j++) {
       ctx.beginPath();
@@ -813,17 +803,14 @@ window.addEventListener('load', () => {
         if (i === 0) {
           ctx.moveTo(p.x, p.y);
         } else {
-          // Enyhe bezier görbe a szebb törésekért
           let prev = points[i-1][j];
           let cpX = (prev.x + p.x) / 2;
           let cpY = (prev.y + p.y) / 2;
           ctx.quadraticCurveTo(prev.x, prev.y, cpX, cpY);
         }
       }
-      // A vonal utolsó pontja
       ctx.lineTo(points[cols-1][j].x, points[cols-1][j].y);
       
-      // Halvány vonalszín
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)'; 
       ctx.stroke();
     }
@@ -835,7 +822,6 @@ window.addEventListener('load', () => {
   
   draw();
 })();
-// 4. Contact Links - Copy to Clipboard
 (() => {
   const notification = document.createElement('div');
   notification.className = 'copy-notification';
