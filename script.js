@@ -537,23 +537,32 @@ window.addEventListener('load', () => {
 
 (() => {
   if (matchMedia('(pointer: coarse)').matches) return;
-  const cards = document.querySelectorAll('.project-card');
-  cards.forEach(card => {
+  const glassCards = document.querySelectorAll('.project-card, .about-section .editor');
+  glassCards.forEach(card => {
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left; 
       const y = e.clientY - rect.top; 
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
+
+      card.style.setProperty('--card-x', `${x}px`);
+      card.style.setProperty('--card-y', `${y}px`);
       
       const rotateX = ((y - centerY) / centerY) * -12; 
       const rotateY = ((x - centerX) / centerX) * 12;
 
-      card.style.transform = 'translateY(-16px) perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.06)';
+      if (card.classList.contains('project-card')) {
+        card.style.transform = 'translateY(-16px) perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.06)';
+      } else {
+        card.style.transform = 'perspective(800px) rotateX(' + (rotateX * 0.5) + 'deg) rotateY(' + (rotateY * 0.5) + 'deg)';
+      }
     });
 
     card.addEventListener('mouseleave', () => {
       card.style.transform = '';
+      card.style.removeProperty('--card-x');
+      card.style.removeProperty('--card-y');
     });
   });
 })();
@@ -697,14 +706,15 @@ window.addEventListener('load', () => {
   });
 })();
 
+// 3. Cyber Topography (Living Holographic Landscape + Ripples + Dust)
 (() => {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   
   let w, h;
-  const spacingX = 25; 
-  const spacingY = 25; 
+  const spacingX = 24; 
+  const spacingY = 24; 
   let cols, rows;
   let points = [];
   
@@ -716,6 +726,44 @@ window.addEventListener('load', () => {
   let afkY = window.innerHeight / 2;
   let afkTx = afkX;
   let afkTy = afkY;
+
+  // Click shockwave ripples
+  const ripples = [];
+  window.addEventListener('click', e => {
+    ripples.push({
+      x: e.clientX,
+      y: e.clientY,
+      radius: 10,
+      maxRadius: 400,
+      strength: 42,
+      speed: 7,
+      alpha: 1
+    });
+  });
+
+  // Floating ambient cyber dust particles
+  const particleCount = 38;
+  const particles = [];
+  for (let p = 0; p < particleCount; p++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 2 + 0.8,
+      speedX: (Math.random() - 0.5) * 0.35,
+      speedY: -Math.random() * 0.45 - 0.1,
+      alpha: Math.random() * 0.45 + 0.15,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+
+  // Energy pulses traveling along contour lines
+  const pulses = [
+    { row: 3, prog: 0.1, speed: 0.0035, color: '#7aa2ff' },
+    { row: 9, prog: 0.6, speed: 0.0045, color: '#9fd6c8' },
+    { row: 16, prog: 0.3, speed: 0.003, color: '#c4a7ff' },
+    { row: 23, prog: 0.85, speed: 0.004, color: '#7aa2ff' },
+    { row: 30, prog: 0.4, speed: 0.0032, color: '#9fd6c8' }
+  ];
 
   window.addEventListener('mousemove', e => {
     mx = e.clientX;
@@ -735,8 +783,8 @@ window.addEventListener('load', () => {
       points[i] = [];
       for(let j = 0; j < rows; j++) {
         points[i][j] = {
-          ox: i * spacingX - spacingX*2, 
-          oy: j * spacingY - spacingY*2, 
+          ox: i * spacingX - spacingX * 2, 
+          oy: j * spacingY - spacingY * 2, 
           x: 0,
           y: 0
         };
@@ -749,7 +797,7 @@ window.addEventListener('load', () => {
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    time += 0.008; 
+    time += 0.01; 
     
     let now = Date.now();
     let isAfk = (now - lastMoved > 2500) && !matchMedia('(pointer: coarse)').matches;
@@ -768,33 +816,57 @@ window.addEventListener('load', () => {
     let targetX = isAfk ? afkX : mx;
     let targetY = isAfk ? afkY : my;
 
+    // Update ripples
+    for (let r = ripples.length - 1; r >= 0; r--) {
+      let rip = ripples[r];
+      rip.radius += rip.speed;
+      rip.alpha = Math.max(0, 1 - rip.radius / rip.maxRadius);
+      if (rip.radius >= rip.maxRadius) {
+        ripples.splice(r, 1);
+      }
+    }
+
+    // Calculate wave points with ripple & mouse force
     for(let i = 0; i < cols; i++) {
       for(let j = 0; j < rows; j++) {
         let p = points[i][j];
         
-        let waveY = Math.sin(i * 0.12 + time) * 35 
-                  + Math.sin(i * 0.25 - time * 1.2) * 15 
-                  + Math.cos(j * 0.15 + time) * 20;
+        let waveY = Math.sin(i * 0.11 + time) * 38 
+                  + Math.sin(i * 0.22 - time * 1.3) * 18 
+                  + Math.cos(j * 0.14 + time) * 22;
 
-        let waveX = Math.cos(j * 0.1 + time) * 15;
+        let waveX = Math.cos(j * 0.09 + time) * 16;
 
         let dx = targetX - p.ox;
         let dy = targetY - p.oy;
-        let dist = Math.sqrt(dx*dx + dy*dy);
+        let dist = Math.sqrt(dx * dx + dy * dy);
         
-        let repX = 0, repY = 0;
-        const radius = 200; 
+        let repY = 0;
+        const radius = 220; 
         if (dist < radius && matchMedia('(pointer: fine)').matches) {
-          let force = Math.exp(-(dist * dist) / (radius * radius * 0.3));
-          repY = force * 60; 
+          let force = Math.exp(-(dist * dist) / (radius * radius * 0.28));
+          repY = force * 65; 
+        }
+
+        // Ripple influence
+        let ripY = 0;
+        for (let r = 0; r < ripples.length; r++) {
+          let rip = ripples[r];
+          let rdx = rip.x - p.ox;
+          let rdy = rip.y - p.oy;
+          let rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+          let diff = Math.abs(rdist - rip.radius);
+          if (diff < 70) {
+            ripY += Math.sin((1 - diff / 70) * Math.PI) * rip.strength * rip.alpha;
+          }
         }
 
         p.x = p.ox + waveX;
-        p.y = p.oy + waveY + repY;
+        p.y = p.oy + waveY + repY + ripY;
       }
     }
 
-    ctx.lineWidth = 1.2;
+    // Draw living topographic contour lines
     for(let j = 0; j < rows; j++) {
       ctx.beginPath();
       for(let i = 0; i < cols; i++) {
@@ -802,16 +874,66 @@ window.addEventListener('load', () => {
         if (i === 0) {
           ctx.moveTo(p.x, p.y);
         } else {
-          let prev = points[i-1][j];
+          let prev = points[i - 1][j];
           let cpX = (prev.x + p.x) / 2;
           let cpY = (prev.y + p.y) / 2;
           ctx.quadraticCurveTo(prev.x, prev.y, cpX, cpY);
         }
       }
-      ctx.lineTo(points[cols-1][j].x, points[cols-1][j].y);
+      ctx.lineTo(points[cols - 1][j].x, points[cols - 1][j].y);
       
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)'; 
+      let rowY = points[0][j].oy;
+      let distToCursorY = Math.abs(targetY - rowY);
+      let isCursorNear = distToCursorY < 200;
+      let isMajor = (j % 4 === 0);
+
+      if (isCursorNear) {
+        let prox = 1 - (distToCursorY / 200);
+        ctx.lineWidth = 1.3 + prox * 0.9;
+        ctx.strokeStyle = `rgba(165, 210, 255, ${0.12 + prox * 0.35})`;
+      } else if (isMajor) {
+        ctx.lineWidth = 1.3;
+        ctx.strokeStyle = 'rgba(122, 162, 255, 0.15)';
+      } else {
+        ctx.lineWidth = 1.0;
+        let hue = 215 + (j % 3) * 25;
+        ctx.strokeStyle = `hsla(${hue}, 80%, 75%, 0.08)`;
+      }
       ctx.stroke();
+    }
+
+    // Draw traveling energy pulses along lines
+    for (let pl of pulses) {
+      if (pl.row < rows) {
+        pl.prog = (pl.prog + pl.speed) % 1;
+        let colIdx = Math.floor(pl.prog * (cols - 1));
+        let pt = points[colIdx] ? points[colIdx][pl.row] : null;
+        if (pt) {
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = pl.color;
+          ctx.shadowColor = pl.color;
+          ctx.shadowBlur = 12;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+    }
+
+    // Draw ambient floating cyber dust particles
+    for (let pt of particles) {
+      pt.x += pt.speedX;
+      pt.y += pt.speedY;
+      pt.phase += 0.025;
+      if (pt.y < -10) { pt.y = h + 10; pt.x = Math.random() * w; }
+      if (pt.x < -10) pt.x = w + 10;
+      if (pt.x > w + 10) pt.x = -10;
+
+      let pAlpha = pt.alpha * (0.6 + 0.4 * Math.sin(pt.phase));
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(160, 215, 255, ${pAlpha})`;
+      ctx.fill();
     }
 
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
