@@ -135,7 +135,7 @@
   <h2 class="reveal section-title" data-i18n="nav_projects">Projektek</h2>
   <div class="marquee project-marquee reveal">
     <div class="marquee-track">
-      <article class="project-card editor">
+      <article class="project-card editor" data-project="gasztrotukor">
         <div class="editor-header">
           <div class="mac-btns"><span></span><span></span><span></span></div>
           <div class="mac-title">gasztrotukor.hu</div>
@@ -144,10 +144,13 @@
           <h3>Gasztrotükör</h3>
           <p class="desc" data-i18n="proj1_desc">Iskolai vizsgaremekként elkészített gasztronómiai webes projekt.</p>
           <ul class="chips"><li data-i18n="proj1_chip1">Webfejlesztés</li><li data-i18n="proj1_chip2">Vizsgamunka</li></ul>
-          <a href="src/GasztroTükör vizsgaremek.pdf" target="_blank" rel="noopener noreferrer" class="project-link"><span data-i18n="proj_btn_view">Megnézem</span><span>&rarr;</span></a>
+          <div class="project-actions">
+            <button type="button" class="project-link modal-btn" data-project="gasztrotukor"><span data-i18n="proj_btn_details">Részletek</span> <span class="arrow-icon">&rarr;</span></button>
+            <a href="src/GasztroTükör vizsgaremek.pdf" target="_blank" rel="noopener noreferrer" class="project-ext-link" title="PDF letöltése">PDF ↗</a>
+          </div>
         </div>
       </article>
-      <article class="project-card editor">
+      <article class="project-card editor" data-project="nocturne">
         <div class="editor-header">
           <div class="mac-btns"><span></span><span></span><span></span></div>
           <div class="mac-title">nocturnerp.lua</div>
@@ -156,10 +159,13 @@
           <h3>Nocturne RP</h3>
           <p class="desc" data-i18n="proj2_desc">Egyedi Roleplay szerver projekt. (Jelenleg szünetel)</p>
           <ul class="chips"><li data-i18n="proj2_chip1">Játékszerver</li><li data-i18n="proj2_chip2">Közösség</li></ul>
-          <span class="project-link" style="color: var(--muted); cursor: not-allowed;" data-i18n="proj_btn_paused">Szünetel</span>
+          <div class="project-actions">
+            <button type="button" class="project-link modal-btn" data-project="nocturne"><span data-i18n="proj_btn_details">Részletek</span> <span class="arrow-icon">&rarr;</span></button>
+            <span class="project-status-tag" data-i18n="proj_btn_paused">Szünetel</span>
+          </div>
         </div>
       </article>
-      <article class="project-card editor">
+      <article class="project-card editor" data-project="portfolio">
         <div class="editor-header">
           <div class="mac-btns"><span></span><span></span><span></span></div>
           <div class="mac-title">jimbodev.hu</div>
@@ -168,7 +174,10 @@
           <h3 data-i18n="proj3_title">Saját Portfólió</h3>
           <p class="desc" data-i18n="proj3_desc">A jelenlegi bemutatkozó weboldalam.</p>
           <ul class="chips"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
-          <a href="https://github.com/jimbodev11" class="project-link">GitHub <span>&rarr;</span></a>
+          <div class="project-actions">
+            <button type="button" class="project-link modal-btn" data-project="portfolio"><span data-i18n="proj_btn_details">Részletek</span> <span class="arrow-icon">&rarr;</span></button>
+            <a href="https://github.com/jimbodev11" target="_blank" rel="noopener" class="project-ext-link" title="GitHub">GitHub ↗</a>
+          </div>
         </div>
       </article>
     </div>
@@ -179,10 +188,67 @@
   <h2 class="reveal section-title" data-i18n="contact_title">Kapcsolat</h2>
   <div class="contact-content reveal">
     <p data-i18n="contact_desc">Nyitott vagyok új projektekre. Keress bátran az alábbi platformokon!</p>
+    
     <div class="social-links">
       <a href="mailto:contact@jimbodev.hu" class="social-link">E-mail</a>
       <a href="https://github.com/jimbodev11" target="_blank" class="social-link">GitHub</a>
       <a href="https://discord.com/users/403903841256341506" target="_blank" class="social-link">Discord</a>
+    </div>
+
+    <!-- Interactive Project Estimator / Inquiry Flow -->
+    <div class="inquiry-card editor" id="inquiry-card">
+      <div class="editor-header">
+        <div class="mac-btns"><span></span><span></span><span></span></div>
+        <div class="mac-title">project_inquiry.sh</div>
+      </div>
+      <div class="inquiry-body">
+        <div class="inquiry-step">
+          <span class="inquiry-label" data-i18n="inquiry_step1_label">1. Milyen projektről van szó?</span>
+          <div class="inquiry-options" id="inquiry-types">
+            <button type="button" class="inquiry-chip active" data-type="Weboldal / Portfólió" data-type-en="Website / Portfolio">
+              <span>🌐</span> <span data-i18n="inquiry_opt_web">Weboldal</span>
+            </button>
+            <button type="button" class="inquiry-chip" data-type="Webalkalmazás / SaaS" data-type-en="Web App / SaaS">
+              <span>⚡</span> <span data-i18n="inquiry_opt_app">Webalkalmazás</span>
+            </button>
+            <button type="button" class="inquiry-chip" data-type="FiveM / Játékszerver" data-type-en="FiveM / Game Server">
+              <span>🎮</span> <span data-i18n="inquiry_opt_game">FiveM / Szerver</span>
+            </button>
+            <button type="button" class="inquiry-chip" data-type="UI/UX Dizájn" data-type-en="UI/UX Design">
+              <span>🎨</span> <span data-i18n="inquiry_opt_ui">UI/UX Dizájn</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="inquiry-step">
+          <span class="inquiry-label" data-i18n="inquiry_step2_label">2. Mikorra van rá szükséged?</span>
+          <div class="inquiry-options" id="inquiry-timelines">
+            <button type="button" class="inquiry-chip active" data-time="Minél hamarabb (1-2 hét)" data-time-en="ASAP (1-2 weeks)">
+              <span>🚀</span> <span data-i18n="inquiry_time_asap">ASAP (1-2 hét)</span>
+            </button>
+            <button type="button" class="inquiry-chip" data-time="1 hónapon belül" data-time-en="Within 1 month">
+              <span>📅</span> <span data-i18n="inquiry_time_month">1 hónapon belül</span>
+            </button>
+            <button type="button" class="inquiry-chip" data-time="Rugalmas / Nem sürgős" data-time-en="Flexible / No rush">
+              <span>☕</span> <span data-i18n="inquiry_time_flex">Rugalmas</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="inquiry-step">
+          <span class="inquiry-label" data-i18n="inquiry_step3_label">3. Rövid elképzelés (opcionális):</span>
+          <input type="text" id="inquiry-note" class="inquiry-input" placeholder="pl. Egy modern bemutató oldal sötét témával..." data-i18n-ph="inquiry_note_ph">
+        </div>
+
+        <div class="inquiry-actions">
+          <a id="inquiry-email-btn" href="mailto:contact@jimbodev.hu" class="inquiry-btn inquiry-primary">
+            <span>✉️</span> <span data-i18n="inquiry_btn_send">Ajánlatkérés küldése (E-mail)</span>
+          </a>
+          <button type="button" id="inquiry-copy-btn" class="inquiry-btn inquiry-secondary">
+            <span>📋</span> <span data-i18n="inquiry_btn_copy">Másolás vágólapra</span>
+          </button>
+        </div>
+      </div>
     </div>
     
     <div id="pet-area">
@@ -208,6 +274,25 @@
     </div>
   </div>
 </section>
+
+<!-- Project Details Case Study Modal -->
+<div id="project-modal" class="project-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div class="modal-dialog editor">
+    <div class="editor-header">
+      <div class="mac-btns">
+        <button type="button" class="modal-close-mac" id="modal-close-mac" aria-label="Bezárás"></button>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="mac-title" id="modal-mac-title">case_study.md</div>
+      <button type="button" class="modal-close-x" id="modal-close-x" aria-label="Bezárás">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- Injected by script.js -->
+    </div>
+  </div>
+</div>
 
 <a class="np editor" id="np" hidden target="_blank" rel="noopener">
     <div class="editor-header">

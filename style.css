@@ -200,7 +200,7 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
 .marquee.reverse .marquee-track {
   animation-direction: reverse;
 }
-.marquee-track span {
+.skills-section .marquee-track span {
   font-size: 2.2rem;
   font-weight: 700;
   color: var(--muted);
@@ -209,11 +209,11 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
   transition: color 0.3s, text-shadow 0.3s;
   cursor: default;
 }
-.marquee-track span.dot {
+.skills-section .marquee-track span.dot {
   color: var(--line);
   font-size: 1.5rem;
 }
-.marquee-track span:hover {
+.skills-section .marquee-track span:hover {
   color: var(--fg);
   text-shadow: 0 0 15px rgba(255,255,255,0.5);
 }
@@ -798,4 +798,350 @@ pre { margin:0; padding:1.5rem 0; font:14px/1.65 var(--mono); counter-reset:n; o
 .copy-notification.show {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+}
+
+/* --- Project Card Actions --- */
+.project-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.project-link.modal-btn,
+.project-ext-link,
+.project-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--fg);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+.project-link.modal-btn {
+  font-weight: 500;
+}
+
+.project-link.modal-btn .arrow-icon {
+  font-size: 0.95rem;
+  color: var(--k);
+  transition: transform 0.2s ease;
+}
+
+.project-link.modal-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.project-link.modal-btn:hover .arrow-icon {
+  transform: translateX(3px);
+  color: var(--fg);
+}
+
+.project-ext-link {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.88rem;
+}
+
+.project-ext-link:hover {
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.project-status-tag {
+  color: var(--c);
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  cursor: default;
+  opacity: 0.8;
+}
+
+/* --- Case Study Project Modal --- */
+.project-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.project-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+}
+.modal-dialog {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(122, 162, 255, 0.15);
+}
+.project-modal.active .modal-dialog {
+  transform: translateY(0) scale(1);
+}
+.modal-close-mac {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff5f56;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.modal-close-mac:hover {
+  filter: brightness(1.2);
+}
+.modal-close-x {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close-x:hover {
+  color: var(--fg);
+}
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  color: var(--fg);
+}
+.modal-header-info {
+  margin-bottom: 1.5rem;
+}
+.modal-header-info h2 {
+  font-size: 2.2rem;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  font-family: var(--display);
+}
+.modal-tagline {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+  font-family: var(--serif);
+}
+.modal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.modal-badges span {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(122, 162, 255, 0.1);
+  color: var(--k);
+  border: 1px solid rgba(122, 162, 255, 0.2);
+}
+.modal-section {
+  margin-bottom: 1.5rem;
+}
+.modal-section h4 {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--k);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem;
+}
+.modal-section p {
+  color: #d1d1d6;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.modal-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.modal-btn-primary {
+  background: var(--fg);
+  color: #000;
+  border: none;
+}
+.modal-btn-primary:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+.modal-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.modal-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Project Estimator / Inquiry Flow --- */
+.inquiry-card {
+  max-width: 650px;
+  width: 100%;
+  margin: 2.5rem auto 3rem;
+  text-align: left;
+}
+.inquiry-body {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.inquiry-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.inquiry-label {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+.inquiry-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.inquiry-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.inquiry-chip:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.inquiry-chip.active {
+  background: rgba(122, 162, 255, 0.16);
+  border-color: var(--k);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(122, 162, 255, 0.3);
+}
+.inquiry-input {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.inquiry-input:focus {
+  border-color: var(--k);
+  box-shadow: 0 0 12px rgba(122, 162, 255, 0.25);
+}
+.inquiry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+.inquiry-btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.inquiry-primary {
+  background: var(--fg);
+  color: #000;
+  border: none;
+}
+.inquiry-primary:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+.inquiry-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.inquiry-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+@media (max-width: 600px) {
+  .inquiry-body { padding: 1.25rem; gap: 1.2rem; }
+  .inquiry-actions { flex-direction: column; }
+  .inquiry-btn { width: 100%; justify-content: center; }
+  .modal-dialog { max-height: 90vh; }
+  .modal-body { padding: 1.25rem; }
 }

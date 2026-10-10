@@ -255,6 +255,20 @@ window.addEventListener('load', () => {
     throwBone(clickX);
   });
 
+  // Global helper for DevTools Console Easter Egg
+  window.suzy = {
+    feed: (targetX) => {
+      const petArea = document.getElementById('pet-area');
+      if (petArea) petArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const gw = ground.offsetWidth || 500;
+        const x = typeof targetX === 'number' ? targetX : (pos < gw / 2 ? pos + 120 : pos - 120);
+        throwBone(x);
+      }, 350);
+      return "🦴 Csont eldobva! Nézd meg Suzy-t! / Bone thrown! Watch Suzy run!";
+    }
+  };
+
   const updatePet = () => {
     if (isChasing || isCelebrating || pet.matches(':hover')) return;
 
@@ -373,6 +387,7 @@ window.addEventListener('load', () => {
       proj1_chip1: { hu: "Webfejlesztés", en: "Web Dev" },
       proj1_chip2: { hu: "Vizsgamunka", en: "Exam Project" },
       proj_btn_view: { hu: "Megnézem", en: "View" },
+      proj_btn_details: { hu: "Részletek", en: "Case Study" },
       proj2_desc: { hu: "Egyedi Roleplay szerver projekt. (Jelenleg szünetel)", en: "Custom Roleplay server project. (Currently paused)" },
       proj2_chip1: { hu: "Játékszerver", en: "Game Server" },
       proj2_chip2: { hu: "Közösség", en: "Community" },
@@ -387,7 +402,22 @@ window.addEventListener('load', () => {
       status_open: { hu: "Elérhető új projektekre", en: "Available for new projects" },
       pet_throw_btn: { hu: "Dobj csontot!", en: "Throw bone!" },
       pet_score_label: { hu: "Csontok:", en: "Bones:" },
-      pet_hint: { hu: "Kattints a földre vagy a gombra egy csont dobásához!", en: "Click the ground or button to throw a bone!" }
+      pet_hint: { hu: "Kattints a földre vagy a gombra egy csont dobásához!", en: "Click the ground or button to throw a bone!" },
+
+      // Inquiry Estimator
+      inquiry_step1_label: { hu: "1. Milyen projektről van szó?", en: "1. What type of project is it?" },
+      inquiry_opt_web: { hu: "Weboldal", en: "Website" },
+      inquiry_opt_app: { hu: "Webalkalmazás", en: "Web App" },
+      inquiry_opt_game: { hu: "FiveM / Szerver", en: "FiveM / Server" },
+      inquiry_opt_ui: { hu: "UI/UX Dizájn", en: "UI/UX Design" },
+      inquiry_step2_label: { hu: "2. Mikorra van rá szükséged?", en: "2. What is your timeline?" },
+      inquiry_time_asap: { hu: "ASAP (1-2 hét)", en: "ASAP (1-2 weeks)" },
+      inquiry_time_month: { hu: "1 hónapon belül", en: "Within 1 month" },
+      inquiry_time_flex: { hu: "Rugalmas", en: "Flexible" },
+      inquiry_step3_label: { hu: "3. Rövid elképzelés (opcionális):", en: "3. Brief idea (optional):" },
+      inquiry_note_ph: { hu: "pl. Egy modern bemutató oldal sötét témával...", en: "e.g. A modern showcase website with dark mode..." },
+      inquiry_btn_send: { hu: "Ajánlatkérés küldése (E-mail)", en: "Send Inquiry (E-mail)" },
+      inquiry_btn_copy: { hu: "Másolás vágólapra", en: "Copy to Clipboard" }
     };
   let currentLang = localStorage.getItem('site_lang') || 'hu';
   const btn = document.getElementById('lang-toggle');
@@ -406,6 +436,15 @@ window.addEventListener('load', () => {
         }
       }
     });
+
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (i18n[key] && i18n[key][currentLang]) {
+        el.setAttribute('placeholder', i18n[key][currentLang]);
+      }
+    });
+
+    window.dispatchEvent(new CustomEvent('langchange', { detail: { lang: currentLang } }));
   };
 
   if (btn) {
@@ -1025,4 +1064,305 @@ window.addEventListener('load', () => {
       }
     });
   });
+})();
+
+// --- Project Case Study Modal Engine ---
+(() => {
+  const modal = document.getElementById('project-modal');
+  const modalBody = document.getElementById('modal-body');
+  const macTitle = document.getElementById('modal-mac-title');
+  const closeMac = document.getElementById('modal-close-mac');
+  const closeX = document.getElementById('modal-close-x');
+  const backdrop = document.getElementById('modal-backdrop');
+
+  if (!modal || !modalBody) return;
+
+  const projectData = {
+    gasztrotukor: {
+      macTitle: "gasztrotukor.md",
+      title: { hu: "Gasztrotükör", en: "Gastrotükör" },
+      tagline: {
+        hu: "Gasztronómiai webes platform & receptkatalógus iskolai vizsgaremekként",
+        en: "Gastronomy web platform & recipe catalog developed as a graduation masterpiece"
+      },
+      badges: ["HTML5", "CSS3", "JavaScript", "PHP", "MySQL", "UI/UX", "Vizsgamunka"],
+      overview: {
+        hu: "A Gasztrotükör egy átfogó receptkatalógus és ételismertető weboldal, amelyet iskolai vizsgaremekként készítettem. A cél egy olyan modern, reszponzív és gyors felület létrehozása volt, amely a receptek lépésről lépésre történő bemutatása mellett részletes konyhaművészeti és gasztronómiai ismereteket ad át a felhasználóknak.",
+        en: "Gastrotükör is a comprehensive recipe catalog and culinary showcase web application created as a school exam masterpiece. The goal was to build a modern, responsive, and blazing-fast interface that guides users through recipes step-by-step with rich gastronomic tips."
+      },
+      architecture: {
+        hu: "Klasszikus kliens-szerver architektúra, optimalizált adatbázis-lekérdezésekkel a gyors ételkereséshez és szűréshez. Reszponzív, mobilbarát elrendezés tiszta szemantikus HTML5 elemekkel és modern CSS rácsrendszerrel (CSS Grid / Flexbox).",
+        en: "Classic client-server architecture with optimized database querying for rapid recipe search and filtering. Fully responsive layout utilizing clean semantic HTML5 and modern CSS Grid/Flexbox layouts."
+      },
+      highlights: {
+        hu: "Kategóriánkénti receptkeresés, részletes alapanyag- és adagkalkuláció, nyomtatóbarát nézet, valamint letisztult vizsgaremek dokumentáció.",
+        en: "Category-based recipe filtering, detailed ingredient and portion calculations, print-friendly styling, and comprehensive examination documentation."
+      },
+      actionPrimary: {
+        url: "src/GasztroTükör vizsgaremek.pdf",
+        text: { hu: "Vizsgaremek PDF Megnyitása ↗", en: "View Exam PDF ↗" },
+        target: "_blank"
+      }
+    },
+    nocturne: {
+      macTitle: "nocturnerp.lua",
+      title: { hu: "Nocturne Roleplay", en: "Nocturne Roleplay" },
+      tagline: {
+        hu: "Egyedi FiveM (GTA V) multiplayer szerepjáték szerver architektúra",
+        en: "Custom FiveM (GTA V) multiplayer roleplay game server architecture"
+      },
+      badges: ["Lua", "FiveM API", "MySQL", "JavaScript", "Custom NUI", "Game Server"],
+      overview: {
+        hu: "A Nocturne RP egy egyedi, GTA V alapú multiplayer szerepjáték-szerver, amelynek teljes szerveroldali és kliensoldali játékmeneti logikáját a nulláról terveztük meg és implementáltuk. Kiemelt fókusz volt a maximális kliensoldali FPS megtartása és a lag-mentes szinkronizáció.",
+        en: "Nocturne RP is a custom GTA V-based multiplayer roleplay server. All gameplay logic, player progression, and economy systems were designed from the ground up with a strict focus on high client FPS and lag-free network synchronization."
+      },
+      architecture: {
+        hu: "Moduláris Lua script-rendszer aszinkron adatbázis-műveletekkel. A felhasználói felületek modern HTML5/CSS/JavaScript alapú NUI (Native UI) panelekként futnak a játékmotoron belül, biztosítva az immerszív, egyedi HUD-ot és paneleket.",
+        en: "Modular Lua script architecture with non-blocking async database operations. In-game interfaces run as hardware-accelerated HTML5/CSS/JavaScript NUI panels directly within the game engine for a sleek, immersive HUD."
+      },
+      highlights: {
+        hu: "Egyedi gazdasági és járműkezelő rendszerek, optimalizált szinkronizáció, saját leltár és interakciós felület. A fejlesztés jelenleg szünetel az architektúra továbbfejlesztése miatt.",
+        en: "Custom dynamic economy, persistent vehicle systems, tailored inventory, and custom interaction radial menus. Currently on hold for engine refactoring."
+      },
+      statusBadge: { hu: "Fejlesztés szünetel", en: "Development Paused" }
+    },
+    portfolio: {
+      macTitle: "jimbodev.md",
+      title: { hu: "Jimbo Dev Portfólió", en: "Jimbo Dev Portfolio" },
+      tagline: {
+        hu: "Kreatív fejlesztői weboldal valós idejű optikai üvegtöréssel és Perlin zajjal",
+        en: "Creative developer website with real physical liquid glass refraction & Perlin noise"
+      },
+      badges: ["Vanilla JS", "HTML5 Canvas", "2D Perlin Noise", "CSS Liquid Glass", "Micro-matrix CRT"],
+      overview: {
+        hu: "A jelenlegi bemutatkozó weboldalam, amelyet a modern kreatív webfejlesztés legmagasabb vizuális elvárásai szerint építettem. Célja a technikai precizitás és a magával ragadó vizuális esztétika ötvözése külső nehéz keretrendszerek nélkül, 100%-ban tiszta Vanilla kód alapon.",
+        en: "My personal developer portfolio designed and built to the highest visual standards of modern creative web development. It showcases technical precision and fluid aesthetics without heavy external dependencies, running entirely on pure Vanilla code."
+      },
+      architecture: {
+        hu: "Ultra-optimalizált HTML5 2D Canvas Louis Raillé inspirálta topográfiai hullámokkal, egyedi 512 elemes Perlin zaj permutációs táblával, és valós idejű fizikai törésmutatóval (refractive index), amely valós időben torzítja a vonalakat a mozgó üvegkártyák mögött. Sima 120 FPS renderelés mobilon és asztali gépen egyaránt.",
+        en: "Ultra-optimized HTML5 2D Canvas featuring Louis Raillé-inspired topographic waves, custom 512-permutation Perlin noise math, and a real physical refractive index engine that optically bends wireframe contours behind moving glass cards at a solid 120 FPS."
+      },
+      highlights: {
+        hu: "Valódi optikai üveghatás, végtelenített szubpixel-pontos marquee, interaktív Suzy minijáték, retro CRT dither mátrix overlay, többnyelvűség (HU/EN) és interaktív ajánlatkérő.",
+        en: "Real optical liquid glass refraction, infinite subpixel marquee engine, interactive pet minigame, retro CRT dither grid, bilingual HU/EN localization, and interactive project inquiry estimator."
+      },
+      actionPrimary: {
+        url: "https://github.com/jimbodev11",
+        text: { hu: "GitHub Forráskód ↗", en: "GitHub Source ↗" },
+        target: "_blank"
+      }
+    }
+  };
+
+  let activeProjectId = null;
+
+  function renderModal(projectId) {
+    const data = projectData[projectId];
+    if (!data) return;
+
+    activeProjectId = projectId;
+    const lang = window.currentLang || (document.documentElement.lang === 'en' ? 'en' : 'hu');
+
+    if (macTitle) macTitle.textContent = data.macTitle;
+
+    const badgesHtml = data.badges.map(b => `<span>${b}</span>`).join('');
+    
+    let actionBtnHtml = '';
+    if (data.actionPrimary) {
+      actionBtnHtml = `<a href="${data.actionPrimary.url}" target="${data.actionPrimary.target || '_blank'}" rel="noopener noreferrer" class="modal-action-btn modal-btn-primary">${data.actionPrimary.text[lang]}</a>`;
+    } else if (data.statusBadge) {
+      actionBtnHtml = `<span class="modal-action-btn modal-btn-secondary" style="cursor: default; opacity: 0.7;">${data.statusBadge[lang]}</span>`;
+    }
+
+    const closeText = lang === 'en' ? 'Close (Esc)' : 'Bezárás (Esc)';
+
+    modalBody.innerHTML = `
+      <div class="modal-header-info">
+        <h2>${data.title[lang]}</h2>
+        <p class="modal-tagline">${data.tagline[lang]}</p>
+        <div class="modal-badges">${badgesHtml}</div>
+      </div>
+      <div class="modal-section">
+        <h4>${lang === 'en' ? 'Overview' : 'Áttekintés'}</h4>
+        <p>${data.overview[lang]}</p>
+      </div>
+      <div class="modal-section">
+        <h4>${lang === 'en' ? 'Architecture & Tech' : 'Architektúra & Technológia'}</h4>
+        <p>${data.architecture[lang]}</p>
+      </div>
+      <div class="modal-section">
+        <h4>${lang === 'en' ? 'Highlights' : 'Kiemelt Tulajdonságok'}</h4>
+        <p>${data.highlights[lang]}</p>
+      </div>
+      <div class="modal-actions">
+        ${actionBtnHtml}
+        <button type="button" class="modal-action-btn modal-btn-secondary" id="modal-body-close">${closeText}</button>
+      </div>
+    `;
+
+    const bodyCloseBtn = document.getElementById('modal-body-close');
+    if (bodyCloseBtn) bodyCloseBtn.addEventListener('click', closeModal);
+  }
+
+  function openModal(projectId) {
+    renderModal(projectId);
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    activeProjectId = null;
+  }
+
+  // Event Delegation for opening modals (handles original and cloned cards)
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.modal-btn, [data-project]');
+    if (trigger) {
+      // If clicking inside an external link like PDF or GitHub directly, let it open
+      if (e.target.closest('.project-ext-link')) return;
+
+      const pId = trigger.getAttribute('data-project');
+      if (pId && projectData[pId]) {
+        e.preventDefault();
+        openModal(pId);
+      }
+    }
+  });
+
+  if (closeMac) closeMac.addEventListener('click', closeModal);
+  if (closeX) closeX.addEventListener('click', closeModal);
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  window.addEventListener('langchange', () => {
+    if (activeProjectId) renderModal(activeProjectId);
+  });
+})();
+
+// --- Interactive Project Estimator / Inquiry Flow ---
+(() => {
+  const card = document.getElementById('inquiry-card');
+  if (!card) return;
+
+  const typeButtons = card.querySelectorAll('#inquiry-types .inquiry-chip');
+  const timeButtons = card.querySelectorAll('#inquiry-timelines .inquiry-chip');
+  const noteInput = document.getElementById('inquiry-note');
+  const emailBtn = document.getElementById('inquiry-email-btn');
+  const copyBtn = document.getElementById('inquiry-copy-btn');
+
+  let selectedType = "Weboldal / Portfólió";
+  let selectedTypeEn = "Website / Portfolio";
+  let selectedTime = "Minél hamarabb (1-2 hét)";
+  let selectedTimeEn = "ASAP (1-2 weeks)";
+
+  function setupChipGroup(buttons, onSelect) {
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        onSelect(btn);
+        updateInquiryOutputs();
+      });
+    });
+  }
+
+  setupChipGroup(typeButtons, btn => {
+    selectedType = btn.getAttribute('data-type') || btn.textContent.trim();
+    selectedTypeEn = btn.getAttribute('data-type-en') || selectedType;
+  });
+
+  setupChipGroup(timeButtons, btn => {
+    selectedTime = btn.getAttribute('data-time') || btn.textContent.trim();
+    selectedTimeEn = btn.getAttribute('data-time-en') || selectedTime;
+  });
+
+  if (noteInput) {
+    noteInput.addEventListener('input', updateInquiryOutputs);
+  }
+
+  function getFormattedInquiryText() {
+    const isEn = (window.currentLang === 'en' || document.documentElement.lang === 'en');
+    const type = isEn ? selectedTypeEn : selectedType;
+    const time = isEn ? selectedTimeEn : selectedTime;
+    const note = noteInput && noteInput.value.trim() ? noteInput.value.trim() : (isEn ? "N/A" : "Nem lett megadva");
+
+    if (isEn) {
+      return `Hello Jimbo,\n\nI would like to inquire about a project:\n• Project Type: ${type}\n• Timeline: ${time}\n• Details / Concept: ${note}\n\nLooking forward to hearing from you!`;
+    } else {
+      return `Szia Jimbo,\n\nÉrdeklődni szeretnék egy projekttel kapcsolatban:\n• Projekt típusa: ${type}\n• Időkeret: ${time}\n• Elképzelés / Részletek: ${note}\n\nVárom a visszajelzésedet!`;
+    }
+  }
+
+  function updateInquiryOutputs() {
+    const isEn = (window.currentLang === 'en' || document.documentElement.lang === 'en');
+    const type = isEn ? selectedTypeEn : selectedType;
+    const subject = isEn ? `Project Inquiry - ${type}` : `Projekt Ajánlatkérés - ${type}`;
+    const body = getFormattedInquiryText();
+
+    if (emailBtn) {
+      emailBtn.href = `mailto:contact@jimbodev.hu?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+  }
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const text = getFormattedInquiryText();
+      const toast = document.querySelector('.copy-notification');
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(text);
+        }
+        if (toast) {
+          const isEn = (window.currentLang === 'en' || document.documentElement.lang === 'en');
+          toast.textContent = isEn ? "Inquiry copied to clipboard!" : "Ajánlatkérés szövege másolva!";
+          toast.classList.add('show');
+          clearTimeout(toast.timeout);
+          toast.timeout = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+      } catch (err) {
+        console.error("Clipboard write error:", err);
+      }
+    });
+  }
+
+  window.addEventListener('langchange', updateInquiryOutputs);
+  updateInquiryOutputs();
+})();
+
+// --- DevTools Console Easter Egg ---
+(() => {
+  const brandStyle = "color: #7aa2ff; font-weight: bold; font-family: monospace; font-size: 11px; line-height: 1.2;";
+  const titleStyle = "color: #ffffff; font-weight: bold; font-size: 14px; padding: 4px 0;";
+  const textStyle = "color: #a0a0a8; font-size: 12px; line-height: 1.5;";
+  const codeStyle = "color: #27c93f; font-family: monospace; font-weight: bold; background: rgba(39, 201, 63, 0.12); padding: 2px 6px; border-radius: 4px;";
+
+  console.log(
+    `%c     _ _____ __  __ ____   ____     ____  _______     __\n` +
+    `    | |_   _|  \\/  | __ ) / ___|   |  _ \\| ____\\ \\   / /\n` +
+    `    | | | | | |\\/| |  _ \\| |  _    | | | |  _|  \\ \\ / / \n` +
+    `  | |_| | | | |  | | |_) | |_| |   | |_| | |___  \\ V /  \n` +
+    `   \\___/  |_| |_|  |_|____/ \\____|   |____/|_____|  \\_/   \n`,
+    brandStyle
+  );
+
+  console.log(
+    `%c👋 Szia, kíváncsi fejlesztő! / Hey there, curious developer!\n` +
+    `%c⚡ Fejlesztette: Márton Bence Dávid (Jimbo Dev) • Budapest\n` +
+    `🚀 Stack: Vanilla JS + HTML5 Canvas (Perlin Noise) + Liquid Glass CSS\n` +
+    `📫 Megkeresés: contact@jimbodev.hu | GitHub: https://github.com/jimbodev11\n\n` +
+    `💡 Poén / Easter Egg: Írd be a konzolba, hogy %csuzy.feed()%c és nézd meg, mi történik az oldalon! 🦴`,
+    titleStyle,
+    textStyle,
+    codeStyle,
+    textStyle
+  );
 })();
