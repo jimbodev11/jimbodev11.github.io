@@ -706,15 +706,17 @@ window.addEventListener('load', () => {
   });
 })();
 
-// 3. Cyber Topography (Living Holographic Landscape + Ripples + Dust)
+// 3. Cyber Topography (Ultra-Lightweight 120FPS Holographic Landscape)
 (() => {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   
+  const isMobile = matchMedia('(max-width: 768px), (pointer: coarse)').matches;
+  const spacingX = isMobile ? 54 : 42; 
+  const spacingY = isMobile ? 48 : 36; 
+
   let w, h;
-  const spacingX = 24; 
-  const spacingY = 24; 
   let cols, rows;
   let points = [];
   
@@ -727,42 +729,45 @@ window.addEventListener('load', () => {
   let afkTx = afkX;
   let afkTy = afkY;
 
-  // Click shockwave ripples
+  // Click ripples (max 2 concurrent for zero lag)
   const ripples = [];
   window.addEventListener('click', e => {
+    if (ripples.length >= 2) ripples.shift();
     ripples.push({
       x: e.clientX,
       y: e.clientY,
       radius: 10,
-      maxRadius: 400,
-      strength: 42,
-      speed: 7,
+      maxRadius: isMobile ? 250 : 360,
+      strength: 28,
+      speed: isMobile ? 8 : 6,
       alpha: 1
     });
-  });
+  }, { passive: true });
 
-  // Floating ambient cyber dust particles
-  const particleCount = 38;
+  // Floating ambient cyber dust (lightweight single-batch)
+  const particleCount = isMobile ? 12 : 24;
   const particles = [];
   for (let p = 0; p < particleCount; p++) {
     particles.push({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      size: Math.random() * 2 + 0.8,
-      speedX: (Math.random() - 0.5) * 0.35,
-      speedY: -Math.random() * 0.45 - 0.1,
-      alpha: Math.random() * 0.45 + 0.15,
+      size: Math.random() * 1.5 + 0.8,
+      speedX: (Math.random() - 0.5) * 0.3,
+      speedY: -Math.random() * 0.4 - 0.1,
+      alpha: Math.random() * 0.35 + 0.15,
       phase: Math.random() * Math.PI * 2
     });
   }
 
-  // Energy pulses traveling along contour lines
-  const pulses = [
-    { row: 3, prog: 0.1, speed: 0.0035, color: '#7aa2ff' },
-    { row: 9, prog: 0.6, speed: 0.0045, color: '#9fd6c8' },
-    { row: 16, prog: 0.3, speed: 0.003, color: '#c4a7ff' },
-    { row: 23, prog: 0.85, speed: 0.004, color: '#7aa2ff' },
-    { row: 30, prog: 0.4, speed: 0.0032, color: '#9fd6c8' }
+  // Moving energy pulses
+  const pulses = isMobile ? [
+    { row: 2, prog: 0.1, speed: 0.003, color: '#7aa2ff' },
+    { row: 6, prog: 0.6, speed: 0.004, color: '#9fd6c8' }
+  ] : [
+    { row: 3, prog: 0.1, speed: 0.003, color: '#7aa2ff' },
+    { row: 8, prog: 0.5, speed: 0.004, color: '#9fd6c8' },
+    { row: 14, prog: 0.8, speed: 0.0035, color: '#c4a7ff' },
+    { row: 20, prog: 0.3, speed: 0.004, color: '#7aa2ff' }
   ];
 
   window.addEventListener('mousemove', e => {
@@ -771,20 +776,20 @@ window.addEventListener('load', () => {
     lastMoved = Date.now();
     afkX = mx;
     afkY = my;
-  });
+  }, { passive: true });
 
   function resize() {
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
-    cols = Math.ceil(w / spacingX) + 4;
-    rows = Math.ceil(h / spacingY) + 4;
+    cols = Math.ceil(w / spacingX) + 3;
+    rows = Math.ceil(h / spacingY) + 3;
     points = [];
     for(let i = 0; i < cols; i++) {
       points[i] = [];
       for(let j = 0; j < rows; j++) {
         points[i][j] = {
-          ox: i * spacingX - spacingX * 2, 
-          oy: j * spacingY - spacingY * 2, 
+          ox: i * spacingX - spacingX, 
+          oy: j * spacingY - spacingY, 
           x: 0,
           y: 0
         };
@@ -792,7 +797,7 @@ window.addEventListener('load', () => {
     }
   }
 
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', resize, { passive: true });
   resize();
 
   function draw() {
@@ -800,10 +805,10 @@ window.addEventListener('load', () => {
     time += 0.01; 
     
     let now = Date.now();
-    let isAfk = (now - lastMoved > 2500) && !matchMedia('(pointer: coarse)').matches;
+    let isAfk = (now - lastMoved > 2500) && !isMobile;
     
     if (isAfk) {
-      if (Math.random() < 0.015) {
+      if (Math.random() < 0.012) {
         afkTx = Math.random() * w;
         afkTy = Math.random() * h;
       }
@@ -815,6 +820,7 @@ window.addEventListener('load', () => {
     
     let targetX = isAfk ? afkX : mx;
     let targetY = isAfk ? afkY : my;
+    let hasCursor = targetX > -50;
 
     // Update ripples
     for (let r = ripples.length - 1; r >= 0; r--) {
@@ -826,83 +832,95 @@ window.addEventListener('load', () => {
       }
     }
 
-    // Calculate wave points with ripple & mouse force
+    const hasRipples = ripples.length > 0;
+    const radius = 180;
+    const radiusSq = radius * radius;
+
+    // Calculate wave points with minimal trig math
     for(let i = 0; i < cols; i++) {
+      let wavePartX = Math.cos(i * 0.12 + time * 0.7) * 12;
       for(let j = 0; j < rows; j++) {
         let p = points[i][j];
         
-        let waveY = Math.sin(i * 0.11 + time) * 38 
-                  + Math.sin(i * 0.22 - time * 1.3) * 18 
-                  + Math.cos(j * 0.14 + time) * 22;
+        // Fast, smooth two-harmonic wave
+        let waveY = Math.sin(i * 0.14 + time) * 32 
+                  + Math.cos(j * 0.16 + time * 0.8) * 16;
 
-        let waveX = Math.cos(j * 0.09 + time) * 16;
-
-        let dx = targetX - p.ox;
-        let dy = targetY - p.oy;
-        let dist = Math.sqrt(dx * dx + dy * dy);
-        
         let repY = 0;
-        const radius = 220; 
-        if (dist < radius && matchMedia('(pointer: fine)').matches) {
-          let force = Math.exp(-(dist * dist) / (radius * radius * 0.28));
-          repY = force * 65; 
-        }
-
-        // Ripple influence
-        let ripY = 0;
-        for (let r = 0; r < ripples.length; r++) {
-          let rip = ripples[r];
-          let rdx = rip.x - p.ox;
-          let rdy = rip.y - p.oy;
-          let rdist = Math.sqrt(rdx * rdx + rdy * rdy);
-          let diff = Math.abs(rdist - rip.radius);
-          if (diff < 70) {
-            ripY += Math.sin((1 - diff / 70) * Math.PI) * rip.strength * rip.alpha;
+        if (hasCursor && !isMobile) {
+          let dx = targetX - p.ox;
+          if (Math.abs(dx) < radius) {
+            let dy = targetY - p.oy;
+            let distSq = dx * dx + dy * dy;
+            if (distSq < radiusSq) {
+              repY = Math.exp(-distSq / (radiusSq * 0.35)) * 50; 
+            }
           }
         }
 
-        p.x = p.ox + waveX;
+        // Ripple influence (only if ripples active)
+        let ripY = 0;
+        if (hasRipples) {
+          for (let r = 0; r < ripples.length; r++) {
+            let rip = ripples[r];
+            let rdx = rip.x - p.ox;
+            let rdy = rip.y - p.oy;
+            let rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+            let diff = Math.abs(rdist - rip.radius);
+            if (diff < 50) {
+              ripY += Math.sin((1 - diff / 50) * Math.PI) * rip.strength * rip.alpha;
+            }
+          }
+        }
+
+        p.x = p.ox + wavePartX;
         p.y = p.oy + waveY + repY + ripY;
       }
     }
 
-    // Draw living topographic contour lines
+    // --- BATCH 1: Standard & major contour lines in ONE single stroke! ---
+    ctx.beginPath();
     for(let j = 0; j < rows; j++) {
-      ctx.beginPath();
       for(let i = 0; i < cols; i++) {
         let p = points[i][j];
         if (i === 0) {
           ctx.moveTo(p.x, p.y);
         } else {
           let prev = points[i - 1][j];
-          let cpX = (prev.x + p.x) / 2;
-          let cpY = (prev.y + p.y) / 2;
-          ctx.quadraticCurveTo(prev.x, prev.y, cpX, cpY);
+          ctx.quadraticCurveTo(prev.x, prev.y, (prev.x + p.x) / 2, (prev.y + p.y) / 2);
         }
       }
       ctx.lineTo(points[cols - 1][j].x, points[cols - 1][j].y);
-      
-      let rowY = points[0][j].oy;
-      let distToCursorY = Math.abs(targetY - rowY);
-      let isCursorNear = distToCursorY < 200;
-      let isMajor = (j % 4 === 0);
+    }
+    ctx.lineWidth = 1.0;
+    ctx.strokeStyle = 'rgba(122, 162, 255, 0.11)'; 
+    ctx.stroke();
 
-      if (isCursorNear) {
-        let prox = 1 - (distToCursorY / 200);
-        ctx.lineWidth = 1.3 + prox * 0.9;
-        ctx.strokeStyle = `rgba(165, 210, 255, ${0.12 + prox * 0.35})`;
-      } else if (isMajor) {
-        ctx.lineWidth = 1.3;
-        ctx.strokeStyle = 'rgba(122, 162, 255, 0.15)';
-      } else {
-        ctx.lineWidth = 1.0;
-        let hue = 215 + (j % 3) * 25;
-        ctx.strokeStyle = `hsla(${hue}, 80%, 75%, 0.08)`;
+    // --- BATCH 2: Nearest 2 rows to cursor glow (only if cursor active on desktop) ---
+    if (hasCursor && !isMobile) {
+      let nearestRow = Math.round((targetY - points[0][0].oy) / spacingY);
+      if (nearestRow >= 0 && nearestRow < rows) {
+        ctx.beginPath();
+        let rowsToGlow = [nearestRow, nearestRow + 1].filter(r => r >= 0 && r < rows);
+        for (let gj of rowsToGlow) {
+          for(let i = 0; i < cols; i++) {
+            let p = points[i][gj];
+            if (i === 0) {
+              ctx.moveTo(p.x, p.y);
+            } else {
+              let prev = points[i - 1][gj];
+              ctx.quadraticCurveTo(prev.x, prev.y, (prev.x + p.x) / 2, (prev.y + p.y) / 2);
+            }
+          }
+          ctx.lineTo(points[cols - 1][gj].x, points[cols - 1][gj].y);
+        }
+        ctx.lineWidth = 1.6;
+        ctx.strokeStyle = 'rgba(175, 215, 255, 0.32)';
+        ctx.stroke();
       }
-      ctx.stroke();
     }
 
-    // Draw traveling energy pulses along lines
+    // --- BATCH 3: Energy pulses (drawn cleanly without expensive shadowBlur) ---
     for (let pl of pulses) {
       if (pl.row < rows) {
         pl.prog = (pl.prog + pl.speed) % 1;
@@ -910,31 +928,32 @@ window.addEventListener('load', () => {
         let pt = points[colIdx] ? points[colIdx][pl.row] : null;
         if (pt) {
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = pl.color;
-          ctx.shadowColor = pl.color;
-          ctx.shadowBlur = 12;
+          ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(122, 162, 255, 0.2)';
           ctx.fill();
-          ctx.shadowBlur = 0;
+
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
+          ctx.fillStyle = pl.color;
+          ctx.fill();
         }
       }
     }
 
-    // Draw ambient floating cyber dust particles
+    // --- BATCH 4: Ambient floating particles in ONE path ---
+    ctx.beginPath();
     for (let pt of particles) {
       pt.x += pt.speedX;
       pt.y += pt.speedY;
-      pt.phase += 0.025;
       if (pt.y < -10) { pt.y = h + 10; pt.x = Math.random() * w; }
       if (pt.x < -10) pt.x = w + 10;
       if (pt.x > w + 10) pt.x = -10;
 
-      let pAlpha = pt.alpha * (0.6 + 0.4 * Math.sin(pt.phase));
-      ctx.beginPath();
+      ctx.moveTo(pt.x + pt.size, pt.y);
       ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(160, 215, 255, ${pAlpha})`;
-      ctx.fill();
     }
+    ctx.fillStyle = 'rgba(160, 215, 255, 0.25)';
+    ctx.fill();
 
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
       requestAnimationFrame(draw);
