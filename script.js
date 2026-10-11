@@ -417,7 +417,21 @@ window.addEventListener('load', () => {
       inquiry_step3_label: { hu: "3. Rövid elképzelés (opcionális):", en: "3. Brief idea (optional):" },
       inquiry_note_ph: { hu: "pl. Egy modern bemutató oldal sötét témával...", en: "e.g. A modern showcase website with dark mode..." },
       inquiry_btn_send: { hu: "Ajánlatkérés küldése (E-mail)", en: "Send Inquiry (E-mail)" },
-      inquiry_btn_copy: { hu: "Másolás vágólapra", en: "Copy to Clipboard" }
+      inquiry_btn_copy: { hu: "Másolás vágólapra", en: "Copy to Clipboard" },
+
+      // FAQ Section
+      faq_title: { hu: "Gyakori Kérdések", en: "Frequently Asked Questions" },
+      faq_subtitle: { hu: "Minden, amit a közös munkáról és a fejlesztésről érdemes tudni.", en: "Everything you need to know about collaboration and development." },
+      faq_q1: { hu: "Milyen projektekkel kereshetlek?", en: "What kind of projects do you take on?" },
+      faq_a1: { hu: "Egyedi bemutatkozó és céges weboldalak, modern webalkalmazások (SaaS), FiveM játékszerver szkriptek, valamint meglévő felületek UI/UX újratervezése terén állok rendelkezésre.", en: "I build custom showcase and business websites, modern web apps (SaaS), FiveM game server scripts, and redesign existing UI/UX interfaces." },
+      faq_q2: { hu: "Hogyan néz ki a fejlesztési folyamat?", en: "How does the development process look?" },
+      faq_a2: { hu: "Konzultáció és igényfelmérés → Tervezés & UI/UX vázlat → Agilis fejlesztés folyamatos bemutatókkal → Tesztelés, optimalizálás és élesítés (deploy) támogatással.", en: "Consultation & requirements → Design & UI/UX drafts → Agile development with regular demos → Testing, performance optimization & deployment with support." },
+      faq_q3: { hu: "Mennyi idő alatt készül el egy projekt?", en: "How long does a project take to complete?" },
+      faq_a3: { hu: "A projekt komplexitásától függ. Egy letisztult landing page vagy portfólió általában 1-2 hét, míg összetettebb egyedi rendszerek és webappok 3-6 hetet vesznek igénybe.", en: "It depends on complexity. A clean landing page or portfolio usually takes 1-2 weeks, while complex custom systems and web apps take 3-6 weeks." },
+      faq_q4: { hu: "Mobilra és minden eszközre optimalizált a weboldal?", en: "Is the website optimized for mobile and all screen sizes?" },
+      faq_a4: { hu: "Igen, maximálisan. Minden általam fejlesztett oldal reszponzív, pixel-pontos és 60–120 FPS teljesítményre van finomhangolva mobiltelefonon, tableten és monitoron egyaránt.", en: "Yes, absolutely. Every website I build is fully responsive, pixel-perfect, and fine-tuned for smooth 60–120 FPS performance on mobile, tablet, and desktop." },
+      faq_q5: { hu: "Hogyan és melyik platformon vehetjük fel a kapcsolatot?", en: "How and on which platform can we get in touch?" },
+      faq_a5: { hu: "Írhatsz közvetlenül e-mailt a contact@jimbodev.hu címre, használhatod a fenti interaktív ajánlatkérőt, vagy elérhetsz Discordon is a leggyorsabb kommunikáció érdekében.", en: "You can email me directly at contact@jimbodev.hu, use the interactive inquiry estimator above, or reach out on Discord for fastest communication." }
     };
   let currentLang = localStorage.getItem('site_lang') || 'hu';
   const btn = document.getElementById('lang-toggle');
@@ -1336,6 +1350,55 @@ window.addEventListener('load', () => {
 
   window.addEventListener('langchange', updateInquiryOutputs);
   updateInquiryOutputs();
+})();
+
+// --- FAQ Accordion Engine ---
+(() => {
+  const faqItems = document.querySelectorAll('.faq-item');
+  if (!faqItems.length) return;
+
+  faqItems.forEach(item => {
+    const trigger = item.querySelector('.faq-trigger');
+    const panel = item.querySelector('.faq-panel');
+    if (!trigger || !panel) return;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = item.classList.contains('active');
+
+      // Close all items smoothly for clean single-accordion feel
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item && otherItem.classList.contains('active')) {
+          otherItem.classList.remove('active');
+          const otherTrigger = otherItem.querySelector('.faq-trigger');
+          const otherPanel = otherItem.querySelector('.faq-panel');
+          if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+          if (otherPanel) otherPanel.style.maxHeight = null;
+        }
+      });
+
+      if (isOpen) {
+        item.classList.remove('active');
+        trigger.setAttribute('aria-expanded', 'false');
+        panel.style.maxHeight = null;
+      } else {
+        item.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Re-calculate heights if language changes while open
+  window.addEventListener('langchange', () => {
+    faqItems.forEach(item => {
+      if (item.classList.contains('active')) {
+        const panel = item.querySelector('.faq-panel');
+        if (panel) {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      }
+    });
+  });
 })();
 
 // --- DevTools Console Easter Egg ---
