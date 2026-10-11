@@ -734,10 +734,51 @@
       }
     }
 
-    draw();
-  })();
-
   // Initialize UI
   applyLanguage();
+
+  // --- Smooth Page Transition Engine (Entrance & Exit) ---
+  (() => {
+    const curtain = document.createElement('div');
+    curtain.className = 'page-transition-curtain active';
+    curtain.innerHTML = `
+      <div class="transition-spinner"></div>
+      <div class="transition-text">Loading Nocturne Store...</div>
+    `;
+    document.body.appendChild(curtain);
+
+    // Smooth entrance fade-out
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        curtain.classList.remove('active');
+        setTimeout(() => curtain.remove(), 500);
+      }, 200);
+    });
+
+    // Exit transition when clicking back link to main portfolio
+    const backLink = document.querySelector('.back-link');
+    if (backLink) {
+      backLink.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        const targetUrl = backLink.getAttribute('href');
+
+        const exitCurtain = document.createElement('div');
+        exitCurtain.className = 'page-transition-curtain';
+        exitCurtain.innerHTML = `
+          <div class="transition-spinner"></div>
+          <div class="transition-text">Returning to jimbodev.hu...</div>
+        `;
+        document.body.appendChild(exitCurtain);
+
+        requestAnimationFrame(() => {
+          exitCurtain.classList.add('active');
+          setTimeout(() => {
+            window.location.href = targetUrl;
+          }, 380);
+        });
+      });
+    }
+  })();
 })();
 

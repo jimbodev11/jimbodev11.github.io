@@ -10,20 +10,17 @@
   <meta name="theme-color" content="#050508">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jimbodev.hu/nocturnedev/">
   <meta property="og:title" content="Nocturne RP — Official FiveM Webstore | nocturnedev">
   <meta property="og:description" content="Support server development and acquire exclusive VIP ranks, custom vehicles, and in-game perks.">
   <meta property="og:image" content="https://jimbodev.hu/img/suzy.jpg">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Nocturne RP — Official FiveM Webstore">
   <meta name="twitter:description" content="Support server development and acquire exclusive VIP ranks, custom vehicles, and in-game perks.">
   <meta name="twitter:image" content="https://jimbodev.hu/img/suzy.jpg">
 
-  <!-- Favicon & Fonts -->
   <link rel="icon" type="image/png" href="../img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,7 +31,6 @@
 <body>
   <canvas id="bg-canvas"></canvas>
 
-  <!-- Navigation Bar -->
   <header class="store-header">
     <div class="header-left">
       <a href="../" class="back-link" title="Vissza a portfólióra">
@@ -46,7 +42,6 @@
       </div>
     </div>
 
-    <!-- Live Server Status Chip -->
     <div class="server-status-pill" id="server-status" title="Kattints a csatlakozási parancs másolásához!">
       <span class="status-dot"></span>
       <span class="status-text">Online · <b id="player-count">68</b>/128</span>
@@ -62,7 +57,6 @@
     </div>
   </header>
 
-  <!-- Hero Section with 1/1 Animated Handwriting SVG -->
   <section class="store-hero">
     <div class="hero-content">
       <span class="hero-author-tag">developed by @nocturnedev</span>
@@ -81,9 +75,7 @@
     </div>
   </section>
 
-  <!-- Store Catalog Area -->
   <main class="store-catalog">
-    <!-- Category Filter Chips -->
     <div class="catalog-filters">
       <button type="button" class="filter-chip active" data-category="all" data-i18n="cat_all">Összes</button>
       <button type="button" class="filter-chip" data-category="vip" data-i18n="cat_vip">VIP Rangok</button>
@@ -92,13 +84,10 @@
       <button type="button" class="filter-chip" data-category="coins" data-i18n="cat_coins">Nocturne Coin</button>
     </div>
 
-    <!-- Product Grid in macOS liquid glass card style -->
     <div class="product-grid" id="product-grid">
-      <!-- Injected dynamically by script.js -->
     </div>
   </main>
 
-  <!-- Product Details Modal (macOS window style) -->
   <div class="product-modal" id="product-modal" aria-hidden="true" role="dialog">
     <div class="modal-backdrop" id="modal-backdrop"></div>
     <div class="modal-dialog editor">
@@ -112,12 +101,10 @@
         <button type="button" class="modal-close-x" id="modal-close-x">&times;</button>
       </div>
       <div class="modal-body" id="modal-body">
-        <!-- Injected dynamically by script.js -->
       </div>
     </div>
   </div>
 
-  <!-- Floating Cart Pill (Liquid Glass macOS bar at bottom right) -->
   <aside class="floating-cart editor" id="floating-cart">
     <div class="editor-header cart-header" id="cart-toggle-header">
       <div class="mac-btns"><span></span><span></span><span></span></div>
@@ -142,12 +129,10 @@
     </div>
   </aside>
 
-  <!-- Copy Notification Toast -->
   <div class="toast-notification" id="toast-notify"></div>
 
-  <!-- Store Footer -->
   <footer class="store-footer">
-    <p>© 2026 Nocturne RP • Author: <b>nocturnedev</b> (Jimbo Dev)</p>
+    <p>© 2026 Nocturne RP • Authors: <b>nocturnedev</b> (<a href="https://jimbodev.hu" target="_blank" rel="noopener noreferrer">Jimbo</a> & <a href="https://csopa04.hu" target="_blank" rel="noopener noreferrer">CsoPa04</a>)</p>
     <p class="footer-disclaimer" data-i18n="footer_disc">A Nocturne RP nem áll kapcsolatban a Rockstar Games-szel vagy a Take-Two Interactive-val. Minden vásárlás a Tebex ÁSZF hatálya alá tartozik.</p>
   </footer>
 

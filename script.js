@@ -1429,3 +1429,32 @@ window.addEventListener('load', () => {
     textStyle
   );
 })();
+
+// --- Smooth Page Transition to Nocturne Store ---
+(() => {
+  const storeLinks = document.querySelectorAll('a[href^="nocturnedev"], a[href*="/nocturnedev"]');
+  if (!storeLinks.length) return;
+
+  const curtain = document.createElement('div');
+  curtain.className = 'page-transition-curtain';
+  curtain.innerHTML = `
+    <div class="transition-spinner"></div>
+    <div class="transition-text">Connecting to Nocturne Store...</div>
+  `;
+  document.body.appendChild(curtain);
+
+  storeLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      // Don't intercept if modifier key is pressed (Ctrl/Cmd click opens new tab)
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      const targetUrl = link.getAttribute('href');
+
+      curtain.classList.add('active');
+
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 420);
+    });
+  });
+})();

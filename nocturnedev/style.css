@@ -802,3 +802,50 @@ body::before {
   .catalog-filters { justify-content: flex-start; overflow-x: auto; padding-bottom: 0.5rem; }
 }
 
+/* --- Seamless Liquid Glass Page Transition Overlay --- */
+.page-transition-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(circle at center, rgba(14, 14, 20, 0.96) 0%, rgba(5, 5, 8, 0.99) 100%);
+  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(25px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.page-transition-curtain.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.transition-spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-top-color: var(--k);
+  border-right-color: var(--purple);
+  box-shadow: 0 0 25px rgba(122, 162, 255, 0.25);
+  animation: spinCurtain 0.8s linear infinite;
+}
+
+.transition-text {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--fg);
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+@keyframes spinCurtain {
+  to { transform: rotate(360deg); }
+}
+
