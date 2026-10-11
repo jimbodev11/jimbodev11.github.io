@@ -734,6 +734,9 @@
       }
     }
 
+    draw();
+  })();
+
   // Initialize UI
   applyLanguage();
 
