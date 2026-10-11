@@ -40,7 +40,7 @@
     {
       id: 'vip_platinum',
       category: 'vip',
-      badge: { text: 'LEGJOBB ÉRTÉK', type: 'badge-hot' },
+      badge: { text: { hu: 'LEGJOBB ÉRTÉK', en: 'BEST VALUE' }, type: 'badge-hot' },
       icon: '👑',
       luaFile: 'vip_platinum.lua',
       name: { hu: 'Platinum VIP Rang', en: 'Platinum VIP Rank' },
@@ -61,7 +61,7 @@
     {
       id: 'vip_gold',
       category: 'vip',
-      badge: { text: 'NÉPSZERŰ', type: 'badge-vip' },
+      badge: { text: { hu: 'NÉPSZERŰ', en: 'POPULAR' }, type: 'badge-vip' },
       icon: '⭐',
       luaFile: 'vip_gold.lua',
       name: { hu: 'Gold VIP Rang', en: 'Gold VIP Rank' },
@@ -81,7 +81,7 @@
     {
       id: 'car_gt3rs',
       category: 'vehicles',
-      badge: { text: 'EXKLUZÍV', type: 'badge-exclusive' },
+      badge: { text: { hu: 'EXKLUZÍV', en: 'EXCLUSIVE' }, type: 'badge-exclusive' },
       icon: '🏎️',
       luaFile: 'porsche_gt3rs.meta',
       name: { hu: 'Porsche 911 GT3 RS', en: 'Porsche 911 GT3 RS' },
@@ -119,7 +119,7 @@
     {
       id: 'prop_mansion',
       category: 'properties',
-      badge: { text: 'LIMITÁLT', type: 'badge-exclusive' },
+      badge: { text: { hu: 'LIMITÁLT', en: 'LIMITED' }, type: 'badge-exclusive' },
       icon: '🏰',
       luaFile: 'vinewood_mansion.xml',
       name: { hu: 'Vinewood Hills Villa', en: 'Vinewood Hills Mansion' },
@@ -259,7 +259,7 @@
       card.className = 'product-card editor';
 
       const badgeHtml = p.badge
-        ? `<span class="card-badge ${p.badge.type}">${p.badge.text}</span>`
+        ? `<span class="card-badge ${p.badge.type}">${currentLang === 'hu' ? p.badge.text.hu : p.badge.text.en}</span>`
         : '';
 
       const perksHtml = p.perks.slice(0, 2).map(perk =>
