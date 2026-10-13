@@ -68,7 +68,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 
   const updateNav = () => {
     let currentId = '';
-    const focusY = window.innerHeight * 0.4; // Képernyő felső 40%-a a fókuszpont
+    const focusY = window.innerHeight * 0.4;
 
     sections.forEach(sec => {
       const rect = sec.getBoundingClientRect();
@@ -476,17 +476,34 @@ window.addEventListener('load', () => {
   const siteHeader = document.querySelector('.site-header');
   const navLinks = document.querySelectorAll('.nav-links a');
 
-  if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
+  if (menuToggle && siteHeader) {
+    const closeMenu = () => {
+      siteHeader.classList.remove('nav-open');
+      menuToggle.classList.remove('active');
+    };
+
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       siteHeader.classList.toggle('nav-open');
       menuToggle.classList.toggle('active');
     });
 
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
-        siteHeader.classList.remove('nav-open');
-        menuToggle.classList.remove('active');
+        closeMenu();
       });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (siteHeader.classList.contains('nav-open') && !siteHeader.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && siteHeader.classList.contains('nav-open')) {
+        closeMenu();
+      }
     });
   }
 })();
@@ -743,7 +760,7 @@ window.addEventListener('load', () => {
 })();
 
 (() => {
-  const magneticElements = document.querySelectorAll('.nav-links a, .social-link, #lang-toggle, .h-icon');
+  const magneticElements = document.querySelectorAll('.social-link');
   
   if (!matchMedia('(pointer: coarse)').matches) {
     magneticElements.forEach(el => {
