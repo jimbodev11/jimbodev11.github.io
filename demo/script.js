@@ -1,86 +1,86 @@
 (function() {
   const i18n = {
     en: {
-      ticker: ['REACTIVE', 'MODULAR', 'PIXEL-PERFECT', 'HIGH-PERFORMANCE', 'NO FLUFF'],
+      ticker: ['NO MORË TALK', 'AFTËRLYFE', 'BEYOND THE REALM', 'GHOST IN THE SYSTEM', 'PHANTOM CORE'],
       nav_about: 'ABOUT',
-      nav_surveillance: 'SURVEILLANCE',
-      nav_faq: 'FAQ',
-      nav_contact: 'CONTACT',
-      nav_status: 'BUDAPEST // AVAILABLE FOR COMMISSIONS',
-      hero_meta_arch: 'SYS_KERNEL_v2.4 // ARCH: x86_64',
-      hero_meta_coord: 'LAT: 47.4979° N // LONG: 19.0402° E',
-      hero_meta_loc: 'BUDAPEST, HU',
-      hero_tagline: 'Sculpting visual systems, high-performance web architecture & custom gaming ecosystems.',
-      hero_pill_1: '[01] FRONTEND & UI/UX',
-      hero_pill_2: '[02] FIVEM & GAME SYSTEMS',
-      hero_pill_3: '[03] FULL-STACK ARCHITECTURE',
-      hands_tag_1: '// CRAFT & IDENTITY',
-      hands_desc_1: 'Every interface carries distinct atmosphere and character. No generic templates: bespoke typography, fluid micro-interactions, and immaculate craft.',
-      hands_tag_2: '// LOW LATENCY SYSTEMS',
-      hands_desc_2: 'C#, Lua, modern JavaScript and robust backends. Engineered for high-throughput gaming networks and ultra-responsive web engines.',
-      cctv_header: '// SURVEILLANCE FEED v2.1.4',
-      cctv_rec: 'RECORDING ACTIVE',
-      cctv_online: '03 / 03 FEEDS ONLINE',
-      cctv_cam1_label: 'WEB ARCHITECTURE',
-      cctv_cam2_label: 'GAME SYSTEMS',
-      cctv_cam3_label: 'INTERACTION DESIGN',
-      cctv_status: 'FEED_ACTIVE',
-      faq_title: 'FAQ',
-      faq_note_1: 'ASKED OFTEN',
-      faq_note_2: 'ANSWERED WITHOUT FILTER',
-      faq_q1: 'What kind of projects do you build?',
-      faq_a1: 'Modern web platforms, custom UI/UX design systems, complex FiveM game frameworks, RESTful APIs, and full digital brand identities. From early concepts to the last line of code, everything is engineered in-house.',
-      faq_q2: 'What is your core tech stack?',
-      faq_a2: 'JavaScript, TypeScript, C#, Lua, CSS3 / Canvas, Node.js, and SQL. I choose the best suited tool for each challenge to achieve maximum performance and long-term stability.',
-      faq_q3: 'How does collaboration work?',
-      faq_a3: 'Transparent, asynchronous workflow with live interactive previews at every milestone. Direct communication via Discord or Email with zero friction or drawn-out meetings.',
-      contact_avail_title: 'AVAILABILITY',
-      contact_avail_desc: 'OPEN FOR CLIENT COMMISSIONS',
-      contact_loc: 'BUDAPEST / REMOTE',
-      contact_discord_label: 'DIRECT DISCORD',
-      contact_rights: '© 2026 JIMBO DEV · ALL RIGHTS RESERVED',
-      contact_craft: 'HANDCRAFTED DESIGN & CODE'
+      nav_surveillance: 'NIGHT VISION',
+      nav_faq: 'DOSSIER',
+      nav_contact: 'TRANSMIT',
+      nav_status: 'SECTOR: BUDAPEST // SIGNAL: UNLOCKED',
+      hero_meta_arch: '// FREQUENCY: 432 Hz // NIGHT_VISION: ACTIVE',
+      hero_meta_coord: 'SPECTRAL LOC: 47.4979° N // 19.0402° E',
+      hero_meta_loc: 'AFTËRLYFE ARCHIVE // CORP_11',
+      hero_tagline: 'Transcending limits into the digital afterlyfe. Ethereal UI/UX architectures, distributed low-latency gaming networks & bespoke web engineering.',
+      hero_pill_1: '[01] ETHEREAL FRONTEND & UI/UX',
+      hero_pill_2: '[02] FIVEM & PARANORMAL NETWORKS',
+      hero_pill_3: '[03] AFTËRLYFE FULL-STACK RUNTIME',
+      hands_tag_1: '// PHENOMENON 01: ETHEREAL CRAFT',
+      hands_desc_1: 'Visual interfaces designed beyond conventional boundaries. Zero generic templates: eerie lighting, spectral phosphor contrast, and meticulous precision.',
+      hands_tag_2: '// PHENOMENON 02: HIGH-OUTPUT SYSTEMS',
+      hands_desc_2: 'C#, Lua, asynchronous JavaScript and robust server runtimes. Engineered for massive concurrency, seamless low latency, and immortal uptime.',
+      cctv_header: '// AFTËRLYFE NIGHT VISION // IR SENSORS ACTIVE',
+      cctv_rec: 'NIGHT CAM REC ●',
+      cctv_online: '03 / 03 SENSORS ONLINE',
+      cctv_cam1_label: 'CORE PLATFORM ARCH',
+      cctv_cam2_label: 'DISTRIBUTED GAME SYSTEMS',
+      cctv_cam3_label: 'TACTICAL UI LAB',
+      cctv_status: 'FEED: STABLE',
+      faq_title: 'DOSSIER',
+      faq_note_1: 'CLASSIFIED ARCHIVE',
+      faq_note_2: 'FILTER OVERRIDE ACTIVE',
+      faq_q1: 'What project scopes do you undertake?',
+      faq_a1: 'Custom web platforms, brutalist UI/UX design architectures, high-performance FiveM game servers, low-latency microservices and end-to-end digital branding. Everything is built from ground zero without third-party template bloat.',
+      faq_q2: 'What is the technical weapon of choice?',
+      faq_a2: 'TypeScript, modern JavaScript, C#, Lua, CSS3 / Canvas shader logic, Node.js, and SQL. I deploy battle-tested technologies engineered for stability, maximum frame rates, and zero latency.',
+      faq_q3: 'How is the transmission and deployment handled?',
+      faq_a3: 'Direct, asynchronous communication via Discord or secure email. Regular live preview staging at every build phase. Zero bloated corporate meetings; pure execution.',
+      contact_avail_title: 'TRANSMISSION FREQUENCY',
+      contact_avail_desc: 'OPEN FOR COMMERCIAL COMMISSIONS',
+      contact_loc: 'BUDAPEST // REMOTE WORLDWIDE',
+      contact_discord_label: 'ENCRYPTED DISCORD',
+      contact_rights: '© 2026 JIMBO DEV // AFTËRLYFE ARCHIVE',
+      contact_craft: 'ALL FREQUENCIES SECURED'
     },
     hu: {
-      ticker: ['REAKTÍV', 'MODULÁRIS', 'PIXEL-PONTOS', 'NAGY SEBESSÉG', 'KOMPROMISSZUMMENTES'],
+      ticker: ['NINCS TÖBB BESZÉD', 'AFTËRLYFE', 'A HATÁROKON TÚL', 'SZELLEM A RENDSZERBEN', 'FANTOM MAG'],
       nav_about: 'RÓLAM',
-      nav_surveillance: 'FIGYELŐ',
-      nav_faq: 'GYIK',
+      nav_surveillance: 'ÉJJELLÁTÓ',
+      nav_faq: 'DOKUMENTÁCIÓ',
       nav_contact: 'KAPCSOLAT',
-      nav_status: 'BUDAPEST // ELÉRHETŐ MEGBÍZÁSOKRA',
-      hero_meta_arch: 'SYS_KERNEL_v2.4 // ARCH: x86_64',
-      hero_meta_coord: 'SZÉL: 47.4979° É // HOSSZ: 19.0402° K',
-      hero_meta_loc: 'BUDAPEST, HU',
-      hero_tagline: 'Vizuális rendszerek, nagy teljesítményű webes architektúra és egyedi játékszerver ökoszisztémák építése.',
-      hero_pill_1: '[01] FRONTEND & UI/UX',
-      hero_pill_2: '[02] FIVEM & JÁTÉK RENDSZEREK',
-      hero_pill_3: '[03] FULL-STACK ARCHITEKTÚRA',
-      hands_tag_1: '// IDENTITÁS & PRECIZITÁS',
-      hands_desc_1: 'Minden felületnek arca és atmoszférája van. Nem használok generikus sablonokat: egyedi tipográfia, finom mikromozgások és letisztult esztétika.',
-      hands_tag_2: '// KISEBESSÉGŰ RENDSZEREK',
-      hands_desc_2: 'C#, Lua, modern JavaScript és robusztus háttérrendszerek. Komplex játékszerver architektúrák és optimalizált webes motorok.',
-      cctv_header: '// BIZTONSÁGI RENDSZER v2.1.4',
-      cctv_rec: 'RÖGZÍTÉS AKTÍV',
-      cctv_online: '03 / 03 KAMERA ONLINE',
-      cctv_cam1_label: 'WEB ARCHITEKTÚRA',
-      cctv_cam2_label: 'JÁTÉK RENDSZEREK',
-      cctv_cam3_label: 'INTERAKCIÓS DIZÁJN',
-      cctv_status: 'ADÁS_AKTÍV',
-      faq_title: 'GYIK',
-      faq_note_1: 'GYAKRAN FELTETT',
-      faq_note_2: 'SZŰRŐ NÉLKÜLI VÁLASZOK',
-      faq_q1: 'Milyen projekteken dolgozol?',
-      faq_a1: 'Modern webes felületek, egyedi UI/UX tervezés, FiveM rendszerek, backend API-k és teljes digitális arculatok. Mindent a tervezéstől az utolsó pixelig és kódsorig magam építek.',
-      faq_q2: 'Mi a technológiai stack?',
-      faq_a2: 'JavaScript, TypeScript, C#, Lua, CSS3 / Canvas, Node.js és SQL. A megfelelő eszközt választom az adott feladathoz a maximális sebesség és stabilitás érdekében.',
-      faq_q3: 'Hogyan zajlik a közös munka?',
-      faq_a3: 'Átlátható, folyamatos élő előnézetekkel (live previews). Felesleges többórás meetingek nélkül, gyors iterációkkal és közvetlen kommunikációval Discordon vagy emailben.',
-      contact_avail_title: 'ELÉRHETŐSÉG',
-      contact_avail_desc: 'ELÉRHETŐ ÚJ PROJEKTEKRE',
-      contact_loc: 'BUDAPEST / TÁVMUNKA',
-      contact_discord_label: 'KÖZVETLEN DISCORD',
-      contact_rights: '© 2026 JIMBO DEV · MINDEN JOG FENNTARTVA',
-      contact_craft: 'KÉZZEL ÍRT KÓD ÉS DIZÁJN'
+      nav_status: 'SZEKTOR: BUDAPEST // JEL: FELOLDVA',
+      hero_meta_arch: '// FREKVENCIA: 432 Hz // ÉJJELLÁTÓ: AKTÍV',
+      hero_meta_coord: 'SPEKTRÁLIS HELY: 47.4979° É // 19.0402° K',
+      hero_meta_loc: 'AFTËRLYFE ARCHÍVUM // CORP_11',
+      hero_tagline: 'Határok átlépése a digitális túlvilágba. Éteri UI/UX architektúrák, osztott alacsony késleltetésű játékhálózatok és egyedi webes mérnökség.',
+      hero_pill_1: '[01] ÉTERI FRONTEND & UI/UX',
+      hero_pill_2: '[02] FIVEM & PARANORMÁLIS HÁLÓZATOK',
+      hero_pill_3: '[03] AFTËRLYFE FULL-STACK MOTOR',
+      hands_tag_1: '// JELENSÉG 01: ÉTERI PRECIZITÁS',
+      hands_desc_1: 'Hagyományos kereteken túli felületek. Nulla sablon: kísérteties fények, foszforzöld kontraszt és aprólékosan csiszolt esztétika.',
+      hands_tag_2: '// JELENSÉG 02: NAGY TELJESÍTMÉNYŰ RENDSZEREK',
+      hands_desc_2: 'C#, Lua, aszinkron JavaScript és megerősített szerverkernelek. Hatalmas egyidejű játékosszámra és halhatatlan üzemidőre méretezve.',
+      cctv_header: '// AFTËRLYFE ÉJJELLÁTÓ // IR SZENZOROK AKTÍVAK',
+      cctv_rec: 'ÉJJELLÁTÓ REC ●',
+      cctv_online: '03 / 03 SZENZOR ONLINE',
+      cctv_cam1_label: 'FŐ PLATFORM ARCHITEKTÚRA',
+      cctv_cam2_label: 'OSZTOTT JÁTÉKRENDSZEREK',
+      cctv_cam3_label: 'TAKTIKAI UI LABOR',
+      cctv_status: 'ADÁS: STABIL',
+      faq_title: 'DOKUMENTÁCIÓ',
+      faq_note_1: 'TITKOSÍTOTT ARCHÍVUM',
+      faq_note_2: 'SZŰRŐ FELÜLÍRÁS AKTÍV',
+      faq_q1: 'Milyen projekt feladatokat vállalsz?',
+      faq_a1: 'Egyedi webes platformok, brutalista UI/UX architektúrák, nagyteljesítményű FiveM szerverek, mikroszolgáltatások és teljes digitális arculatok. Mindent az alapoktól építek külső sablonok nélkül.',
+      faq_q2: 'Milyen technológiai fegyvertárral dolgozol?',
+      faq_a2: 'TypeScript, modern JavaScript, C#, Lua, CSS3 / Canvas shaderek, Node.js és SQL. Harcedzett technológiákat alkalmazok maximális sebességgel és nulla felesleges késleltetéssel.',
+      faq_q3: 'Hogyan zajlik az átadás és a kommunikáció?',
+      faq_a3: 'Közvetlen, aszinkron kommunikáció Discordon vagy titkosított emailben. Folyamatos éles előnézetek minden fejlesztési fázisban. Nulla felesleges meeting; tiszta megvalósítás.',
+      contact_avail_title: 'SUGÁRZÁSI FREKVENCIA',
+      contact_avail_desc: 'ELÉRHETŐ KERESKEDELMI MEGBÍZÁSOKRA',
+      contact_loc: 'BUDAPEST // GLOBÁLIS TÁVMUNKA',
+      contact_discord_label: 'TITKOSÍTOTT DISCORD',
+      contact_rights: '© 2026 JIMBO DEV // AFTËRLYFE ARCHÍVUM',
+      contact_craft: 'MINDEN FREKVENCIA BIZTOSÍTVA'
     }
   };
 
@@ -190,19 +190,20 @@
         const centerDist = Math.abs((rect.top + rect.height / 2) - viewH / 2);
         const maxDist = viewH / 2 + rect.height / 2;
         const scrollProx = Math.max(0, 1 - centerDist / maxDist);
-        targetProximity = Math.max(targetProximity, scrollProx * 0.9);
+        targetProximity = Math.max(targetProximity, scrollProx * 0.95);
       }
     }, { passive: true });
 
     const sparks = [];
     function addSpark(x, y) {
       sparks.push({
-        x: x + (Math.random() - 0.5) * 16,
-        y: y + (Math.random() - 0.5) * 16,
-        vx: (Math.random() - 0.5) * 3,
-        vy: (Math.random() - 0.5) * 3,
+        x: x + (Math.random() - 0.5) * 20,
+        y: y + (Math.random() - 0.5) * 20,
+        vx: (Math.random() - 0.5) * 3.5,
+        vy: (Math.random() - 0.5) * 3.5,
         life: 1,
-        decay: 0.04 + Math.random() * 0.05
+        decay: 0.035 + Math.random() * 0.055,
+        color: Math.random() > 0.35 ? '#00ff77' : '#e6fff4'
       });
     }
 
@@ -216,7 +217,7 @@
       const centerY = height / 2;
 
       const baseGap = 220 * scale;
-      const currentGap = baseGap * (1 - mouseProximity * 0.78);
+      const currentGap = baseGap * (1 - mouseProximity * 0.8);
 
       const drawWidthL = 440 * scale;
       const drawHeightL = 260 * scale;
@@ -245,26 +246,29 @@
       const sparkMidY = (tipLY + tipRY) / 2;
 
       if (mouseProximity > 0.45) {
-        const pulse = 0.5 + 0.5 * Math.sin(time / 160);
-        const glowRad = (12 + pulse * 28) * scale;
+        const pulse = 0.5 + 0.5 * Math.sin(time / 140);
+        const glowRad = (14 + pulse * 34) * scale;
         const grad = ctx.createRadialGradient(sparkMidX, sparkMidY, 0, sparkMidX, sparkMidY, glowRad);
-        grad.addColorStop(0, `rgba(0, 255, 136, ${0.9 * pulse})`);
-        grad.addColorStop(0.4, `rgba(0, 255, 136, ${0.4 * pulse})`);
-        grad.addColorStop(1, 'rgba(0, 255, 136, 0)');
+        grad.addColorStop(0, `rgba(0, 255, 119, ${0.95 * pulse})`);
+        grad.addColorStop(0.35, `rgba(0, 255, 119, ${0.5 * pulse})`);
+        grad.addColorStop(0.7, `rgba(230, 255, 244, ${0.25 * pulse})`);
+        grad.addColorStop(1, 'rgba(0, 255, 119, 0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(sparkMidX, sparkMidY, glowRad, 0, Math.PI * 2);
         ctx.fill();
 
-        if (Math.random() < 0.8) {
+        if (Math.random() < 0.85) {
           addSpark(sparkMidX, sparkMidY);
         }
 
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 + Math.random() * 0.5})`;
-        ctx.lineWidth = 1.2 * scale;
+        ctx.strokeStyle = Math.random() > 0.35 ? 'rgba(0, 255, 119, 0.95)' : 'rgba(230, 255, 244, 0.95)';
+        ctx.lineWidth = 1.3 * scale;
         ctx.beginPath();
         ctx.moveTo(tipLX, tipLY);
-        ctx.lineTo(sparkMidX + (Math.random() - 0.5) * 8 * scale, sparkMidY + (Math.random() - 0.5) * 8 * scale);
+        const jx = sparkMidX + (Math.random() - 0.5) * 10 * scale;
+        const jy = sparkMidY + (Math.random() - 0.5) * 10 * scale;
+        ctx.lineTo(jx, jy);
         ctx.lineTo(tipRX, tipRY);
         ctx.stroke();
       }
@@ -278,9 +282,9 @@
           sparks.splice(i, 1);
           continue;
         }
-        ctx.fillStyle = `rgba(0, 255, 136, ${sp.life})`;
+        ctx.fillStyle = sp.color === '#00ff77' ? `rgba(0, 255, 119, ${sp.life})` : `rgba(230, 255, 244, ${sp.life})`;
         ctx.beginPath();
-        ctx.arc(sp.x, sp.y, 2 * scale, 0, Math.PI * 2);
+        ctx.arc(sp.x, sp.y, 2.2 * scale, 0, Math.PI * 2);
         ctx.fill();
       }
 

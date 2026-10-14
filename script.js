@@ -1,3 +1,33 @@
+// Fluid Smooth Scroll (Lenis) + Menü horgonyok sima siklása
+(() => {
+  if (typeof Lenis === 'undefined' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const lenis = new Lenis({
+    duration: 1.15,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 0.95
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // Menülinkekre kattintva a Lenis siklik a szekcióhoz
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const targetId = anchor.getAttribute('href');
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        lenis.scrollTo(targetEl, { offset: -60 });
+      }
+    });
+  });
+})();
+
 (() => {
   if (matchMedia('(pointer: coarse)').matches) return;
 
@@ -38,19 +68,34 @@
 
 })();
 
+// Háttér folyamatos átfűzése görgetéskor (Landing Page -> Tartalmi szekciók)
 (() => {
+  const canvas = document.getElementById('bg-canvas');
   const heroText = document.querySelector('.hero > div');
-  if (!heroText) return;
-  let tick = false;
-  window.addEventListener('scroll', () => {
-    if (tick) return;
-    tick = true;
-    requestAnimationFrame(() => {
-      tick = false;
-      const opacity = Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.7));
-      heroText.style.opacity = opacity;
-    });
-  }, { passive: true });
+  if (!canvas) return;
+
+  const updateScrollBlend = () => {
+    const scrollY = window.scrollY;
+    const vh = window.innerHeight;
+    // 0.0 a tetején -> 1.0 amikor leértünk a Hero aljára
+    const progress = Math.min(1, Math.max(0, scrollY / (vh * 0.85)));
+
+    // A Hero szöveg elhalványulása
+    if (heroText) {
+      heroText.style.opacity = Math.max(0, 1 - progress * 1.25);
+      heroText.style.transform = `translateY(${progress * 45}px) scale(${1 - progress * 0.06})`;
+    }
+
+    // A Canvas a Landing Page-en 100%-os, lejjebb görgetve 22%-ra szelídül, hogy a kártyák üvegtörése megmaradjon, de a dizájn tiszta legyen
+    const canvasOpacity = 1 - (progress * 0.78);
+    canvas.style.opacity = canvasOpacity.toFixed(3);
+
+    // Beúszik a sötétített ambient háttérréteg
+    document.documentElement.style.setProperty('--content-bg-opacity', progress.toFixed(3));
+  };
+
+  window.addEventListener('scroll', updateScrollBlend, { passive: true });
+  updateScrollBlend();
 })();
 
 (() => {
@@ -63,11 +108,28 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 
 (() => {
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  if (!sections.length || !navLinks.length) return;
+  const navContainer = document.querySelector('.dock-nav');
+  const navLinks = document.querySelectorAll('.dock-nav a');
+  if (!sections.length || !navContainer || !navLinks.length) return;
+
+  // Glider elem dinamikus létrehozása (nem kell a HTML-be nyúlnod)
+  const glider = document.createElement('span');
+  glider.className = 'nav-glider';
+  navContainer.prepend(glider);
+
+  const moveGlider = (activeLink) => {
+    if (!activeLink || window.innerWidth <= 920) return;
+    const navRect = navContainer.getBoundingClientRect();
+    const linkRect = activeLink.getBoundingClientRect();
+    const offsetLeft = linkRect.left - navRect.left;
+
+    glider.style.width = `${linkRect.width}px`;
+    glider.style.transform = `translateX(${offsetLeft}px)`;
+    glider.style.opacity = '1';
+  };
 
   const updateNav = () => {
-    let currentId = '';
+    let currentId = sections[0].id;
     const focusY = window.innerHeight * 0.4;
 
     sections.forEach(sec => {
@@ -81,17 +143,26 @@ document.addEventListener('contextmenu', e => e.preventDefault());
       currentId = sections[sections.length - 1].id;
     }
 
-    if (currentId) {
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${currentId}`) {
-          link.classList.add('active');
-        }
-      });
-    }
+    navLinks.forEach(link => {
+      const isMatch = link.getAttribute('href') === `#${currentId}`;
+      link.classList.toggle('active', isMatch);
+      if (isMatch) moveGlider(link);
+    });
   };
 
+  // Hoverre is finoman elmozdulhat, majd visszaáll az aktívra
+  navLinks.forEach(link => {
+    link.addEventListener('mouseenter', () => moveGlider(link));
+  });
+  navContainer.addEventListener('mouseleave', () => {
+    const active = navContainer.querySelector('a.active');
+    if (active) moveGlider(active);
+  });
+
   window.addEventListener('scroll', updateNav, { passive: true });
+  window.addEventListener('resize', updateNav, { passive: true });
+  window.addEventListener('langchange', () => setTimeout(updateNav, 50));
+  window.addEventListener('load', () => setTimeout(updateNav, 100));
   updateNav();
 })();
 
