@@ -1,34 +1,21 @@
 /**
- * JimboDev.hu — Scroll-Driven 3D Ribbed Metallic Torus Engine + Deep-Space Environment
- * Recreates the monochrome ribbed sculpture + adds volumetric glow, 3D perspective grid,
- * orbital CAD rings, and parallax floating particles behind the mesh.
+ * JimboDev.hu — Full-Page Black Hole Universe & Receding Depth Engine
+ * - Always stays fixed in the background across the entire page (never clips).
+ * - Recedes into deep space as you scroll through the middle sections, then zooms in for the final CTA.
+ * - Pulls scrolled sections into & out of the black hole singularity.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ==========================================================================
-     2. INTERSECTION OBSERVER FOR REVEALS
+     1. INITIAL REVEALS
      ========================================================================== */
   const reveals = document.querySelectorAll('.reveal');
-  if (prefersReducedMotion) {
-    reveals.forEach((el) => el.classList.add('visible'));
-  } else {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    reveals.forEach((el) => io.observe(el));
-  }
+  reveals.forEach((el) => el.classList.add('visible'));
 
   /* ==========================================================================
-     3. SCROLL-DRIVEN 3D RIBBED METALLIC SCULPTURE + DEEP ENVIRONMENT (Canvas)
+     2. BLACK HOLE SINGULARITY, UNIVERSE & GRAVITATIONAL SCROLL WARP
      ========================================================================== */
   const canvas = document.getElementById('ribbedTorusCanvas');
   if (!canvas) return;
@@ -42,13 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
     vh = canvas.height = window.innerHeight;
   });
 
-  // Track normalized scroll progress (0.0 at top -> 1.0 at bottom)
+  // Track normalized scroll progress (0.0 at top -> 1.0 at bottom) + scroll velocity
   let targetScroll = 0;
   let smoothScroll = 0;
+  let scrollVelocity = 0;
+  let lastScrollY = window.scrollY;
 
   const updateScroll = () => {
     const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     targetScroll = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+    const delta = window.scrollY - lastScrollY;
+    scrollVelocity = Math.max(-60, Math.min(60, delta));
+    lastScrollY = window.scrollY;
   };
   window.addEventListener('scroll', updateScroll, { passive: true });
   updateScroll();
@@ -63,35 +55,57 @@ document.addEventListener('DOMContentLoaded', () => {
     normMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
-  // --- Generate 3D Deep-Space Floating Particles & Starbursts ---
-  const PARTICLE_COUNT = 95;
-  const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
-    x: (Math.random() - 0.5) * 2400,
-    y: (Math.random() - 0.5) * 2400,
-    z: (Math.random() - 0.5) * 1400,
-    size: Math.random() * 1.9 + 0.4,
-    alpha: Math.random() * 0.55 + 0.12,
-    speed: Math.random() * 0.35 + 0.08,
-    phase: Math.random() * Math.PI * 2,
-    isStar: Math.random() < 0.14
+  // Select content blocks that emerge from & get swallowed by the black hole
+  const warpTargets = document.querySelectorAll(
+    '.hero-top-content, .hero-bottom-content, .manifesto-block, .sticky-title-box, .glass-card, .cta-center, #pet-area'
+  );
+  warpTargets.forEach((el) => el.classList.add('warp-target'));
+
+  /**
+   * UNIVERSE STARFIELD & SPIRAL IN-FALLING MATTER
+   */
+  const STAR_COUNT = 230;
+  const universeStars = Array.from({ length: STAR_COUNT }, () => {
+    const maxDist = Math.hypot(window.innerWidth, window.innerHeight) * 0.9;
+    return {
+      angle: Math.random() * Math.PI * 2,
+      radius: Math.random() * maxDist + 30,
+      size: Math.random() * 1.9 + 0.35,
+      infallSpeed: Math.random() * 0.55 + 0.18,
+      orbitSpeed: (Math.random() * 0.0038 + 0.0012) * (Math.random() < 0.85 ? 1 : -1),
+      alpha: Math.random() * 0.75 + 0.2,
+      hue: Math.random() < 0.6 ? 220 : (Math.random() < 0.5 ? 260 : 195),
+      sat: Math.random() < 0.45 ? 0 : Math.floor(Math.random() * 45 + 15)
+    };
+  });
+
+  /**
+   * ACCRETION DISK / PHOTON SWIRL PARTICLES
+   */
+  const DISK_PARTICLES = 95;
+  const accretionParticles = Array.from({ length: DISK_PARTICLES }, () => ({
+    angle: Math.random() * Math.PI * 2,
+    orbitOffset: (Math.random() - 0.5) * 0.42,
+    speed: Math.random() * 0.018 + 0.008,
+    length: Math.random() * 0.3 + 0.08,
+    alpha: Math.random() * 0.36 + 0.08,
+    width: Math.random() * 1.6 + 0.5
   }));
 
   /**
-   * 4 Keyframe Camera States matching the video timestamps:
-   * State 0 (0:00 Hero): Wide ribbed arch across the bottom half
-   * State 1 (0:07 About): Shifted right, standing vertically like a twisted column
-   * State 2 (0:09 Bento): Shifted center-right behind the glass cards
-   * State 3 (0:12 CTA): Centered vortex tunnel facing the camera
+   * 4 Keyframe Camera States:
+   * Notice how Scale & Z-distance recede smoothly as you scroll down,
+   * keeping the Black Hole clearly visible inside the viewport the entire time!
    */
   const keyframes = [
-    // Scene 0: Hero Arch
-    { offsetX: 0.0, offsetY: 0.36, scale: 1.28, rotX: 1.05, rotY: 0.08, rotZ: 0.0, twist: 2.2 },
-    // Scene 1: Manifesto Right Column
-    { offsetX: 0.32, offsetY: 0.02, scale: 1.05, rotX: 0.35, rotY: -0.85, rotZ: 1.25, twist: 3.0 },
-    // Scene 2: Bento Background Sculpture
-    { offsetX: 0.08, offsetY: 0.0, scale: 1.12, rotX: 0.55, rotY: 0.55, rotZ: -0.65, twist: 2.6 },
-    // Scene 3: Vortex Tunnel Center
-    { offsetX: 0.0, offsetY: 0.0, scale: 1.38, rotX: 0.12, rotY: 0.1, rotZ: 0.0, twist: 3.6 }
+    // Scene 0 (Hero): Close giant arch at the lower center
+    { offsetX: 0.0, offsetY: 0.24, scale: 1.22, rotX: 0.98, rotY: 0.06, rotZ: 0.0, twist: 2.2 },
+    // Scene 1 (Manifesto): Recedes into deep space on the right side
+    { offsetX: 0.22, offsetY: 0.0, scale: 0.72, rotX: 0.48, rotY: -0.65, rotZ: 0.95, twist: 2.9 },
+    // Scene 2 (Bento Cards): Recedes further into the center-left background behind the cards
+    { offsetX: -0.05, offsetY: 0.0, scale: 0.58, rotX: 0.35, rotY: 0.45, rotZ: -0.65, twist: 3.3 },
+    // Scene 3 (Final CTA): Expands back into a full centered vortex facing the camera
+    { offsetX: 0.0, offsetY: -0.04, scale: 1.18, rotX: 0.12, rotY: 0.08, rotZ: 0.0, twist: 3.7 }
   ];
 
   function lerp(a, b, t) {
@@ -123,17 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function rotatePoint(p, rx, ry, rz) {
-    // X rotation
     let y1 = p.y * Math.cos(rx) - p.z * Math.sin(rx);
     let z1 = p.y * Math.sin(rx) + p.z * Math.cos(rx);
     let x1 = p.x;
 
-    // Y rotation
     let z2 = z1 * Math.cos(ry) - x1 * Math.sin(ry);
     let x2 = z1 * Math.sin(ry) + x1 * Math.cos(ry);
     let y2 = y1;
 
-    // Z rotation
     let x3 = x2 * Math.cos(rz) - y2 * Math.sin(rz);
     let y3 = x2 * Math.sin(rz) + y2 * Math.cos(rz);
     let z3 = z2;
@@ -142,184 +153,172 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * LAYER A: Volumetric Aura & Core Backlight behind the 3D Sculpture
+   * 1. DRAW DEEP UNIVERSE & IN-FALLING SPIRAL STARFIELD
    */
-  function drawAmbientBacklight(centerX, centerY, baseRadius, clock) {
-    const auraRadius = baseRadius * 2.15;
-    const grad = ctx.createRadialGradient(
+  function drawUniverseVortex(centerX, centerY, baseRadius) {
+    const horizonRadius = baseRadius * 0.42;
+    const warpBoost = 1 + Math.abs(scrollVelocity) * 0.05;
+
+    // Deep cosmic nebula aura around the receding black hole
+    const nebulaGrad = ctx.createRadialGradient(
       centerX,
       centerY,
-      baseRadius * 0.12,
+      horizonRadius * 0.5,
       centerX,
       centerY,
-      auraRadius
+      Math.max(vw, vh) * 0.75
     );
-    grad.addColorStop(0, 'rgba(255, 255, 255, 0.11)');
-    grad.addColorStop(0.35, 'rgba(200, 210, 235, 0.055)');
-    grad.addColorStop(0.7, 'rgba(130, 145, 180, 0.018)');
-    grad.addColorStop(1, 'rgba(5, 5, 6, 0)');
+    nebulaGrad.addColorStop(0, 'rgba(255, 255, 255, 0.13)');
+    nebulaGrad.addColorStop(0.22, 'rgba(170, 195, 255, 0.06)');
+    nebulaGrad.addColorStop(0.55, 'rgba(90, 80, 155, 0.025)');
+    nebulaGrad.addColorStop(1, 'rgba(2, 2, 4, 0)');
 
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, auraRadius, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = nebulaGrad;
+    ctx.fillRect(0, 0, vw, vh);
 
-    // Secondary subtle counter-glow in the opposite quadrant
-    const counterX = vw - centerX;
-    const counterY = vh - centerY;
-    const counterRadius = Math.max(vw, vh) * 0.45;
-    const counterGrad = ctx.createRadialGradient(
-      counterX,
-      counterY,
-      10,
-      counterX,
-      counterY,
-      counterRadius
-    );
-    counterGrad.addColorStop(0, 'rgba(190, 200, 230, 0.04)');
-    counterGrad.addColorStop(0.6, 'rgba(140, 150, 180, 0.012)');
-    counterGrad.addColorStop(1, 'rgba(5, 5, 6, 0)');
+    // Update & render spiraling stars across the entire screen
+    for (const s of universeStars) {
+      if (!prefersReducedMotion) {
+        const gravityFactor = Math.max(0.25, 240 / (s.radius + 55));
+        s.angle += s.orbitSpeed * gravityFactor * warpBoost;
+        s.radius -= s.infallSpeed * gravityFactor * warpBoost;
 
-    ctx.fillStyle = counterGrad;
-    ctx.beginPath();
-    ctx.arc(counterX, counterY, counterRadius, 0, Math.PI * 2);
-    ctx.fill();
+        if (s.radius < horizonRadius * 0.5) {
+          s.radius = Math.hypot(vw, vh) * (0.55 + Math.random() * 0.4);
+          s.angle = Math.random() * Math.PI * 2;
+        }
+      }
 
-    // Subtle rotating light beams / god-rays behind the torus
+      const x = centerX + Math.cos(s.angle) * s.radius - smoothMouseX * 22;
+      const y = centerY + Math.sin(s.angle) * s.radius * 0.88 - smoothMouseY * 22;
+
+      const pullRatio = Math.max(0, Math.min(1, 1 - (s.radius - horizonRadius) / (baseRadius * 1.5)));
+      const tailAngle = s.angle - (0.035 + pullRatio * 0.15 + Math.abs(scrollVelocity) * 0.002);
+      const tailRadius = s.radius + pullRatio * 20;
+      const tx = centerX + Math.cos(tailAngle) * tailRadius - smoothMouseX * 22;
+      const ty = centerY + Math.sin(tailAngle) * tailRadius * 0.88 - smoothMouseY * 22;
+
+      const fadeEdge = Math.min(1, Math.max(0, (s.radius - horizonRadius * 0.45) / 50));
+      const alpha = Math.max(0, s.alpha * fadeEdge);
+
+      if (pullRatio > 0.15 || Math.abs(scrollVelocity) > 4) {
+        ctx.strokeStyle = `hsla(${s.hue}, ${s.sat}%, 92%, ${alpha.toFixed(3)})`;
+        ctx.lineWidth = s.size * (1 - pullRatio * 0.35);
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, 95%, ${alpha.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  /**
+   * 2. DRAW EVENT HORIZON CORE, PHOTON RING & ACCRETION SWIRL
+   */
+  function drawBlackHoleSingularity(centerX, centerY, baseRadius, rx, ry, rz) {
+    const coreRadius = baseRadius * 0.54;
+
     ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(clock * 0.18);
-    for (let i = 0; i < 4; i++) {
-      ctx.rotate(Math.PI / 2);
-      const beamGrad = ctx.createLinearGradient(0, -auraRadius * 0.85, 0, auraRadius * 0.85);
-      beamGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      beamGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.024)');
-      beamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      ctx.fillStyle = beamGrad;
-      ctx.fillRect(-baseRadius * 0.18, -auraRadius * 0.85, baseRadius * 0.36, auraRadius * 1.7);
+    for (const p of accretionParticles) {
+      if (!prefersReducedMotion) {
+        p.angle += p.speed;
+      }
+      const r = baseRadius * (0.95 + p.orbitOffset);
+      const steps = 12;
+      ctx.beginPath();
+
+      for (let s = 0; s <= steps; s++) {
+        const a = p.angle + (s / steps) * p.length;
+        const px = r * Math.cos(a);
+        const py = r * Math.sin(a);
+        const pz = Math.sin(a * 2) * 18;
+
+        const rot = rotatePoint({ x: px, y: py, z: pz }, rx, ry, rz);
+        const fov = 900;
+        const scale = fov / (fov + rot.z + 400);
+        const sx = centerX + rot.x * scale;
+        const sy = centerY + rot.y * scale;
+
+        if (s === 0) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+      }
+
+      ctx.strokeStyle = `rgba(225, 235, 255, ${p.alpha})`;
+      ctx.lineWidth = p.width;
+      ctx.stroke();
     }
     ctx.restore();
+
+    const photonGrad = ctx.createRadialGradient(
+      centerX,
+      centerY,
+      coreRadius * 0.72,
+      centerX,
+      centerY,
+      coreRadius * 1.35
+    );
+    photonGrad.addColorStop(0, '#000000');
+    photonGrad.addColorStop(0.68, '#020204');
+    photonGrad.addColorStop(0.82, 'rgba(255, 255, 255, 0.24)');
+    photonGrad.addColorStop(0.91, 'rgba(180, 205, 255, 0.09)');
+    photonGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+    ctx.fillStyle = photonGrad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, coreRadius * 1.35, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   /**
-   * LAYER B: 3D Perspective Wireframe Horizon & Orbital CAD Rings
+   * 3. GRAVITATIONAL SCROLL WARP ON DOM ELEMENTS
+   * Sections emerge out of the black hole's coordinates (holeX, holeY) from below,
+   * and get pulled back into the black hole when scrolled past above.
    */
-  function drawArchitecturalSpace(centerX, centerY, baseRadius, rx, ry, rz, clock) {
-    const fov = 900;
+  function applyGravitationalScrollWarp(holeX, holeY) {
+    if (prefersReducedMotion) return;
 
-    // 1. Concentric 3D Orbital Rings around the sculpture
-    const ringMultipliers = [1.48, 1.82, 2.25];
-    ringMultipliers.forEach((mult, idx) => {
-      const r = baseRadius * mult;
-      const segments = 90;
-      ctx.beginPath();
+    const vhHalf = vh * 0.5;
 
-      for (let i = 0; i <= segments; i++) {
-        const theta = (i / segments) * Math.PI * 2;
-        const px = r * Math.cos(theta);
-        const py = r * Math.sin(theta);
-        const pz = Math.sin(theta * 2 + clock + idx) * 35;
+    warpTargets.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const elCenterX = rect.left + rect.width * 0.5;
+      const elCenterY = rect.top + rect.height * 0.5;
 
-        const rotP = rotatePoint(
-          { x: px, y: py, z: pz },
-          rx * 0.55 + idx * 0.28,
-          ry * 0.55 - idx * 0.18,
-          -rz * 0.35 + idx * 0.4
-        );
+      // Normalized vertical position: -1 (top edge), 0 (screen center), +1 (bottom edge)
+      const normY = (elCenterY - vhHalf) / vhHalf;
 
-        const perspective = fov / (fov + rotP.z + 500);
-        const sx = centerX + rotP.x * perspective;
-        const sy = centerY + rotP.y * perspective;
+      // Comfortable sharp reading zone in the middle of the screen
+      const deadZone = 0.38;
+      const absY = Math.abs(normY);
 
-        if (i === 0) ctx.moveTo(sx, sy);
-        else ctx.lineTo(sx, sy);
+      if (absY <= deadZone) {
+        el.style.transform = 'translate3d(0px, 0px, 0px) scale(1)';
+        el.style.opacity = '1';
+        el.style.filter = 'blur(0px)';
+        return;
       }
 
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.065 - idx * 0.016})`;
-      ctx.lineWidth = 1;
-      if (idx === 1) {
-        ctx.setLineDash([5, 9]);
-      } else if (idx === 2) {
-        ctx.setLineDash([2, 14]);
-      } else {
-        ctx.setLineDash([]);
-      }
-      ctx.stroke();
+      const rawIntensity = Math.min(1, (absY - deadZone) / (1.22 - deadZone));
+      const warp = rawIntensity * rawIntensity;
+
+      // Pull element toward the Black Hole's current position (holeX, holeY)
+      const pullX = (holeX - elCenterX) * warp * 0.48;
+      const pullY = (holeY - elCenterY) * warp * 0.38;
+
+      const scale = Math.max(0.5, 1 - warp * 0.45);
+      const blur = (warp * 6.5).toFixed(1);
+      const opacity = Math.max(0.04, 1 - warp * 0.92).toFixed(3);
+
+      el.style.transform = `translate3d(${pullX.toFixed(1)}px, ${pullY.toFixed(1)}px, 0px) scale(${scale.toFixed(3)})`;
+      el.style.opacity = opacity;
+      el.style.filter = warp > 0.08 ? `blur(${blur}px)` : 'none';
     });
-    ctx.setLineDash([]);
-
-    // 2. Subtle 3D Perspective Latitude/Longitude Cage in Deep Background
-    const gridLines = 11;
-    const gridSpan = Math.max(vw, vh) * 1.15;
-    const gridDepth = 520;
-    const tiltX = 0.65 + (smoothScroll - 0.5) * 0.35 + smoothMouseY * 0.08;
-    const tiltY = (smoothScroll - 0.5) * 0.25 + smoothMouseX * 0.08;
-
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.028)';
-    ctx.lineWidth = 0.8;
-
-    for (let i = -gridLines; i <= gridLines; i++) {
-      const offset = (i / gridLines) * gridSpan;
-
-      ctx.beginPath();
-      for (let step = -10; step <= 10; step++) {
-        const zPos = (step / 10) * gridSpan;
-        const p = rotatePoint({ x: offset, y: 260, z: zPos }, tiltX, tiltY, 0);
-        const scale = fov / (fov + p.z + gridDepth);
-        if (scale <= 0) continue;
-        const sx = vw * 0.5 + p.x * scale;
-        const sy = vh * 0.5 + p.y * scale;
-        if (step === -10) ctx.moveTo(sx, sy);
-        else ctx.lineTo(sx, sy);
-      }
-      ctx.stroke();
-    }
-  }
-
-  /**
-   * LAYER C: Deep-Space Floating Dust & Starfield with 3D Parallax
-   */
-  function drawDeepParticles(clock) {
-    const fov = 800;
-    const scrollShiftY = smoothScroll * 900;
-
-    for (const pt of particles) {
-      let py = ((pt.y - scrollShiftY * pt.speed - clock * 35 * pt.speed) % 2400);
-      if (py < -1200) py += 2400;
-      if (py > 1200) py -= 2400;
-
-      const px = pt.x - smoothMouseX * 45 * pt.speed;
-      const pz = pt.z;
-
-      const perspective = fov / (fov + pz + 750);
-      if (perspective <= 0) continue;
-
-      const sx = vw * 0.5 + px * perspective;
-      const sy = vh * 0.5 + py * perspective;
-
-      if (sx < -20 || sx > vw + 20 || sy < -20 || sy > vh + 20) continue;
-
-      const twinkle = 0.65 + 0.35 * Math.sin(clock * 2.5 + pt.phase);
-      const finalAlpha = Math.min(0.85, pt.alpha * twinkle * perspective);
-      const r = pt.size * perspective;
-
-      ctx.fillStyle = `rgba(245, 247, 255, ${finalAlpha.toFixed(3)})`;
-      ctx.beginPath();
-      ctx.arc(sx, sy, r, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (pt.isStar && perspective > 0.7) {
-        const flare = r * 4.2;
-        ctx.strokeStyle = `rgba(255, 255, 255, ${(finalAlpha * 0.45).toFixed(3)})`;
-        ctx.lineWidth = 0.7;
-        ctx.beginPath();
-        ctx.moveTo(sx - flare, sy);
-        ctx.lineTo(sx + flare, sy);
-        ctx.moveTo(sx, sy - flare);
-        ctx.lineTo(sx, sy + flare);
-        ctx.stroke();
-      }
-    }
   }
 
   let clock = 0;
@@ -328,11 +327,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.clearRect(0, 0, vw, vh);
 
     smoothScroll += (targetScroll - smoothScroll) * 0.07;
+    scrollVelocity *= 0.9;
     smoothMouseX += (normMouseX - smoothMouseX) * 0.06;
     smoothMouseY += (normMouseY - smoothMouseY) * 0.06;
 
     if (!prefersReducedMotion) {
-      clock += 0.008;
+      clock += 0.0085;
     }
 
     const state = getInterpolatedState(smoothScroll);
@@ -345,14 +345,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const rx = state.rotX + smoothMouseY * 0.12;
     const ry = state.rotY + smoothMouseX * 0.12;
-    const rz = state.rotZ + clock * 0.4;
+    const rz = state.rotZ + clock * 0.42;
 
-    // 1. Render Deep Background Layers (Glow, Perspective Grid, Orbitals, Dust)
-    drawAmbientBacklight(centerX, centerY, baseRadius, clock);
-    drawArchitecturalSpace(centerX, centerY, baseRadius, rx, ry, rz, clock);
-    drawDeepParticles(clock);
+    // STEP 1: Draw Deep Universe & In-falling Spiral Stars
+    drawUniverseVortex(centerX, centerY, baseRadius);
 
-    // 2. Render Main 3D Ribbed Metallic Torus Sculpture
+    // STEP 2: Draw Event Horizon Core & Relativistic Accretion Swirl
+    drawBlackHoleSingularity(centerX, centerY, baseRadius, rx, ry, rz);
+
+    // STEP 3: Render Main 3D Ribbed Metallic Torus Sculpture
     const numRibs = 112;
     const ribPoints = 34;
     const ribsToDraw = [];
@@ -425,12 +426,15 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
 
-        ctx.strokeStyle = `rgb(${brightness}, ${brightness}, ${Math.min(255, brightness + 6)})`;
-        ctx.lineWidth = 3.2 * depthFactor;
+        ctx.strokeStyle = `rgb(${brightness}, ${brightness}, ${Math.min(255, brightness + 8)})`;
+        ctx.lineWidth = (2.8 * state.scale + 0.6) * depthFactor;
         ctx.lineCap = 'round';
         ctx.stroke();
       }
     }
+
+    // STEP 4: Warp DOM Sections so they emerge from & get swallowed by the Black Hole
+    applyGravitationalScrollWarp(centerX, centerY);
 
     requestAnimationFrame(render);
   }
@@ -875,7 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     7. SUZY PET MINIGAME (Bone Physics, Happiness, Celebrations)
+     7. SUZY PET MINIGAME
      ========================================================================== */
   (() => {
     const pet = document.querySelector('.pet-character');
@@ -1109,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ==========================================================================
-     8. SUZY 3D CAROUSEL EASTER EGG (Triggered by 5 Rapid Clicks on Suzy)
+     8. SUZY 3D CAROUSEL EASTER EGG
      ========================================================================== */
   (() => {
     const pet = document.querySelector('.pet-character');
