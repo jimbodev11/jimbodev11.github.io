@@ -1,11 +1,11 @@
 /**
- * JimboDev.hu — Scroll-Driven 3D Ribbed Metallic Torus Engine
- * Recreates the exact monochrome ribbed sculpture & camera choreography from the reference video.
+ * JimboDev.hu — Scroll-Driven 3D Ribbed Metallic Torus Engine + Deep-Space Environment
+ * Recreates the monochrome ribbed sculpture + adds volumetric glow, 3D perspective grid,
+ * orbital CAD rings, and parallax floating particles behind the mesh.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 
   /* ==========================================================================
      2. INTERSECTION OBSERVER FOR REVEALS
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     3. SCROLL-DRIVEN 3D RIBBED METALLIC SCULPTURE (Canvas)
+     3. SCROLL-DRIVEN 3D RIBBED METALLIC SCULPTURE + DEEP ENVIRONMENT (Canvas)
      ========================================================================== */
   const canvas = document.getElementById('ribbedTorusCanvas');
   if (!canvas) return;
@@ -56,10 +56,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Normalized mouse for subtle parallax (-1 to 1)
   let normMouseX = 0;
   let normMouseY = 0;
+  let smoothMouseX = 0;
+  let smoothMouseY = 0;
   window.addEventListener('mousemove', (e) => {
     normMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
     normMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
+
+  // --- Generate 3D Deep-Space Floating Particles & Starbursts ---
+  const PARTICLE_COUNT = 95;
+  const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+    x: (Math.random() - 0.5) * 2400,
+    y: (Math.random() - 0.5) * 2400,
+    z: (Math.random() - 0.5) * 1400,
+    size: Math.random() * 1.9 + 0.4,
+    alpha: Math.random() * 0.55 + 0.12,
+    speed: Math.random() * 0.35 + 0.08,
+    phase: Math.random() * Math.PI * 2,
+    isStar: Math.random() < 0.14
+  }));
 
   /**
    * 4 Keyframe Camera States matching the video timestamps:
@@ -126,13 +141,196 @@ document.addEventListener('DOMContentLoaded', () => {
     return { x: x3, y: y3, z: z3 };
   }
 
+  /**
+   * LAYER A: Volumetric Aura & Core Backlight behind the 3D Sculpture
+   */
+  function drawAmbientBacklight(centerX, centerY, baseRadius, clock) {
+    const auraRadius = baseRadius * 2.15;
+    const grad = ctx.createRadialGradient(
+      centerX,
+      centerY,
+      baseRadius * 0.12,
+      centerX,
+      centerY,
+      auraRadius
+    );
+    grad.addColorStop(0, 'rgba(255, 255, 255, 0.11)');
+    grad.addColorStop(0.35, 'rgba(200, 210, 235, 0.055)');
+    grad.addColorStop(0.7, 'rgba(130, 145, 180, 0.018)');
+    grad.addColorStop(1, 'rgba(5, 5, 6, 0)');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, auraRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Secondary subtle counter-glow in the opposite quadrant
+    const counterX = vw - centerX;
+    const counterY = vh - centerY;
+    const counterRadius = Math.max(vw, vh) * 0.45;
+    const counterGrad = ctx.createRadialGradient(
+      counterX,
+      counterY,
+      10,
+      counterX,
+      counterY,
+      counterRadius
+    );
+    counterGrad.addColorStop(0, 'rgba(190, 200, 230, 0.04)');
+    counterGrad.addColorStop(0.6, 'rgba(140, 150, 180, 0.012)');
+    counterGrad.addColorStop(1, 'rgba(5, 5, 6, 0)');
+
+    ctx.fillStyle = counterGrad;
+    ctx.beginPath();
+    ctx.arc(counterX, counterY, counterRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Subtle rotating light beams / god-rays behind the torus
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(clock * 0.18);
+    for (let i = 0; i < 4; i++) {
+      ctx.rotate(Math.PI / 2);
+      const beamGrad = ctx.createLinearGradient(0, -auraRadius * 0.85, 0, auraRadius * 0.85);
+      beamGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      beamGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.024)');
+      beamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = beamGrad;
+      ctx.fillRect(-baseRadius * 0.18, -auraRadius * 0.85, baseRadius * 0.36, auraRadius * 1.7);
+    }
+    ctx.restore();
+  }
+
+  /**
+   * LAYER B: 3D Perspective Wireframe Horizon & Orbital CAD Rings
+   */
+  function drawArchitecturalSpace(centerX, centerY, baseRadius, rx, ry, rz, clock) {
+    const fov = 900;
+
+    // 1. Concentric 3D Orbital Rings around the sculpture
+    const ringMultipliers = [1.48, 1.82, 2.25];
+    ringMultipliers.forEach((mult, idx) => {
+      const r = baseRadius * mult;
+      const segments = 90;
+      ctx.beginPath();
+
+      for (let i = 0; i <= segments; i++) {
+        const theta = (i / segments) * Math.PI * 2;
+        const px = r * Math.cos(theta);
+        const py = r * Math.sin(theta);
+        const pz = Math.sin(theta * 2 + clock + idx) * 35;
+
+        const rotP = rotatePoint(
+          { x: px, y: py, z: pz },
+          rx * 0.55 + idx * 0.28,
+          ry * 0.55 - idx * 0.18,
+          -rz * 0.35 + idx * 0.4
+        );
+
+        const perspective = fov / (fov + rotP.z + 500);
+        const sx = centerX + rotP.x * perspective;
+        const sy = centerY + rotP.y * perspective;
+
+        if (i === 0) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+      }
+
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.065 - idx * 0.016})`;
+      ctx.lineWidth = 1;
+      if (idx === 1) {
+        ctx.setLineDash([5, 9]);
+      } else if (idx === 2) {
+        ctx.setLineDash([2, 14]);
+      } else {
+        ctx.setLineDash([]);
+      }
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // 2. Subtle 3D Perspective Latitude/Longitude Cage in Deep Background
+    const gridLines = 11;
+    const gridSpan = Math.max(vw, vh) * 1.15;
+    const gridDepth = 520;
+    const tiltX = 0.65 + (smoothScroll - 0.5) * 0.35 + smoothMouseY * 0.08;
+    const tiltY = (smoothScroll - 0.5) * 0.25 + smoothMouseX * 0.08;
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.028)';
+    ctx.lineWidth = 0.8;
+
+    for (let i = -gridLines; i <= gridLines; i++) {
+      const offset = (i / gridLines) * gridSpan;
+
+      ctx.beginPath();
+      for (let step = -10; step <= 10; step++) {
+        const zPos = (step / 10) * gridSpan;
+        const p = rotatePoint({ x: offset, y: 260, z: zPos }, tiltX, tiltY, 0);
+        const scale = fov / (fov + p.z + gridDepth);
+        if (scale <= 0) continue;
+        const sx = vw * 0.5 + p.x * scale;
+        const sy = vh * 0.5 + p.y * scale;
+        if (step === -10) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke();
+    }
+  }
+
+  /**
+   * LAYER C: Deep-Space Floating Dust & Starfield with 3D Parallax
+   */
+  function drawDeepParticles(clock) {
+    const fov = 800;
+    const scrollShiftY = smoothScroll * 900;
+
+    for (const pt of particles) {
+      let py = ((pt.y - scrollShiftY * pt.speed - clock * 35 * pt.speed) % 2400);
+      if (py < -1200) py += 2400;
+      if (py > 1200) py -= 2400;
+
+      const px = pt.x - smoothMouseX * 45 * pt.speed;
+      const pz = pt.z;
+
+      const perspective = fov / (fov + pz + 750);
+      if (perspective <= 0) continue;
+
+      const sx = vw * 0.5 + px * perspective;
+      const sy = vh * 0.5 + py * perspective;
+
+      if (sx < -20 || sx > vw + 20 || sy < -20 || sy > vh + 20) continue;
+
+      const twinkle = 0.65 + 0.35 * Math.sin(clock * 2.5 + pt.phase);
+      const finalAlpha = Math.min(0.85, pt.alpha * twinkle * perspective);
+      const r = pt.size * perspective;
+
+      ctx.fillStyle = `rgba(245, 247, 255, ${finalAlpha.toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (pt.isStar && perspective > 0.7) {
+        const flare = r * 4.2;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${(finalAlpha * 0.45).toFixed(3)})`;
+        ctx.lineWidth = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(sx - flare, sy);
+        ctx.lineTo(sx + flare, sy);
+        ctx.moveTo(sx, sy - flare);
+        ctx.lineTo(sx, sy + flare);
+        ctx.stroke();
+      }
+    }
+  }
+
   let clock = 0;
 
   function render() {
     ctx.clearRect(0, 0, vw, vh);
 
-    // Smoothly approach scroll position
     smoothScroll += (targetScroll - smoothScroll) * 0.07;
+    smoothMouseX += (normMouseX - smoothMouseX) * 0.06;
+    smoothMouseY += (normMouseY - smoothMouseY) * 0.06;
+
     if (!prefersReducedMotion) {
       clock += 0.008;
     }
@@ -142,37 +340,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const baseRadius = Math.min(vw, vh) * 0.34 * state.scale;
     const tubeRadius = baseRadius * 0.42;
 
-    const centerX = vw * (0.5 + state.offsetX) + normMouseX * 18;
-    const centerY = vh * (0.5 + state.offsetY) + normMouseY * 18;
+    const centerX = vw * (0.5 + state.offsetX) + smoothMouseX * 18;
+    const centerY = vh * (0.5 + state.offsetY) + smoothMouseY * 18;
 
-    const rx = state.rotX + normMouseY * 0.12;
-    const ry = state.rotY + normMouseX * 0.12;
+    const rx = state.rotX + smoothMouseY * 0.12;
+    const ry = state.rotY + smoothMouseX * 0.12;
     const rz = state.rotZ + clock * 0.4;
 
-    // Number of metallic ribs around the torus (gives the exact fluted/ribbed look)
+    // 1. Render Deep Background Layers (Glow, Perspective Grid, Orbitals, Dust)
+    drawAmbientBacklight(centerX, centerY, baseRadius, clock);
+    drawArchitecturalSpace(centerX, centerY, baseRadius, rx, ry, rz, clock);
+    drawDeepParticles(clock);
+
+    // 2. Render Main 3D Ribbed Metallic Torus Sculpture
     const numRibs = 112;
     const ribPoints = 34;
     const ribsToDraw = [];
 
-    // Light direction for high-contrast dramatic chrome reflection
     const light = { x: 0.25, y: -0.85, z: -0.45 };
 
     for (let i = 0; i < numRibs; i++) {
       const u = (i / numRibs) * Math.PI * 2;
-
-      // Subtle organic wave along the major ring
       const majorWave = 1 + 0.08 * Math.sin(u * 3 + clock * 2);
       const R = baseRadius * majorWave;
 
       const pts2D = [];
       let avgZ = 0;
-      let normalSum = { x: 0, y: 0, z: 0 };
 
       for (let j = 0; j <= ribPoints; j++) {
-        // v goes around the tube cross-section, twisted by u
         const v = (j / ribPoints) * Math.PI * 2 + u * state.twist + clock * 1.4;
-
-        // Ribbed extrusion ridges
         const ridge = 1 + 0.06 * Math.cos(v * 6);
         const r = tubeRadius * ridge;
 
@@ -180,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const py = (R + r * Math.cos(v)) * Math.sin(u);
         const pz = r * Math.sin(v) * 1.25;
 
-        // Approximate surface normal for metallic shading
         const nx = Math.cos(v) * Math.cos(u);
         const ny = Math.cos(v) * Math.sin(u);
         const nz = Math.sin(v);
@@ -199,19 +394,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         avgZ += rotP.z;
-        normalSum.x += rotN.x;
-        normalSum.y += rotN.y;
-        normalSum.z += rotN.z;
       }
 
       avgZ /= pts2D.length;
       ribsToDraw.push({ pts2D, avgZ, u });
     }
 
-    // Painter's algorithm: sort ribs back to front
     ribsToDraw.sort((a, b) => b.avgZ - a.avgZ);
 
-    // Render each metallic rib plate with dark shadows & bright chrome speculars
     for (const rib of ribsToDraw) {
       const pts = rib.pts2D;
 
@@ -219,13 +409,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const p1 = pts[j];
         const p2 = pts[j + 1];
 
-        // Calculate lighting intensity from rotated normal
         const dotLight = -(p1.n.x * light.x + p1.n.y * light.y + p1.n.z * light.z);
         const diffuse = Math.max(0, dotLight);
-        const specular = Math.pow(diffuse, 14); // Sharp chrome reflection band
+        const specular = Math.pow(diffuse, 14);
         const rim = Math.pow(1 - Math.abs(p1.n.z), 3) * 0.25;
 
-        // Depth fade so back ribs melt into the black background
         const depthFactor = Math.max(0.08, Math.min(1, 1 - (p1.z + 250) / 750));
 
         const brightness = Math.min(
@@ -237,7 +425,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
 
-        // Draw dark rib body + bright metallic ridge edge
         ctx.strokeStyle = `rgb(${brightness}, ${brightness}, ${Math.min(255, brightness + 6)})`;
         ctx.lineWidth = 3.2 * depthFactor;
         ctx.lineCap = 'round';
@@ -389,7 +576,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.documentElement.lang = lang;
 
-    // Update plain text elements
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
       if (dict[key] !== undefined) {
@@ -397,7 +583,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Update HTML-containing elements
     document.querySelectorAll('[data-i18n-html]').forEach((el) => {
       const key = el.getAttribute('data-i18n-html');
       if (dict[key] !== undefined) {
@@ -405,7 +590,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Toggle active state in the navbar button
     const optEn = document.getElementById('opt-en');
     const optHu = document.getElementById('opt-hu');
     if (optEn && optHu) {
@@ -418,7 +602,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // If modal is open, re-render with new language
     if (modal && modal.classList.contains('active') && activeProjectId) {
       renderModal(activeProjectId);
     }
@@ -628,7 +811,6 @@ document.addEventListener('DOMContentLoaded', () => {
     activeProjectId = null;
   }
 
-  // Open modal on clicking .modal-btn or project card (ignoring direct external link clicks)
   document.addEventListener('click', (e) => {
     if (e.target.closest('.project-ext-link')) return;
 
@@ -673,21 +855,18 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleMobileMenu();
     });
 
-    // Close on clicking any link inside drawer
     mobileDrawer.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         toggleMobileMenu(false);
       });
     });
 
-    // Close when clicking outside drawer
     document.addEventListener('click', (e) => {
       if (!mobileDrawer.contains(e.target) && !hamburgerBtn.contains(e.target) && mobileDrawer.classList.contains('active')) {
         toggleMobileMenu(false);
       }
     });
 
-    // Close on Escape
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileDrawer.classList.contains('active')) {
         toggleMobileMenu(false);
@@ -814,7 +993,6 @@ document.addEventListener('DOMContentLoaded', () => {
       throwBone(clickX);
     });
 
-    // Global helper for DevTools Console
     window.suzy = {
       feed: (targetX) => {
         const petArea = document.getElementById('pet-area');
@@ -1019,21 +1197,18 @@ document.addEventListener('DOMContentLoaded', () => {
       closeBtn.addEventListener('click', closeEasterEgg);
     }
 
-    // Close when clicking backdrop outside track
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay || e.target.classList.contains('carousel-container')) {
         closeEasterEgg();
       }
     });
 
-    // Close on Escape
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && overlay.classList.contains('show')) {
         closeEasterEgg();
       }
     });
 
-    // Focus item on click
     items.forEach((item, i) => {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
