@@ -3,519 +3,244 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JimboDev — Digital Experiences, FiveM & UI/UX Studio</title>
-  <meta name="description" content="Hungarian creative development studio crafting high-end web design, custom FiveM scripts (ESX/NUI), and modern UI/UX experiences." />
+  <title>JimboDev — Powering the Next Generation of Digital Brands</title>
+  <meta name="description" content="JimboDev (jimbodev.hu) — Hungarian creative engineering studio specializing in Web Design, FiveM Ecosystems, and UI/UX Design." />
 
-  <!-- Google Fonts: 1 Sans-Serif (Syne) + 1 Editorial Serif (Instrument Serif) -->
+  <!-- Google Fonts: Instrument Serif (Editorial) + Inter (Clean Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body data-theme="dark">
+<body>
 
-  <!-- ==========================================
-       NOISE / GRAIN OVERLAY (Pure SVG, zero assets)
-  =========================================== -->
-  <div class="noise-overlay" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-      <filter id="grain">
-        <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="3" stitchTiles="stitch" />
-        <feColorMatrix type="saturate" values="0" />
-      </filter>
-      <rect width="100%" height="100%" filter="url(#grain)" opacity="0.055" />
-    </svg>
+  <!-- =========================================================
+       FIXED SCROLL-DRIVEN 3D RIBBED METALLIC SCULPTURE CANVAS
+       (Follows scroll progress through all 4 camera states)
+  ========================================================== -->
+  <div class="canvas-stage" aria-hidden="true">
+    <canvas id="ribbedTorusCanvas"></canvas>
+    <div class="vignette-overlay"></div>
+    <div class="grain-overlay"></div>
   </div>
 
-  <!-- ==========================================
-       AMBIENT FLUID GRADIENT BACKGROUND
-  =========================================== -->
-  <div class="ambient-canvas" aria-hidden="true">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-  </div>
-
-  <!-- ==========================================
+  <!-- =========================================================
        CUSTOM CURSOR
-  =========================================== -->
+  ========================================================== -->
   <div class="cursor-dot" aria-hidden="true"></div>
-  <div class="cursor-ring" aria-hidden="true">
-    <span class="cursor-label"></span>
-  </div>
+  <div class="cursor-ring" aria-hidden="true"></div>
 
-  <!-- ==========================================
-       PILL NAVIGATION BAR
-  =========================================== -->
+  <!-- =========================================================
+       TOP MINIMAL NAVIGATION (Matches 0:01 in video)
+  ========================================================== -->
   <header class="site-header">
-    <nav class="pill-nav" aria-label="Main Navigation">
-      <a href="#hero" class="brand" data-cursor="Home">
-        <span class="brand-dot"></span>
-        JimboDev<span class="brand-tld">.hu</span>
+    <nav class="nav-bar" aria-label="Main Navigation">
+      <a href="#hero" class="brand-logo" data-hover>
+        JimboDev<span class="dot">.</span>
       </a>
 
-      <div class="nav-links">
-        <a href="#services" data-cursor="Explore">Services</a>
-        <a href="#work" data-cursor="View">Work</a>
-        <a href="#process" data-cursor="Read">Process</a>
-      </div>
+      <ul class="nav-center">
+        <li><a href="#about" data-hover>About</a></li>
+        <li><a href="#services" data-hover>Services</a></li>
+        <li><a href="#work" data-hover>Work</a></li>
+        <li><a href="#contact" data-hover>Contact</a></li>
+      </ul>
 
-      <div class="nav-actions">
-        <a href="#contact" class="btn-contact-pill" data-cursor="Let's Talk">
-          <span>Contact</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      <div class="nav-right">
+        <a href="#contact" class="btn-white-pill" data-hover>
+          <span>Get in Touch</span>
         </a>
-        <button class="menu-toggle" aria-label="Toggle Menu" aria-expanded="false">
-          <span></span>
-          <span></span>
-        </button>
       </div>
     </nav>
-
-    <!-- Mobile Drawer -->
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="#services" class="mobile-link">Services</a>
-      <a href="#work" class="mobile-link">Selected Work</a>
-      <a href="#process" class="mobile-link">Our Process</a>
-      <a href="#contact" class="mobile-link">Contact Us</a>
-    </div>
   </header>
 
-  <main>
-    <!-- ==========================================
-         1. HERO SECTION (Ref 1: Dark Minimal + 3D Object)
-    =========================================== -->
-    <section id="hero" class="section hero-section" data-bg="dark">
-      <div class="hero-container">
+  <!-- =========================================================
+       SCROLLABLE CONTENT SCENES
+  ========================================================== -->
+  <main class="scroll-container">
 
-        <!-- Giant full-width thin/editorial typography -->
-        <div class="hero-stage">
-          <h1 class="hero-title" aria-label="We design & build digital experiences">
-            <span class="hero-row row-top reveal-text">WE DESIGN <em class="serif">&amp;</em> BUILD</span>
-            <span class="hero-row row-bottom reveal-text">DIGITAL EXPERIENCES</span>
-          </h1>
+    <!-- SCENE 1: HERO (0:00 - 0:05 in video)
+         Centered serif headline, giant ribbed arch below, bottom-right paragraph -->
+    <section id="hero" class="scene scene-hero" data-scene="0">
+      <div class="hero-top-content reveal">
+        <h1 class="hero-headline">
+          Powering the next<br />
+          generation of <em>digital</em> brands.
+        </h1>
+      </div>
 
-          <!-- Floating 3D Glossy Torus Knot / Morphing Sculpture (Interactive Canvas) -->
-          <div class="hero-object-wrapper" id="heroParallax">
-            <canvas id="heroObjectCanvas" width="520" height="520" aria-label="Interactive 3D glossy sculpture"></canvas>
-            <div class="object-glow"></div>
-          </div>
-
-          <!-- Circular Rotating Badge on the Right -->
-          <a href="#work" class="circular-badge" data-cursor="Scroll" aria-label="Scroll to selected work">
-            <svg viewBox="0 0 120 120" class="badge-svg">
-              <path id="badgeCircle" d="M 60, 60 m -46, 0 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0" fill="none" />
-              <text>
-                <textPath href="#badgeCircle" startOffset="0%">
-                  • HUNGARIAN STUDIO • EST. BUDAPEST •
-                </textPath>
-              </text>
-            </svg>
-            <span class="badge-center-arrow">↓</span>
-          </a>
+      <div class="hero-bottom-content reveal">
+        <div class="hero-scroll-hint">
+          <span class="pulse-dot"></span>
+          <span>Scroll to explore</span>
         </div>
 
-        <!-- Bottom bar: tiny caption block + pill CTA -->
-        <div class="hero-footer reveal-up">
-          <div class="hero-caption">
-            <span class="caption-index">[01 / STUDIO]</span>
-            <p>
-              Independent digital studio based in Hungary. Engineering high-craft web applications, bespoke <strong>FiveM NUI/Lua ecosystems</strong>, and precision interfaces.
+        <p class="hero-description">
+          JimboDev is a premier Hungarian digital studio specializing in bespoke web experiences, <strong>high-performance FiveM scripts</strong>, and precision UI/UX systems—partnering with ambitious creators and communities to drive real impact.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCENE 2: MANIFESTO / ABOUT (0:06 - 0:08 in video)
+         3D ribbed object moves to the right; bold highlighted editorial copy on the left -->
+    <section id="about" class="scene scene-about" data-scene="1">
+      <div class="scene-inner">
+        <div class="manifesto-block reveal">
+          <span class="section-tag">01 // STUDIO MANIFESTO</span>
+          <h2 class="manifesto-text">
+            <span class="hi">We specialize in engineering</span> for the modern digital world. From <span class="hi">award-style web platforms</span> and interactive <span class="hi">UI/UX design systems</span>, to zero-lag <span class="hi">FiveM NUI &amp; Lua ecosystems</span> that elevate roleplay servers.
+          </h2>
+          <div class="manifesto-stats">
+            <div class="stat-item">
+              <span class="stat-val">0.00ms</span>
+              <span class="stat-label">Idle Script Resmon</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-val">60 FPS</span>
+              <span class="stat-label">NUI &amp; Web Motion</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-val">100%</span>
+              <span class="stat-label">Custom Architecture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 3: SERVICES & SELECTED WORK GRID (0:09 - 0:10 in video)
+         Left sticky headline + Right 2-column staggered dark glass cards -->
+    <section id="services" class="scene scene-bento" data-scene="2">
+      <div class="bento-layout">
+        
+        <!-- Left Sticky Column -->
+        <div class="bento-left">
+          <div class="sticky-title-box reveal">
+            <span class="section-tag">02 // CAPABILITIES &amp; ARCHIVE</span>
+            <h2 class="bento-headline">
+              Trusted by Leading<br />
+              Innovators &amp; <em>Creators.</em>
+            </h2>
+            <p class="bento-sub">
+              Three core pillars combined with battle-tested fullstack and FiveM engineering.
             </p>
           </div>
-
-          <a href="#work" class="btn-pill-cta" data-cursor="Explore">
-            <span>See all projects</span>
-            <span class="pill-icon">→</span>
-          </a>
         </div>
 
-      </div>
-    </section>
+        <!-- Right Staggered 2-Column Glass Cards -->
+        <div class="bento-right" id="work">
+          <div class="cards-columns">
+            
+            <!-- Column 1 -->
+            <div class="card-col col-left">
+              <article class="glass-card reveal" data-hover>
+                <span class="card-badge">Pillar 01</span>
+                <div class="card-center-logo">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <path d="M8 21h8M12 17v4"/>
+                  </svg>
+                  <h3>Web Design &amp; Dev</h3>
+                </div>
+                <p class="card-foot">Custom HTML/CSS/JS, WebGL &amp; Next-Gen Portfolios</p>
+              </article>
 
-    <!-- ==========================================
-         2. SERVICES SECTION (Ref 2: Fluid Gradient + 3 Big Cards)
-    =========================================== -->
-    <section id="services" class="section services-section" data-bg="gradient">
-      <div class="container">
-        
-        <div class="section-header reveal-up">
-          <span class="eyebrow">(02) — CAPABILITIES</span>
-          <h2 class="editorial-heading">
-            Where technical precision meets <span class="serif">fluid aesthetics.</span>
-          </h2>
-        </div>
+              <article class="glass-card reveal" data-hover>
+                <span class="card-badge">Selected Work // 2026</span>
+                <div class="card-center-logo">
+                  <span class="project-glyph">❖</span>
+                  <h3>Nexus RP NUI Suite</h3>
+                </div>
+                <p class="card-foot">Garage, Banking &amp; Admin Panel (ESX / ox_lib)</p>
+              </article>
 
-        <!-- 3 Big Hover Cards -->
-        <div class="services-grid">
-          
-          <!-- Card 1 -->
-          <article class="service-card reveal-up" data-cursor="01 / Web">
-            <div class="card-glow"></div>
-            <div class="card-top">
-              <span class="service-num">01</span>
-              <span class="service-tag">Frontend &amp; Fullstack</span>
+              <article class="glass-card reveal" data-hover>
+                <span class="card-badge">Selected Work // 2026</span>
+                <div class="card-center-logo">
+                  <span class="project-glyph">◈</span>
+                  <h3>Gasztrotükör</h3>
+                </div>
+                <p class="card-foot">Hospitality Digital Platform &amp; Web Engine</p>
+              </article>
             </div>
-            <div class="card-body">
-              <h3 class="service-title">Web <span class="serif">Design</span> &amp; Dev</h3>
-              <p class="service-desc">
-                Ultra-fast, responsive websites, custom portfolios, and web platforms built with clean code, smooth motion, and SEO-ready architecture.
-              </p>
-            </div>
-            <ul class="service-features">
-              <li>Custom HTML5 / CSS3 / JS &amp; Modern Frameworks</li>
-              <li>Interactive WebGL &amp; Micro-animations</li>
-              <li>API Integrations &amp; Cloud Deployment</li>
-            </ul>
-          </article>
 
-          <!-- Card 2 -->
-          <article class="service-card reveal-up" style="--delay: 0.1s" data-cursor="02 / FiveM">
-            <div class="card-glow"></div>
-            <div class="card-top">
-              <span class="service-num">02</span>
-              <span class="service-tag">ESX / QBCore / ox_lib</span>
-            </div>
-            <div class="card-body">
-              <h3 class="service-title">FiveM <span class="serif">Scripts</span></h3>
-              <p class="service-desc">
-                Zero-lag, synced roleplay systems and sleek 60FPS NUI interfaces tailored for ambitious GTA V communities.
-              </p>
-            </div>
-            <ul class="service-features">
-              <li>Custom NUI Dashboards, Garages &amp; Banking</li>
-              <li>Optimized Lua Server/Client Architecture (0.00ms idle)</li>
-              <li>ox_lib, ox_target &amp; SQL Database Design</li>
-            </ul>
-          </article>
+            <!-- Column 2 (Staggered Downward) -->
+            <div class="card-col col-right">
+              <article class="glass-card reveal" data-hover>
+                <span class="card-badge">Pillar 02</span>
+                <div class="card-center-logo">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                  </svg>
+                  <h3>FiveM Scripts</h3>
+                </div>
+                <p class="card-foot">Lua, JS, SQL, ESX Legacy &amp; Custom NUI Systems</p>
+              </article>
 
-          <!-- Card 3 -->
-          <article class="service-card reveal-up" style="--delay: 0.2s" data-cursor="03 / UI/UX">
-            <div class="card-glow"></div>
-            <div class="card-top">
-              <span class="service-num">03</span>
-              <span class="service-tag">Design Systems</span>
-            </div>
-            <div class="card-body">
-              <h3 class="service-title">UI/UX <span class="serif">Design</span></h3>
-              <p class="service-desc">
-                Human-centered product design, game HUDs, and interactive prototypes engineered for clarity, dark-mode elegance, and conversion.
-              </p>
-            </div>
-            <ul class="service-features">
-              <li>Wireframing &amp; Interactive Prototyping</li>
-              <li>In-Game HUD &amp; NUI Component Libraries</li>
-              <li>Design Systems &amp; Brand Identity</li>
-            </ul>
-          </article>
+              <article class="glass-card reveal" data-hover>
+                <span class="card-badge">Pillar 03</span>
+                <div class="card-center-logo">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                  </svg>
+                  <h3>UI / UX Design</h3>
+                </div>
+                <p class="card-foot">Design Systems, Game HUDs &amp; Prototypes</p>
+              </article>
 
-        </div>
+              <article class="glass-card reveal" data-hover>
+                <span class="card-badge">Selected Work // 2026</span>
+                <div class="card-center-logo">
+                  <span class="project-glyph">✦</span>
+                  <h3>Pacek SMC &amp; Pulse AI</h3>
+                </div>
+                <p class="card-foot">Algorithmic FinTech Visuals &amp; Chrome AI Copilot</p>
+              </article>
+            </div>
 
-        <!-- Bold Text List of Capabilities / Stack (Ref 2 detail) -->
-        <div class="bold-capabilities reveal-up">
-          <p class="capabilities-label">CORE STACK &amp; FOCUS AREAS</p>
-          <div class="capabilities-ticker">
-            <span>LUA / FIVEM NUI</span> <i class="serif">/</i>
-            <span>ESX LEGACY</span> <i class="serif">/</i>
-            <span>OX_LIB</span> <i class="serif">/</i>
-            <span>JAVASCRIPT ES6+</span> <i class="serif">/</i>
-            <span>HTML5 &amp; CSS3</span> <i class="serif">/</i>
-            <span>SQL ARCHITECTURE</span> <i class="serif">/</i>
-            <span>UI DESIGN SYSTEMS</span> <i class="serif">/</i>
-            <span>TRADINGVIEW TOOLS</span>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- ==========================================
-         3. SELECTED WORK SECTION (4-6 Project Cards)
-    =========================================== -->
-    <section id="work" class="section work-section" data-bg="midnight">
-      <div class="container">
-        
-        <div class="section-header split-header reveal-up">
-          <div>
-            <span class="eyebrow">(03) — SELECTED ARCHIVE</span>
-            <h2 class="editorial-heading">Featured <span class="serif">Works</span></h2>
-          </div>
-          <p class="header-subtext">
-            A curated selection of commercial web builds, custom FiveM NUI ecosystems, and digital products crafted between 2025—2026.
-          </p>
-        </div>
+    <!-- SCENE 4: VORTEX CTA & FOOTER (0:11 - 0:14 in video)
+         Camera flies into the center of the ribbed vortex; centered headline + pill CTA -->
+    <section id="contact" class="scene scene-cta" data-scene="3">
+      <div class="cta-center reveal">
+        <ul class="cta-mini-nav">
+          <li><a href="#about" data-hover>About</a></li>
+          <li><a href="#services" data-hover>Services</a></li>
+          <li><a href="#work" data-hover>Work</a></li>
+        </ul>
 
-        <div class="work-grid">
+        <h2 class="cta-headline">
+          Ready to <em>ascend</em> your<br />
+          digital project?
+        </h2>
 
-          <!-- Project 1 -->
-          <article class="project-card reveal-up" data-cursor="View Case">
-            <div class="project-visual grad-1">
-              <div class="visual-mesh"></div>
-              <div class="visual-ui-mockup">
-                <span class="mockup-pill">0.01ms resmon</span>
-                <div class="mockup-window">
-                  <div class="mockup-bar"><span></span><span></span><span></span></div>
-                  <div class="mockup-title">NEXUS // ADMIN &amp; GARAGE NUI</div>
-                </div>
-              </div>
-              <span class="project-year">2026</span>
-            </div>
-            <div class="project-info">
-              <div class="project-meta">
-                <span>FiveM Ecosystem</span>
-                <span>•</span>
-                <span>Lua / JS / SQL / ox_lib</span>
-              </div>
-              <h3 class="project-name">Nexus RP — Complete NUI Suite <span class="serif">(&amp; Garage System)</span></h3>
-            </div>
-          </article>
-
-          <!-- Project 2 -->
-          <article class="project-card reveal-up" style="--delay: 0.1s" data-cursor="View Case">
-            <div class="project-visual grad-2">
-              <div class="visual-mesh"></div>
-              <div class="visual-ui-mockup">
-                <span class="mockup-pill">Web Platform</span>
-                <div class="mockup-window">
-                  <div class="mockup-bar"><span></span><span></span><span></span></div>
-                  <div class="mockup-title">GASZTROTÜKÖR // DIGITAL</div>
-                </div>
-              </div>
-              <span class="project-year">2026</span>
-            </div>
-            <div class="project-info">
-              <div class="project-meta">
-                <span>Web Design &amp; Fullstack</span>
-                <span>•</span>
-                <span>Hospitality Platform</span>
-              </div>
-              <h3 class="project-name">Gasztrotükör — Restaurant <span class="serif">Marketing Engine</span></h3>
-            </div>
-          </article>
-
-          <!-- Project 3 -->
-          <article class="project-card reveal-up" data-cursor="View Case">
-            <div class="project-visual grad-3">
-              <div class="visual-mesh"></div>
-              <div class="visual-ui-mockup">
-                <span class="mockup-pill">ESX Legacy</span>
-                <div class="mockup-window">
-                  <div class="mockup-bar"><span></span><span></span><span></span></div>
-                  <div class="mockup-title">AEXIS // FLEECA &amp; HEIST HUD</div>
-                </div>
-              </div>
-              <span class="project-year">2026</span>
-            </div>
-            <div class="project-info">
-              <div class="project-meta">
-                <span>FiveM Script &amp; UI/UX</span>
-                <span>•</span>
-                <span>Interactive Minigames</span>
-              </div>
-              <h3 class="project-name">Aexis Banking &amp; Dynamic <span class="serif">Heist Framework</span></h3>
-            </div>
-          </article>
-
-          <!-- Project 4 -->
-          <article class="project-card reveal-up" style="--delay: 0.1s" data-cursor="View Case">
-            <div class="project-visual grad-4">
-              <div class="visual-mesh"></div>
-              <div class="visual-ui-mockup">
-                <span class="mockup-pill">FinTech UI</span>
-                <div class="mockup-window">
-                  <div class="mockup-bar"><span></span><span></span><span></span></div>
-                  <div class="mockup-title">PACEK // SMC ANALYTICS</div>
-                </div>
-              </div>
-              <span class="project-year">2026</span>
-            </div>
-            <div class="project-info">
-              <div class="project-meta">
-                <span>UI/UX &amp; Algorithmic Visuals</span>
-                <span>•</span>
-                <span>Dashboard Design</span>
-              </div>
-              <h3 class="project-name">Pacek SMC — Futures Liquidity <span class="serif">&amp; Volume Suite</span></h3>
-            </div>
-          </article>
-
-          <!-- Project 5 -->
-          <article class="project-card reveal-up" data-cursor="View Case">
-            <div class="project-visual grad-5">
-              <div class="visual-mesh"></div>
-              <div class="visual-ui-mockup">
-                <span class="mockup-pill">Automotive Telemetry</span>
-                <div class="mockup-window">
-                  <div class="mockup-bar"><span></span><span></span><span></span></div>
-                  <div class="mockup-title">APEX // HANDLING STUDIO</div>
-                </div>
-              </div>
-              <span class="project-year">2025</span>
-            </div>
-            <div class="project-info">
-              <div class="project-meta">
-                <span>Web App &amp; Tooling</span>
-                <span>•</span>
-                <span>XML / Physics Visualizer</span>
-              </div>
-              <h3 class="project-name">Apex Telemetry — Custom Vehicle <span class="serif">Physics Editor</span></h3>
-            </div>
-          </article>
-
-          <!-- Project 6 -->
-          <article class="project-card reveal-up" style="--delay: 0.1s" data-cursor="View Case">
-            <div class="project-visual grad-6">
-              <div class="visual-mesh"></div>
-              <div class="visual-ui-mockup">
-                <span class="mockup-pill">Chrome AI Extension</span>
-                <div class="mockup-window">
-                  <div class="mockup-bar"><span></span><span></span><span></span></div>
-                  <div class="mockup-title">PULSE // SIDE-PANEL COPILOT</div>
-                </div>
-              </div>
-              <span class="project-year">2026</span>
-            </div>
-            <div class="project-info">
-              <div class="project-meta">
-                <span>Product UI/UX &amp; API</span>
-                <span>•</span>
-                <span>Browser Extension</span>
-              </div>
-              <h3 class="project-name">Pulse AI — Developer Side-Panel <span class="serif">Workspace</span></h3>
-            </div>
-          </article>
-
-        </div>
-
+        <a href="mailto:hello@jimbodev.hu" class="btn-white-pill btn-large" data-hover>
+          <span>Get in Touch</span>
+          <span class="arrow">→</span>
+        </a>
       </div>
+
+      <footer class="bottom-bar">
+        <div class="footer-left">
+          <span class="brand-logo-sm">JimboDev.hu</span>
+          <span class="copyright">© 2026 JimboDev Studio — Hungary. All rights reserved.</span>
+        </div>
+        <div class="footer-right">
+          <a href="mailto:hello@jimbodev.hu" data-hover>hello@jimbodev.hu</a>
+          <a href="https://github.com" target="_blank" rel="noopener" data-hover>GitHub</a>
+          <a href="https://discord.com" target="_blank" rel="noopener" data-hover>Discord</a>
+        </div>
+      </footer>
     </section>
 
-    <!-- ==========================================
-         4. PROCESS SECTION (4 Steps)
-    =========================================== -->
-    <section id="process" class="section process-section" data-bg="violet">
-      <div class="container">
-        
-        <div class="section-header reveal-up">
-          <span class="eyebrow">(04) — METHODOLOGY</span>
-          <h2 class="editorial-heading">
-            From raw concept to <span class="serif">shipped perfection.</span>
-          </h2>
-        </div>
-
-        <div class="process-list">
-          
-          <div class="process-item reveal-up" data-cursor="Step 01">
-            <div class="process-number">01</div>
-            <div class="process-content">
-              <h3>Discovery &amp; <span class="serif">Architecture</span></h3>
-              <p>
-                We map out your technical requirements—whether that means structuring SQL schemas and server events for a high-pop FiveM server or defining the sitemap and conversion funnel for a brand website.
-              </p>
-            </div>
-            <div class="process-meta">Scope / Wireframes / DB</div>
-          </div>
-
-          <div class="process-item reveal-up" data-cursor="Step 02">
-            <div class="process-number">02</div>
-            <div class="process-content">
-              <h3>Art Direction &amp; <span class="serif">UI/UX Prototyping</span></h3>
-              <p>
-                Crafting atmospheric interfaces with editorial typography, tactile hover states, and clean component hierarchies. Every screen is designed for instant readability and visual impact.
-              </p>
-            </div>
-            <div class="process-meta">Figma / Design Systems / Motion</div>
-          </div>
-
-          <div class="process-item reveal-up" data-cursor="Step 03">
-            <div class="process-number">03</div>
-            <div class="process-content">
-              <h3>Precision <span class="serif">Engineering</span></h3>
-              <p>
-                Writing clean, modular code. Semantic HTML/CSS and vanilla JS on the web; rock-solid Lua scripts with hardware-accelerated NUI interfaces that keep client resource usage near 0.00ms.
-              </p>
-            </div>
-            <div class="process-meta">Frontend / Lua / NUI / APIs</div>
-          </div>
-
-          <div class="process-item reveal-up" data-cursor="Step 04">
-            <div class="process-number">04</div>
-            <div class="process-content">
-              <h3>QA, Optimization &amp; <span class="serif">Launch</span></h3>
-              <p>
-                Stress-testing across devices and server loads, fine-tuning animations, configuring DNS/cloud deployment, and handing over clean documentation.
-              </p>
-            </div>
-            <div class="process-meta">60FPS / Stress Test / Deploy</div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ==========================================
-         5. CONTACT SECTION + FOOTER
-    =========================================== -->
-    <section id="contact" class="section contact-section" data-bg="dark">
-      <div class="container">
-        
-        <div class="contact-box reveal-up">
-          <span class="eyebrow">(05) — INITIATE A PROJECT</span>
-          
-          <h2 class="contact-headline">
-            HAVE AN IDEA?<br />
-            <span class="serif">Let’s build it together.</span>
-          </h2>
-
-          <p class="contact-sub">
-            Available for custom web development, FiveM script commissions, and UI/UX design collaborations worldwide.
-          </p>
-
-          <div class="contact-cta-group">
-            <a href="mailto:hello@jimbodev.hu" class="btn-email-giant" data-cursor="Send Email">
-              <span>hello@jimbodev.hu</span>
-              <span class="email-arrow">↗</span>
-            </a>
-          </div>
-        </div>
-
-        <footer class="site-footer">
-          <div class="footer-col">
-            <span class="footer-label">STUDIO</span>
-            <p>JimboDev — Hungary (CET / UTC+1)</p>
-          </div>
-
-          <div class="footer-col">
-            <span class="footer-label">NAVIGATION</span>
-            <div class="footer-links">
-              <a href="#hero">Top</a>
-              <a href="#services">Services</a>
-              <a href="#work">Work</a>
-              <a href="#process">Process</a>
-            </div>
-          </div>
-
-          <div class="footer-col">
-            <span class="footer-label">SOCIAL &amp; CODE</span>
-            <div class="footer-links">
-              <a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
-              <a href="https://discord.com" target="_blank" rel="noopener">Discord ↗</a>
-              <a href="https://cfx.re" target="_blank" rel="noopener">Cfx.re ↗</a>
-            </div>
-          </div>
-
-          <div class="footer-col footer-copy">
-            <span>© 2026 JimboDev (jimbodev.hu)</span>
-            <span>All rights reserved.</span>
-          </div>
-        </footer>
-
-      </div>
-    </section>
   </main>
 
   <script src="script.js"></script>
