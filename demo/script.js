@@ -1,4 +1,4 @@
-/**
+﻿/**
  * JimboDev.hu — Clean Monochrome 3D Ribbed Sculpture & Subtle Depth Engine
  * - Pure silver/chrome ribbed torus matching the original Pinterest reference.
  * - Subtle monochrome stardust & soft silver atmospheric backlight (never empty, never overdone).
@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================================
      1. INITIAL REVEALS
      ========================================================================== */
-  const reveals = document.querySelectorAll('.reveal');
-  reveals.forEach((el) => el.classList.add('visible'));
+  // GSAP handles all reveal animations -- removed immediate-show
+  // const reveals = document.querySelectorAll('.reveal');
+  // reveals.forEach((el) => el.classList.add('visible'));
 
   /* ==========================================================================
      2. SCROLL-DRIVEN 3D RIBBED METALLIC SCULPTURE & SUBTLE AMBIENT SPACE
@@ -1056,10 +1057,13 @@ document.addEventListener('DOMContentLoaded', () => {
       clearInterval(autoplayTimer);
     };
 
+    const siteHeader = document.querySelector('.site-header');
+
     const openEasterEgg = () => {
       overlay.classList.add('show');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      if (siteHeader) siteHeader.style.visibility = 'hidden';
       updateCarousel();
       startAutoplay();
     };
@@ -1068,6 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
       overlay.classList.remove('show');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      if (siteHeader) siteHeader.style.visibility = '';
       stopAutoplay();
     };
 

@@ -1517,3 +1517,37 @@ a, button, [data-hover] {
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   GSAP ANIMATION SUPPORT
+   ========================================================================== */
+
+/* Word-split clip reveal support */
+.gsap-word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+/* Scroll progress bar */
+#gsap-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(184,184,196,0.5) 100%);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Section tag accent line */
+.section-tag-line {
+  display: inline-block;
+  width: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.35);
+  vertical-align: middle;
+  margin-right: 0.5em;
+  overflow: hidden;
+}
