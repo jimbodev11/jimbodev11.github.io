@@ -1961,6 +1961,81 @@ pre {
   box-shadow: 0 0 12px rgba(122, 162, 255, 0.25);
 }
 
+textarea.inquiry-input {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.inquiry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.inquiry-status {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease;
+}
+
+.inquiry-status.success {
+  background: rgba(46, 204, 113, 0.14);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  color: #2ecc71;
+}
+
+.inquiry-status.error {
+  background: rgba(231, 76, 60, 0.14);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #ff6b6b;
+}
+
+.inquiry-status.info {
+  background: rgba(122, 162, 255, 0.14);
+  border: 1px solid rgba(122, 162, 255, 0.4);
+  color: #7aa2ff;
+}
+
+.inquiry-discord {
+  background: #5865F2;
+  color: #ffffff;
+  border: none;
+}
+
+.inquiry-discord:hover {
+  background: #4752c4;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 18px rgba(88, 101, 242, 0.45);
+}
+
+.inquiry-discord:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.inquiry-btn svg,
+.inquiry-discord svg {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
 .inquiry-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2008,6 +2083,7 @@ pre {
 
 @media (max-width: 600px) {
   .inquiry-body { padding: 1.25rem; gap: 1.2rem; }
+  .inquiry-grid { grid-template-columns: 1fr; }
   .inquiry-actions { flex-direction: column; }
   .inquiry-btn { width: 100%; justify-content: center; }
   .modal-dialog { max-height: 90vh; }

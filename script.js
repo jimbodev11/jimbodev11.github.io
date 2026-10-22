@@ -485,9 +485,13 @@ window.addEventListener('load', () => {
       inquiry_time_asap: { hu: "ASAP (1-2 hét)", en: "ASAP (1-2 weeks)" },
       inquiry_time_month: { hu: "1 hónapon belül", en: "Within 1 month" },
       inquiry_time_flex: { hu: "Rugalmas", en: "Flexible" },
-      inquiry_step3_label: { hu: "3. Rövid elképzelés (opcionális):", en: "3. Brief idea (optional):" },
+      inquiry_step3_label: { hu: "3. Neved és elérhetőséged:", en: "3. Your Name & Contact:" },
+      inquiry_name_ph: { hu: "Neved / Beceneved...", en: "Your Name / Nickname..." },
+      inquiry_contact_ph: { hu: "Discord felh. vagy E-mail...", en: "Discord user or Email..." },
+      inquiry_step4_label: { hu: "4. Rövid elképzelés / Részletek (opcionális):", en: "4. Brief idea / Details (optional):" },
       inquiry_note_ph: { hu: "pl. Egy modern bemutató oldal sötét témával...", en: "e.g. A modern showcase website with dark mode..." },
-      inquiry_btn_send: { hu: "Ajánlatkérés küldése (E-mail)", en: "Send Inquiry (E-mail)" },
+      inquiry_btn_discord: { hu: "Küldés Discordra", en: "Send to Discord" },
+      inquiry_btn_send: { hu: "E-mail", en: "E-mail" },
       inquiry_btn_copy: { hu: "Másolás vágólapra", en: "Copy to Clipboard" },
 
       // FAQ Section
@@ -1350,14 +1354,28 @@ window.addEventListener('load', () => {
   });
 })();
 
-// --- Interactive Project Estimator / Inquiry Flow ---
+// --- Interactive Project Estimator & Discord Contact Form Flow ---
 (() => {
   const card = document.getElementById('inquiry-card');
   if (!card) return;
 
+  // ==========================================================================
+  // DISCORD WEBHOOK CONFIGURATION
+  // Ide másold be a Discord Webhook URL-t (Discord Csatorna beállítások -> Integrációk -> Webhookok)
+  // Példa: "https://discord.com/api/webhooks/1234567890/abcde_fgHIJK..."
+  // (Teszteléshez böngésző konzolban is beállítható: localStorage.setItem('jimbo_discord_webhook', 'URL'))
+  // ==========================================================================
+  const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1562902455342207067/yqsjf0qtxX0nNk1DsvFLDlb_jgkjoXgC6jFkt6dErz2AWdf4ioglcgrUEBdQSpCXnYUI";
+
   const typeButtons = card.querySelectorAll('#inquiry-types .inquiry-chip');
   const timeButtons = card.querySelectorAll('#inquiry-timelines .inquiry-chip');
+  const nameInput = document.getElementById('inquiry-name');
+  const contactInput = document.getElementById('inquiry-contact');
   const noteInput = document.getElementById('inquiry-note');
+  const hpInput = document.getElementById('inquiry-hp');
+  const statusBox = document.getElementById('inquiry-status');
+  const discordBtn = document.getElementById('inquiry-discord-btn');
+  const discordBtnText = document.getElementById('inquiry-discord-btn-text');
   const emailBtn = document.getElementById('inquiry-email-btn');
   const copyBtn = document.getElementById('inquiry-copy-btn');
 
@@ -1365,6 +1383,28 @@ window.addEventListener('load', () => {
   let selectedTypeEn = "Website / Portfolio";
   let selectedTime = "Minél hamarabb (1-2 hét)";
   let selectedTimeEn = "ASAP (1-2 weeks)";
+  let statusTimeout = null;
+
+  function getWebhookUrl() {
+    if (DISCORD_WEBHOOK_URL && DISCORD_WEBHOOK_URL.trim() !== "") {
+      return DISCORD_WEBHOOK_URL.trim();
+    }
+    return localStorage.getItem('jimbo_discord_webhook') || "";
+  }
+
+  function showStatus(message, type = 'info', autoHideMs = 7000) {
+    if (!statusBox) return;
+    clearTimeout(statusTimeout);
+    statusBox.textContent = message;
+    statusBox.className = `inquiry-status ${type}`;
+    statusBox.style.display = 'flex';
+
+    if (autoHideMs > 0) {
+      statusTimeout = setTimeout(() => {
+        statusBox.style.display = 'none';
+      }, autoHideMs);
+    }
+  }
 
   function setupChipGroup(buttons, onSelect) {
     buttons.forEach(btn => {
@@ -1387,6 +1427,12 @@ window.addEventListener('load', () => {
     selectedTimeEn = btn.getAttribute('data-time-en') || selectedTime;
   });
 
+  if (nameInput) {
+    nameInput.addEventListener('input', updateInquiryOutputs);
+  }
+  if (contactInput) {
+    contactInput.addEventListener('input', updateInquiryOutputs);
+  }
   if (noteInput) {
     noteInput.addEventListener('input', updateInquiryOutputs);
   }
@@ -1395,12 +1441,14 @@ window.addEventListener('load', () => {
     const isEn = (window.currentLang === 'en' || document.documentElement.lang === 'en');
     const type = isEn ? selectedTypeEn : selectedType;
     const time = isEn ? selectedTimeEn : selectedTime;
+    const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : (isEn ? "Not specified" : "Nincs megadva");
+    const contact = contactInput && contactInput.value.trim() ? contactInput.value.trim() : (isEn ? "Not specified" : "Nincs megadva");
     const note = noteInput && noteInput.value.trim() ? noteInput.value.trim() : (isEn ? "N/A" : "Nem lett megadva");
 
     if (isEn) {
-      return `Hello Jimbo,\n\nI would like to inquire about a project:\n• Project Type: ${type}\n• Timeline: ${time}\n• Details / Concept: ${note}\n\nLooking forward to hearing from you!`;
+      return `Hello Jimbo,\n\nI would like to inquire about a project:\n• Name: ${name}\n• Contact (Discord / Email): ${contact}\n• Project Type: ${type}\n• Timeline: ${time}\n• Details / Concept: ${note}\n\nLooking forward to hearing from you!`;
     } else {
-      return `Szia Jimbo,\n\nÉrdeklődni szeretnék egy projekttel kapcsolatban:\n• Projekt típusa: ${type}\n• Időkeret: ${time}\n• Elképzelés / Részletek: ${note}\n\nVárom a visszajelzésedet!`;
+      return `Szia Jimbo,\n\nÉrdeklődni szeretnék egy projekttel kapcsolatban:\n• Név: ${name}\n• Elérhetőség (Discord / Email): ${contact}\n• Projekt típusa: ${type}\n• Időkeret: ${time}\n• Elképzelés / Részletek: ${note}\n\nVárom a visszajelzésedet!`;
     }
   }
 
@@ -1413,6 +1461,172 @@ window.addEventListener('load', () => {
     if (emailBtn) {
       emailBtn.href = `mailto:contact@jimbodev.hu?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
+  }
+
+  // Discord Webhook Submit Handler
+  if (discordBtn) {
+    discordBtn.addEventListener('click', async () => {
+      const isEn = (window.currentLang === 'en' || document.documentElement.lang === 'en');
+      const name = nameInput ? nameInput.value.trim() : "";
+      const contact = contactInput ? contactInput.value.trim() : "";
+      const note = noteInput ? noteInput.value.trim() : "";
+      const type = isEn ? selectedTypeEn : selectedType;
+      const time = isEn ? selectedTimeEn : selectedTime;
+
+      // 1. Honeypot check (Anti-bot trap)
+      if (hpInput && hpInput.value.trim() !== "") {
+        showStatus(isEn ? "✅ Message sent successfully!" : "✅ Üzenet sikeresen elküldve!", "success");
+        return;
+      }
+
+      // 2. Validation
+      if (!name || !contact) {
+        showStatus(
+          isEn
+            ? "⚠️ Please fill in both your Name and Contact info (Discord or Email)!"
+            : "⚠️ Kérlek add meg a nevedet és egy elérhetőséget (Discord tag vagy Email)!",
+          "error"
+        );
+        if (!name && nameInput) nameInput.focus();
+        else if (!contact && contactInput) contactInput.focus();
+        return;
+      }
+
+      // 3. Rate limiting (45s cooldown)
+      const LAST_SENT_KEY = 'jimbo_last_discord_inquiry';
+      const lastSent = parseInt(localStorage.getItem(LAST_SENT_KEY) || '0', 10);
+      const now = Date.now();
+      const cooldownMs = 45 * 1000;
+      if (now - lastSent < cooldownMs) {
+        const remainingSec = Math.ceil((cooldownMs - (now - lastSent)) / 1000);
+        showStatus(
+          isEn
+            ? `⏳ Please wait ${remainingSec} seconds before sending another message.`
+            : `⏳ Kérlek várj még ${remainingSec} másodpercet a következő üzenet előtt!`,
+          "error"
+        );
+        return;
+      }
+
+      // 4. Webhook URL check
+      const webhookUrl = getWebhookUrl();
+      if (!webhookUrl || webhookUrl.trim() === "" || webhookUrl.includes("BEILLESZTENDŐ") || webhookUrl.includes("YOUR_WEBHOOK_URL")) {
+        showStatus(
+          isEn
+            ? "⚠️ Discord Webhook is not configured in script.js yet. Please use E-mail or Copy for now!"
+            : "⚠️ A Discord Webhook URL még nincs beillesztve a script.js-ben (DISCORD_WEBHOOK_URL). Addig használd az E-mail vagy Másolás opciót!",
+          "error",
+          10000
+        );
+        return;
+      }
+
+      // 5. Send to Discord Webhook
+      const origBtnText = discordBtnText ? discordBtnText.textContent : "";
+      discordBtn.disabled = true;
+      if (discordBtnText) discordBtnText.textContent = isEn ? "Sending..." : "Küldés folyamatban...";
+      showStatus(isEn ? "Connecting to Discord..." : "Kapcsolódás a Discordhoz és üzenet küldése...", "info", 0);
+
+      // Format contact link if email
+      const isEmail = contact.includes('@') && contact.includes('.');
+      const formattedContact = isEmail ? `[${contact}](mailto:${encodeURIComponent(contact)}?subject=${encodeURIComponent('JimboDev - ' + type)})` : `\`${contact}\``;
+
+      const embedPayload = {
+        username: "JimboDev Értesítő",
+        avatar_url: "https://jimbodev.hu/img/favicon.png",
+        embeds: [
+          {
+            title: "📩 Új megkeresés / Ajánlatkérés érkezett!",
+            description: `Egy érdeklődő kitöltötte az űrlapot a **[jimbodev.hu](https://jimbodev.hu)** weboldalon.`,
+            color: 0x5865F2,
+            fields: [
+              {
+                name: "👤 Küldő neve / Nick",
+                value: `**${name}**`,
+                inline: true
+              },
+              {
+                name: "💬 Elérhetőség",
+                value: formattedContact,
+                inline: true
+              },
+              {
+                name: "🛠️ Projekt típusa",
+                value: type,
+                inline: true
+              },
+              {
+                name: "⏱️ Időkeret",
+                value: time,
+                inline: true
+              },
+              {
+                name: "📝 Részletek / Üzenet",
+                value: note.length > 0 ? (note.length > 1024 ? note.substring(0, 1020) + "..." : note) : "_Nem adott meg külön részleteket._",
+                inline: false
+              },
+              {
+                name: "📋 Státusz & Teendő (Kezelés)",
+                value: "⏳ **Jelenlegi állapot:** `Függőben / Válaszra vár`\n\n**Reagálj az üzenetre a Discordban a jelöléshez:**\n• ✅ = **Megválaszolva** *(Sikeres kapcsolatfelvétel / Elfogadva)*\n• ❌ = **Elutasítva** *(Nem vállalt projekt / Lezárva)*",
+                inline: false
+              }
+            ],
+            footer: {
+              text: "jimbodev.hu portfolio • project_inquiry.sh",
+              icon_url: "https://jimbodev.hu/img/favicon.png"
+            },
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(embedPayload)
+        });
+
+        if (response.ok) {
+          localStorage.setItem(LAST_SENT_KEY, now.toString());
+          showStatus(
+            isEn
+              ? "✅ Message sent successfully! I received it on Discord and will contact you soon."
+              : "✅ Szuper! Az üzenet megérkezett a Discord szobámba, hamarosan felveszem veled a kapcsolatot!",
+            "success",
+            8000
+          );
+          if (noteInput) noteInput.value = "";
+          if (nameInput) nameInput.value = "";
+          if (contactInput) contactInput.value = "";
+          updateInquiryOutputs();
+        } else {
+          const errBody = await response.text().catch(() => "");
+          console.error("Discord webhook responded with error:", response.status, errBody);
+          showStatus(
+            isEn
+              ? "❌ Failed to send to Discord. Please reach out via Email or direct Discord message!"
+              : "❌ Nem sikerült a Discordra elküldeni. Kérlek írj közvetlenül e-mailt vagy Discord üzenetet!",
+            "error",
+            8000
+          );
+        }
+      } catch (err) {
+        console.error("Discord webhook fetch error:", err);
+        showStatus(
+          isEn
+            ? "❌ Network error. Please send via Email or contact me directly!"
+            : "❌ Hálózati hiba. Kérlek használd az E-mail gombot vagy keress közvetlenül!",
+          "error",
+          8000
+        );
+      } finally {
+        discordBtn.disabled = false;
+        if (discordBtnText) discordBtnText.textContent = origBtnText;
+      }
+    });
   }
 
   if (copyBtn) {
