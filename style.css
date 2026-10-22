@@ -1963,8 +1963,38 @@ pre {
 
 textarea.inquiry-input {
   min-height: 80px;
-  resize: vertical;
+  max-height: 260px;
+  resize: none;
   line-height: 1.5;
+  overflow-y: auto;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inquiry-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.inquiry-char-count {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-muted, #8b949e);
+  opacity: 0.8;
+  letter-spacing: 0.03em;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.inquiry-char-count.near-limit {
+  color: #f1c40f;
+  opacity: 1;
+}
+
+.inquiry-char-count.at-limit {
+  color: #ff5252;
+  opacity: 1;
+  font-weight: 600;
 }
 
 .inquiry-grid {

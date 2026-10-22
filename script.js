@@ -1433,8 +1433,35 @@ window.addEventListener('load', () => {
   if (contactInput) {
     contactInput.addEventListener('input', updateInquiryOutputs);
   }
+  const charCounter = document.getElementById('inquiry-char-count');
+  const MAX_NOTE_LENGTH = 500;
+
+  function autoResizeTextarea() {
+    if (!noteInput) return;
+    noteInput.style.height = 'auto';
+    const newHeight = Math.min(Math.max(noteInput.scrollHeight, 80), 260);
+    noteInput.style.height = `${newHeight}px`;
+  }
+
+  function updateCharCount() {
+    if (!noteInput || !charCounter) return;
+    const len = noteInput.value.length;
+    charCounter.textContent = `${len} / ${MAX_NOTE_LENGTH}`;
+    if (len >= MAX_NOTE_LENGTH) {
+      charCounter.className = 'inquiry-char-count at-limit';
+    } else if (len >= MAX_NOTE_LENGTH * 0.85) {
+      charCounter.className = 'inquiry-char-count near-limit';
+    } else {
+      charCounter.className = 'inquiry-char-count';
+    }
+  }
+
   if (noteInput) {
-    noteInput.addEventListener('input', updateInquiryOutputs);
+    noteInput.addEventListener('input', () => {
+      autoResizeTextarea();
+      updateCharCount();
+      updateInquiryOutputs();
+    });
   }
 
   function getFormattedInquiryText() {
@@ -1598,7 +1625,11 @@ window.addEventListener('load', () => {
             "success",
             8000
           );
-          if (noteInput) noteInput.value = "";
+          if (noteInput) {
+            noteInput.value = "";
+            autoResizeTextarea();
+            updateCharCount();
+          }
           if (nameInput) nameInput.value = "";
           if (contactInput) contactInput.value = "";
           updateInquiryOutputs();

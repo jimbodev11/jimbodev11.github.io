@@ -261,8 +261,11 @@
         </div>
 
         <div class="inquiry-step">
-          <span class="inquiry-label" data-i18n="inquiry_step4_label">4. Rövid elképzelés / Részletek (opcionális):</span>
-          <textarea id="inquiry-note" class="inquiry-input" rows="3" placeholder="pl. Egy modern bemutató oldal sötét témával..." data-i18n-ph="inquiry_note_ph"></textarea>
+          <div class="inquiry-step-header">
+            <span class="inquiry-label" data-i18n="inquiry_step4_label">4. Rövid elképzelés / Részletek (opcionális):</span>
+            <span id="inquiry-char-count" class="inquiry-char-count">0 / 500</span>
+          </div>
+          <textarea id="inquiry-note" class="inquiry-input" rows="3" maxlength="500" placeholder="pl. Egy modern bemutató oldal sötét témával..." data-i18n-ph="inquiry_note_ph"></textarea>
         </div>
 
         <!-- Honeypot spam trap -->
