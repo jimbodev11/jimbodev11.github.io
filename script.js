@@ -1365,7 +1365,7 @@ window.addEventListener('load', () => {
   // Példa: "https://discord.com/api/webhooks/1234567890/abcde_fgHIJK..."
   // (Teszteléshez böngésző konzolban is beállítható: localStorage.setItem('jimbo_discord_webhook', 'URL'))
   // ==========================================================================
-  const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1562902455342207067/yqsjf0qtxX0nNk1DsvFLDlb_jgkjoXgC6jFkt6dErz2AWdf4ioglcgrUEBdQSpCXnYUI";
+const DISCORD_WEBHOOK_URL = "https://jimbodev-contact.marton-bence-david.workers.dev";
 
   const typeButtons = card.querySelectorAll('#inquiry-types .inquiry-chip');
   const timeButtons = card.querySelectorAll('#inquiry-timelines .inquiry-chip');
